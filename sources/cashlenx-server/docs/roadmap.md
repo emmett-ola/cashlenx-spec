@@ -1,0 +1,116 @@
+# CashLenX Roadmap
+
+This file tracks active and future work. Completed milestone history lives in
+[`milestones.md`](milestones.md), and the documentation map lives in
+[`README.md`](README.md).
+
+## Current Status
+
+- Active branch line: `dev/v0.9.0`
+- Active API path: `/api/v0`
+- Current implementation version: `0.9.0`
+- `v0.9.0` implementation and local verification: complete
+- Remaining release action: publish/promote the completed development branch when authorized
+- Active milestone: `v0.10.0` cloud and self-hosted hardening
+
+The Go suite, MongoDB API smoke flow, MySQL migration runner, and independent
+numbered SQL sequence have passed against disposable Docker environments.
+
+## v0.9.0 Audit
+
+### Completed foundations
+
+- [x] In-memory category cache used by MongoDB and MySQL mappers
+- [x] Exact user/type/parent/name cache keys for user-scoped category lookup
+- [x] Defensive entity copies and targeted ID/user invalidation
+- [x] Parameterized category-name queries for both mapper backends
+- [x] Parameterized dynamic MySQL ID lists and corrected user-scoped deletion columns
+- [x] Reconciled MySQL cash-flow projections and DATE decoding through live mapper benchmark validation
+- [x] Redis decision for this milestone: do not add Redis; reconsider it when multi-instance deployment requires shared cache coherence
+- [x] Removed the unused global name-only category-cache index and compatibility methods/tests
+
+### Remaining work
+
+- [x] Add deterministic benchmarks for cash-flow summaries and statistic summary/dashboard calculations
+- [x] Add disposable integration benchmarks for MongoDB and MySQL filtered/date-range mapper queries
+- [x] Capture benchmark baselines before adding another cache layer
+- [x] Decide from measurements whether a recent-query cache provides a material benefit
+- [x] Reject a recent-query cache for this milestone because the measured cost does not justify its invalidation complexity
+
+There is no recent-query cache. The measured decision and median service
+results are recorded in [`performance.md`](performance.md). The deterministic
+benchmarks use fixed fixtures of 100, 1,000, and 10,000 transactions with 10
+categories. Run them with:
+
+```bash
+go test -run '^$' -bench 'Summary|Dashboard' -benchmem ./service/cash_flow_service ./service/statistic_service
+```
+
+Statistic and dashboard endpoints repeatedly read user/date-range cash flows.
+The dashboard's allocation profile makes in-request aggregation the preferred
+future optimization target if production traces justify more work.
+
+The mapper benchmarks are excluded from normal tests by the `integration` build
+tag. They seed 1,000- and 10,000-row user-isolated fixtures, validate the query
+result, and remove only those fixtures after each run. Use a disposable database
+with an initialized CashLenX schema. The explicit opt-in prevents accidental
+database writes:
+
+```bash
+# MongoDB
+CASHLENX_BENCHMARKS=1 DB_TYPE=mongodb DB_NAME=cashlenx MONGO_DB_URI='<mongodb-uri>' \
+  go test -tags=integration -run '^$' -bench '^BenchmarkCashFlowMapper' -benchmem ./mapper/cash_flow_mapper
+
+# MySQL
+CASHLENX_BENCHMARKS=1 DB_TYPE=mysql DB_NAME=cashlenx MYSQL_DB_URI='<mysql-uri-without-database>' \
+  go test -tags=integration -run '^$' -bench '^BenchmarkCashFlowMapper' -benchmem ./mapper/cash_flow_mapper
+```
+
+## v0.9.0 Execution Order
+
+1. Add service benchmarks using deterministic in-memory mapper fakes.
+2. Add build-tagged mapper benchmarks against disposable MongoDB and MySQL databases.
+3. Record baseline results and identify actual bottlenecks.
+4. Record the decision to reject recent-query caching because the measured service cost does not justify invalidation complexity.
+5. Re-run race tests, both database benchmark suites, and the MongoDB/MySQL smoke flows.
+
+## v0.9.0 Guardrails
+
+- Cache keys must include the authenticated user and every query dimension.
+- Cached entities and response objects must never expose mutable internal state.
+- Every write path affecting cached results must have a tested invalidation path.
+- Cache size and TTL must be bounded and configurable if recent-query caching is added.
+- MongoDB and MySQL behavior must remain equivalent.
+- Do not add Redis merely to complete a checklist; revisit it with horizontal scaling or cross-process invalidation requirements.
+
+## v0.9.0 Exit Criteria
+
+- Benchmark baselines are committed with reproducible commands and fixture sizes.
+- The recent-query cache is either implemented with measured benefit or explicitly rejected with benchmark evidence.
+- Category cache no longer maintains unused unscoped lookup state.
+- Race tests and relevant disposable database checks pass.
+- `README.md`, `AGENTS.md`, and milestone documentation reflect the final decision.
+
+## Future Milestones
+
+### v0.10.0 - Cloud and Self-Hosted Hardening
+
+- [ ] Docker Compose profiles for single-tenant and multi-tenant deployments
+- [ ] Helm chart draft for cloud deployments, if needed
+- [ ] Secure defaults for production CORS, rate limits, secrets, and operational endpoints
+- [ ] Revisit Redis or another shared cache only if multi-instance deployment is adopted
+
+### v1.0.0 - Stable Release Readiness
+
+- [ ] GitHub Actions release pipeline with tagged binaries and images
+- [ ] Module caching and reproducible builds
+- [ ] Start `CHANGELOG.md` and synchronize displayed versions with release tags
+- [ ] Decide and publish the stable `/api/v1` compatibility policy
+
+## Planning Policy
+
+- User-facing functionality takes priority over infrastructure enhancements during `v0.x` development.
+- Keep API routes under `/api/v0` until the first stable API release.
+- Keep `model/version.go`, OpenAPI `info.version`, this roadmap, and release notes synchronized.
+- Treat code as authoritative when documentation drifts, then correct the documentation deliberately.
+- Track repository-wide architectural debt in `AGENTS.md`; keep this roadmap focused on milestone work.
