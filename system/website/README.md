@@ -15,11 +15,7 @@ Current stack:
 
 The first scaffold keeps content in `src/App.tsx` so the documentation structure is easy to revise while the source of truth is still settling.
 
-Later candidates:
-
-- Replace inline arrays with MDX.
-- Generate OpenAPI summaries from the server contract.
-- Load content from CashLenX server docs or this spec workspace.
+Future MDX, generated OpenAPI summaries, and spec-to-website content pipelines remain deferred in `../../backlog/`; they are not current website behavior.
 
 ## Standard Commands
 

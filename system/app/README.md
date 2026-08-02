@@ -20,12 +20,17 @@ Current stack:
 - `.env.sample`: local environment template.
 - `lib/main.dart`: config, provider scope, theme, i18n, and router startup.
 - `lib/routing/app_router.dart`: GoRouter setup and auth redirects.
+- `lib/core/i18n/app_i18n.dart`: translations and language selection.
 - `lib/core/config/app_config.dart`: environment loading and API base URL composition.
+- `lib/core/services/secure_storage_service.dart`: token and remember-me persistence.
 - `lib/network/cashlenx_api.dart`: app API adapter methods.
 - `lib/features/home/presentation/pages/home_page.dart`: authenticated shell and major finance UI surfaces.
 - `lib/features/profile/presentation/pages/profile_page.dart`: profile and avatar/currency controls.
 - `lib/features/demo/data/demo_data_store.dart`: editable demo-mode data store.
 - `lib/theme/app_theme.dart`: theme mode and theme color providers.
+- `lib/shared/widgets/app_surface.dart`: shared panels, cards, and list tiles.
+- `lib/shared/widgets/app_color_picker.dart`: shared theme-color picker.
+- `assets/images/avatars/`: fixed preset avatar library.
 
 ## Architecture
 
@@ -57,11 +62,14 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 - One silent token refresh attempt on eligible 401 responses.
 - Authenticated home shell with Home, Category, Add, Budget, and Settings tabs.
 - Real API-backed dashboard and finance flows for normal users.
-- Session-local editable data for demo users.
+- Session-local editable data for demo users. Choosing demo mode resets the demo store before entering the session, and demo mode does not call authenticated APIs.
 - Transaction list, add, edit, delete, category selection, date selection, validation, and server error handling.
+- Add and edit transactions share amount/keypad, category, date, description, remark, and attachment-placeholder behavior. Their category selectors remember the last income and expense selections independently while the transaction type changes.
 - Hierarchical category management.
-- Profile fetch/update for supported fields.
+- Localized transaction dates, calendar month titles, weekday labels, and first-day-of-week behavior through Flutter localizations.
+- Profile fetch/update for `nickname`, `avatar_url`, and `gender`. Avatars come from the fixed preset library; the fallback asset is `assets/images/avatars/f9b59ca5421b2b7ef2e31c2ba4d827f48d22594a.png`.
 - Theme color, currency, language, about, and logout settings.
+- The selected theme color drives primary controls, accents, selected states, and highlights. Splash and pre-splash visuals remain brand-stable rather than following the selected theme color.
 - Docker-based Flutter web deployment using `Dockerfile`, `compose.yml`, and nginx route fallback.
 - GitHub Actions web release workflow that builds, analyzes, tests, and publishes static web output to the release repository.
 
@@ -86,21 +94,12 @@ Regenerate from source with:
 dart run build_runner build --delete-conflicting-outputs
 ```
 
-## Standard Validation
+For a longer generated-code session:
 
 ```bash
-flutter analyze
-flutter test
+dart run build_runner watch --delete-conflicting-outputs
 ```
 
-Run the disposable Flutter-to-server smoke flow on Windows with Docker available:
+## Standard Validation
 
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/smoke-api.ps1
-```
-
-Use MySQL 8 instead of MongoDB with:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/smoke-api.ps1 -Database mysql
-```
+See `../testing.md` for the canonical app analyze, test, and disposable database/API smoke commands and their evidence boundaries.

@@ -18,6 +18,8 @@ The local workspace contains these project areas:
 
 The outer workspace is not assumed to be a Git repository.
 
+Implementation work uses each repository's existing `develop` branch by default and commits each completed request or coherent change set locally unless the user opts out. `cashlenx-spec` currently remains on `main`; repository-local commits do not imply push, merge, tag, publication, or deployment.
+
 ## Current Map
 
 | Area | Purpose |
@@ -28,7 +30,7 @@ The outer workspace is not assumed to be a Git repository.
 | `versions/` | Versioned delivery records, validation evidence, and templates. |
 | `backlog/` | Deferred candidates, known gaps, and open product questions. |
 | `decisions/` | ADR-style durable decisions. |
-| `sources/` | Copied Markdown source material from sibling projects, excluding their `README.md` files. |
+| `sources/` | Copied Markdown source material and import inventory from sibling projects, excluding their `README.md` files. |
 
 ## Reading Order
 
@@ -36,18 +38,9 @@ The outer workspace is not assumed to be a Git repository.
 2. `WORKFLOW.md`: work levels, evidence triggers, Human gates, version states, and closeout rules.
 3. `GUIDELINE.md`: reusable product and engineering principles.
 4. `system/README.md`: stable current system facts.
-5. `versions/README.md`: version workflow and current version plan.
+5. `versions/README.md`: version-record policy, state semantics, templates, and close gate.
 6. `backlog/README.md`: deferred work and open questions.
 7. `decisions/README.md`: durable decisions.
-
-## Current Planning Position
-
-- Product status: active `v0.x` development.
-- Server API path: `/api/v0`.
-- Server status: `v0.9.0` implementation and local verification are complete; `v0.10.0` cloud and self-hosted hardening is the active server milestone.
-- App status: authenticated shell and core finance flows are implemented, with budget mutation and full statistics UI still incomplete.
-- Default development database: MongoDB; MySQL 8 is also supported and covered by the Flutter/API smoke flow.
-- Spec status: pre-baseline. Create the first formal baseline later after the beta readiness boundary is selected.
 
 ## Source Of Truth Rules
 
@@ -62,6 +55,8 @@ The outer workspace is not assumed to be a Git repository.
 - For website documentation structure, inspect `../cashlenx-website/src/App.tsx` and `../cashlenx-website/docs/`.
 - When this spec conflicts with implementation, implementation wins until the spec is corrected.
 
+Current implementation maturity belongs in `system/`; unopened delivery candidates and readiness work belong in `backlog/`; opened delivery state and evidence belong in `versions/`.
+
 ## Working Rule
 
-Keep all files in this spec workspace in English. Agent-specific rules belong in `AGENTS.md`; workflow rules belong in `WORKFLOW.md`; reusable principles belong in `GUIDELINE.md`; project facts belong in `system/`, `versions/`, `backlog/`, or `decisions/`.
+Keep all files in this spec workspace in English. Agent-specific rules belong in `AGENTS.md`; workflow rules belong in `WORKFLOW.md`; reusable principles belong in `GUIDELINE.md`; current facts belong in `system/`; opened delivery evidence belongs in `versions/`; deferred work belongs in `backlog/`; durable choices belong in `decisions/`.

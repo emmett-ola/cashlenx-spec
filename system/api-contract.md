@@ -5,7 +5,6 @@
 - Public API path: `/api/v0`.
 - Server default local base URL: `http://localhost:11063/api/v0`.
 - The API path version is configurable through `API_VERSION`.
-- Server API notes baseline: version `0.9.0`, last updated `2026-06-30` in the imported server docs.
 
 The detailed contract lives in `../cashlenx-server/docs/openapi.yaml`. This document is a human-readable summary.
 

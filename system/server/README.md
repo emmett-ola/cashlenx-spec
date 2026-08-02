@@ -9,6 +9,7 @@ Current stack:
 - Go `1.23.0`.
 - Cobra CLI.
 - Gorilla Mux HTTP routing.
+- Gin remains a direct dependency only for legacy response helpers; it is not the active router.
 - Zap logging utilities.
 - MongoDB and MySQL drivers.
 - JWT via `github.com/golang-jwt/jwt/v5`.
@@ -21,6 +22,7 @@ Current stack:
 
 - `main.go`: calls `cmd.Execute()`.
 - `cmd/root.go`: wires the CLI and initializes the MongoDB pool in `PersistentPreRun`.
+- `cmd/cli_auth/auth.go`: owns CLI session persistence, authorization helpers, and refresh behavior.
 - `cmd/open_cmd/start.go`: starts the HTTP server with `controller.StartServer(port)`.
 - `controller/server.go`: registers versioned API routes under `/api/{version}`.
 - `docs/openapi.yaml`: detailed OpenAPI contract.
@@ -42,6 +44,7 @@ http://localhost:11063/api/v0
 ```text
 cashlenx-server/
   auth/         # Auth service/provider abstraction.
+  cache/        # Cache helpers.
   cmd/          # Cobra commands.
   config/       # Runtime data files.
   controller/   # HTTP route registration and handlers.
@@ -54,6 +57,7 @@ cashlenx-server/
   model/        # Entities, DTOs, response types, constants.
   scripts/      # Start and docs helper scripts.
   service/      # Business logic.
+  test/         # Sparse test and log area.
   util/         # Config, logging, DB, email, date, ID, HTTP helpers.
   validation/   # Validation helpers and tests.
 ```
@@ -72,9 +76,32 @@ cashlenx-server/
 - User-scoped export/import backup flows.
 - Admin user management and full database backup/restore.
 - Backup/restore preflight validation and progress reporting.
+- Compensating rollback for destructive admin restore and versioned MySQL migrations; failed migration compensation retains dirty state and blocks startup.
 - MySQL migration tracking and startup migration application.
 - SMTP email utility for verification-related delivery.
 - Snowflake ID generator initialization for distributed IDs.
+
+## Architecture And Entry Layers
+
+The primary server path is:
+
+```text
+HTTP -> Controller -> Service -> Mapper -> Database
+```
+
+- Cobra commands under `cmd/` and Gorilla Mux handlers under `controller/` are the two entry layers.
+- Controllers translate requests into service calls and take authenticated identity and role from middleware context.
+- CLI commands translate flags and saved CLI session context into the same request shapes and service behavior. Non-open commands centralize session checks in `cmd/cli_auth`.
+- CLI-only behavior is limited to terminal output, prompts, local file paths, and session persistence.
+- When an API request field or query parameter also has a CLI surface, the matching CLI flag should mirror it.
+- Route or command shape changes must keep `controller/server.go`, `docs/openapi.yaml`, `docs/api.md`, and `docs/cli.md` aligned.
+
+Supporting ownership:
+
+- `middleware/` owns request authentication, administrator checks, CORS, request logging, metrics, and OpenAPI validation.
+- `auth/` owns token creation and authentication middleware delegation.
+- `validation/validators.go` owns shared request validators.
+- `config/default_categories.json` owns the built-in category seed data.
 
 ## CLI Structure
 
@@ -94,15 +121,44 @@ The server start command is `go run main.go open start -p 11063`, not `server st
 
 - MongoDB is the default development database.
 - MySQL 8 is also runnable and covered by disposable smoke validation.
+- Production-facing mapper behavior is expected for both backends unless a change is explicitly database-specific.
+- Current mapper owners include cash flow, category, user, user configuration, refresh token, and operation confirmation code packages. Mapper packages select the active implementation by database type.
+- Core entities use soft deletion through `is_delete` and audit metadata. Normal queries must continue to exclude deleted records unless an administrative backup or another explicit include-deleted operation requires them.
 - Independent MongoDB and MySQL Compose projects store data in the named `cashlenx-mongodb-data` and `cashlenx-mysql-data` volumes. Server build/start scripts do not manage dependency lifecycle.
 - MongoDB applied-version tracking is not implemented and remains architecture debt.
 
-## Standard Validation
+Persistence-shape changes must account for mapper code, migrations, Docker initialization assets when applicable, and backup/restore or import/export formats.
 
-```bash
-go build -o cashlenx main.go
-go test ./...
-scripts/ci-test.sh
+## Security-Critical Behavior
+
+- User-owned cash flows, categories, configuration, and exports are scoped by authenticated user identity through controller, service, and mapper layers.
+- Admin routes use `middleware.Admin`, which reads the `role` set by authentication middleware.
+- Administrator users are created only by `user_service.InitAdminUser()` when no administrator exists.
+- Registration and user-management creation always create the `user` role even if input requests `admin`.
+- Generic user updates cannot promote or demote roles, and user deletion rejects administrator accounts.
+- Password changes and account deletion revoke persisted refresh tokens.
+
+## Middleware And Operational Surface
+
+API traffic is wrapped in this order:
+
+```text
+CORS -> Logging -> Metrics -> Auth -> OpenAPI schema validation -> Router
 ```
 
-The sibling Flutter client owns the end-to-end database smoke flow through `../cashlenx-app/scripts/smoke-api.ps1`.
+- CORS stays outermost so browser preflight requests are answered before authentication or schema validation.
+- Logging preserves or creates `X-Request-ID`, echoes it in responses, stores it in request context, and includes it in structured logs.
+- `/api/{version}/open/*` bypasses required authentication. `POST /open/auth/logout` performs optional token handling in its controller and remains public and idempotent.
+- `GET /metrics` is unversioned and outside JWT/OpenAPI middleware. `/debug/pprof/*` is registered only when `ENV=dev`.
+- In development and test, loopback browser origins may use dynamic ports. Production uses explicit `CORS_ORIGINS` values.
+
+## Configuration Boundaries
+
+- Runtime configuration is loaded from `.env` and process environment through `util/config_util.go`.
+- Database connection values map to internal keys `db.mongodb.url` and `db.mysql.url`; legacy `mongodb.uri` and `mysql.uri` keys are not registered.
+- API version, schema validation, authentication lifetime, registration, bootstrap administrator, CORS, host/port, timezone, Snowflake worker, verification-code, SMTP, logging, and database selection are configuration-owned behaviors.
+- Automated registration and password-reset tests must replace email delivery and must not contact a real provider.
+
+## Standard Validation
+
+See `../testing.md` for the canonical server build, unit, migration, and disposable database/API smoke commands and their evidence boundaries.

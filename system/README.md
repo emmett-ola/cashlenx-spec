@@ -6,12 +6,13 @@ This directory contains the current CashLenX system facts. These documents descr
 
 | Document | Purpose |
 | --- | --- |
-| `product-and-flows.md` | Product scope, users, current flows, known limits, and open product questions. |
+| `product-and-flows.md` | Product scope, users, current flows, and verified implementation limits. |
 | `domain-model.md` | Canonical domain concepts and relationships. |
 | `api-contract.md` | API versioning, response wrapper, auth model, and route surface summary. |
-| `operations-and-testing.md` | Local runtime, databases, deployment notes, and validation commands. |
-| `app/README.md` | Flutter client architecture, behavior, and validation facts. |
-| `server/README.md` | Go server architecture, CLI/API entry points, persistence, and validation facts. |
+| `operations.md` | Local runtime, databases, container boundaries, deployment mechanics, configuration synchronization, and operational endpoints. |
+| `testing.md` | Validation commands, evidence boundaries, and app/server/integration testing strategy. |
+| `app/README.md` | Flutter client architecture, behavior, generated-code boundary, and testing entry point. |
+| `server/README.md` | Go server architecture, CLI/API entry points, persistence, security boundaries, and testing entry point. |
 | `design/README.md` | Design reference, visual tokens, and UI guidance. |
 | `website/README.md` | Website documentation scaffold status. |
 | `quality-attributes.md` | Triggered quality scenarios and validation expectations for correctness, auth, data integrity, operations, maintainability, and documentation. |

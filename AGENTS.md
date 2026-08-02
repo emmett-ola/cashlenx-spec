@@ -5,10 +5,12 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 ## Startup Rules
 
 - Start by reading `README.md`, then `WORKFLOW.md`, then `GUIDELINE.md`, then `system/README.md`, then `versions/README.md`.
+- Before changing or investigating a sibling project, read that project's nearest `AGENTS.md` when one exists. Treat it as repository-local operating guidance and reconcile its durable content with this spec's canonical document owners.
 - Use `sources/` as imported source material, not as current truth.
 - If specs conflict with implementation, inspect the implementation first and then update the affected spec.
 - Do not assume the outer workspace is a Git root.
 - Keep edits scoped to `cashlenx-spec` unless the user explicitly asks to update sibling projects.
+- Use paths relative to `cashlenx-spec` or the logical workspace root in repository documents. Do not record host-specific drive-letter paths.
 - Inspect repository evidence before acting. Separate verified facts, reasonable inferences, and unresolved questions.
 - Read delivery history only when the task changes or investigates that scope; Lightweight work does not require unrelated version history.
 
@@ -21,6 +23,7 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 ## Repository Boundaries
 
 - Treat `cashlenx-spec`, `cashlenx-app`, `cashlenx-server`, `cashlenx-design`, and `cashlenx-website` as separate project areas.
+- Use an existing `develop` branch as the default implementation working branch. Inspect branch and worktree state before switching; do not create, replace, or switch branches when doing so would displace unrelated user work.
 - `cashlenx-spec` is the specification workspace and should not contain runtime code.
 - Sibling repositories are source-of-truth inputs for implementation facts.
 - Sibling implementation repositories must not import, read, link to, build from, test against, or otherwise depend on `cashlenx-spec`.
@@ -30,8 +33,8 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 ## Spec Layering
 
 - `system/` contains durable current facts.
-- `versions/` contains delivery records, release scopes, validation evidence, and version-specific notes.
-- `backlog/` contains deferred candidates and open product questions.
+- `versions/` contains delivery records, release scopes, validation evidence, and version-specific notes after a concrete boundary is selected.
+- `backlog/` contains deferred candidates, readiness work without a selected delivery boundary, and open product questions.
 - `decisions/` contains ADR-style durable product or architecture decisions.
 - `sources/` contains copied Markdown source documents from sibling projects.
 - `WORKFLOW.md` owns work levels, Human gates, evidence triggers, state semantics, and closeout flow.
@@ -40,7 +43,7 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 ## Version Workflow Rules
 
 - Open new work as `versions/vX.Y.Z-short-name/` when it has a concrete delivery boundary.
-- Use `versions/_template/` for version directories that need scope, design, work items, acceptance, and release notes.
+- Use `versions/_template/` for version directories that need a task contract, delivery result, triggered evidence, and closeout record.
 - Move durable behavior into `system/` before closing a version.
 - Move deferred or rejected ideas into `backlog/`.
 - Add ADRs under `decisions/` only for choices that should remain discoverable after a version closes.
@@ -49,8 +52,12 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 ## Editing Practices
 
 - Prefer small, stable documents over large mixed notes.
+- After completing a request or coherent change set, create a repository-local commit by default unless the user explicitly asks not to commit. Implementation commits use the existing `develop` branch by default; spec-only commits use the current spec governance branch. Stage only intended files. A commit does not authorize push, merge, tag, publication, or deployment.
 - Keep product requirements separate from implementation notes.
+- At the spec root, keep conventional governance entry points uppercase (`AGENTS.md`, `README.md`, `WORKFLOW.md`, and `GUIDELINE.md`). Below the root, reserve uppercase `README.md` for directory indexes and use lowercase names for other project-authored documents.
+- Keep tracked text files on LF line endings through `.gitattributes`, and end files with exactly one newline.
 - Keep copied source documents intact unless the user asks for a cleanup pass.
+- When importing a sibling `AGENTS.md`, keep an exact snapshot under `sources/<project>/AGENTS.md`, then deduplicate its durable facts, principles, workflow rules, decisions, and deferred work into their canonical spec layers. Do not promote branch names, session narration, or stale implementation claims without verification.
 - When importing facts from sources, deduplicate and rewrite them into the current spec structure instead of editing copied source files in place.
 - Before finishing a documentation task, check edited files for accidental non-English content.
 - Do not keep empty placeholder documentation directories. Create a new information area only when a concrete artifact and authority boundary exist.

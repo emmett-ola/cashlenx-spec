@@ -16,7 +16,7 @@ Include only relevant categories; do not add empty rows merely to satisfy the te
 
 | ID | Category | Scenario / Preconditions | Expected Result | Evidence | Result |
 | --- | --- | --- | --- | --- | --- |
-| 01 | Positive / Negative / Auth / Compatibility / Migration / Recovery / Security / Documentation |  |  |  | Not run |
+| 01 | Positive / Negative / Authentication / Authorization / Compatibility / Migration / Recovery / Security / Documentation |  |  |  | Not run |
 
 ## Validation Summary
 

@@ -57,7 +57,7 @@ CashLenX is a personal-finance application for recording cash flows, organizing 
 ### Profile And Preferences
 
 - Fetch and update API-supported profile fields: `nickname`, `avatar_url`, and `gender`.
-- Use fixed preset avatar assets; uploaded avatars are not planned.
+- Use fixed preset avatar assets; user-uploaded avatars are not supported.
 - Store selected avatar preset path in `avatar_url`.
 - Keep currency preference app-local through the app currency provider.
 - Configure theme color and language in settings.
@@ -71,20 +71,7 @@ CashLenX is a personal-finance application for recording cash flows, organizing 
 
 - Budget preview exists in the authenticated shell.
 - Budget creation and editing are still coming-soon behavior in the app.
-- Budget creation/editing is not part of `v1.0.0`; it is planned as a `v1.1.0` major feature.
 - Do not describe budget mutation as complete until backend and design scope are confirmed and implemented.
-
-## Planned Stable Release Decisions
-
-These decisions are accepted release targets for `v1.0.0`. They become current implemented facts only after the affected app, server, website, and release metadata changes are delivered and validated.
-
-- `v1.0.0` launches the stable API path under `/api/v1`.
-- Stable login supports both username and email.
-- Remember-me does not define a separate app-level expiry; refresh-token expiry controls remembered session lifetime.
-- Logout keeps the backend-supported ability to revoke a specified session or all sessions.
-- Demo mode remains a normal available feature with local demo data.
-- Export/import remains an administrator/management capability and is not opened as a normal app user workflow in `v1.0.0`.
-- Website, app, and backend all advance to `v1.0.0` for the first stable release. After that, only affected implementation projects advance their runtime/displayed version.
 
 ## Known Product Limits
 
@@ -94,11 +81,4 @@ These decisions are accepted release targets for `v1.0.0`. They become current i
 - Export/import remains management capability; normal app user UI is deferred.
 - The home shell is still concentrated in a large presentation file and should be split as feature boundaries mature.
 
-These limits do not block the beta baseline when the corresponding action is clearly represented by the existing coming-soon toast. They remain implementation gaps and must not be described as completed capabilities.
-
-## Open Product Questions
-
-- What should the final splash subtitle be?
-- Which platform should drive UI decisions first: mobile, web, or equal priority?
-- What is the first complete budget workflow?
-- Which statistics views are required for the first stable release?
+These remain implementation gaps and must not be described as completed capabilities. Stable-release decisions are owned by `../decisions/0001-stable-release-api-auth-and-capability-policy.md`; deferred scope, beta allowances, and open product questions are owned by `../backlog/`.

@@ -12,7 +12,7 @@ Use this file for High-impact work or when the compact version README cannot exp
 
 - Current behavior:
 - Evidence:
-- Affected users:
+- Affected users and roles:
 
 ### Constraints
 
@@ -30,8 +30,8 @@ Use this file for High-impact work or when the compact version README cannot exp
 - Out of scope:
 - API/contracts:
 - Data/schema:
-- Auth/security:
-- App/server/website:
+- Auth/permissions/security:
+- App/server/website/design:
 - Operations/deployment:
 
 ## Material Decisions

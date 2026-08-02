@@ -5,7 +5,7 @@
 - Version:
 - State: Draft / Ready / WIP / Testing / Closed / Cancelled
 - Work Level: Standard / High-impact
-- Execution Owner:
+- Execution Owner: AI
 - Validation Owner:
 - Validated At:
 - Human Gate: Not required / Required
@@ -13,7 +13,6 @@
 - Human Decision By/At: N/A
 - Deployment State: Not deployed / Testing / Production / N/A
 - Deployment Evidence: N/A
-- Owner:
 - Started:
 - Target:
 - Affected project areas:
@@ -25,11 +24,7 @@
 - Constraints:
 - Done when:
 
-## Summary
-
-Describe the version in one short paragraph.
-
-## Links
+## Optional Files
 
 - Requirement: `requirement.md` when High-impact scope or decisions need separate evidence.
 - Developing: `developing.md` when rollout, compatibility, migration, recovery, or operations need separate evidence.
@@ -46,5 +41,16 @@ Describe the version in one short paragraph.
 ## Validation
 
 - Commands and results:
-- Negative/permission/compatibility evidence when applicable:
+- Negative/auth/compatibility evidence when applicable:
 - Known limits:
+
+## Close Gate
+
+- [ ] Done condition satisfied.
+- [ ] Relevant validation passed and known limits recorded.
+- [ ] Workflow state and deployment state recorded separately.
+- [ ] Durable facts updated in the canonical `system/` document.
+- [ ] Deferred work moved to `backlog/` or recorded as an open question.
+- [ ] Implementation refs and final repository state recorded.
+- [ ] Triggered contract, migration, security, compatibility, recovery, or deployment evidence recorded.
+- [ ] Human decision recorded only when a Human gate was triggered.

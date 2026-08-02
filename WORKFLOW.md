@@ -29,7 +29,8 @@ When levels overlap, use the highest applicable level. Technical difficulty alon
 5. Validate in proportion to the behavior and risk changed.
 6. Synchronize the canonical `system/` fact when implementation behavior changes.
 7. When an implementation `.env.sample` changes, run `cashlenx-spec/scripts/sync-env.sh` for local `.env` structure and preserve every existing configured value unless an explicit migration requires changing it. Do not inspect or synchronize owner-managed `.env.testing` or `.env.production` files without explicit authorization.
-8. Recheck repository state and report validation, changed files, known limits, and delivery actions.
+8. Commit the completed request or coherent change set by default unless the user explicitly opts out. Implementation commits use an existing `develop` branch by default; spec-only commits use the current spec governance branch. Stage only intended files and keep push, merge, tag, publication, and deployment as separately authorized actions.
+9. Recheck repository state and report validation, changed files, known limits, commits, and delivery actions.
 
 Lightweight work does not require a persisted task contract, scenario matrix, or broad implementation build unless its impact triggers one.
 
@@ -76,13 +77,11 @@ Human approval covers only the stated decision or operation. Reversible implemen
 2. **Decide:** choose the smallest safe approach; obtain only triggered Human decisions.
 3. **Implement:** work repository by repository and preserve independent build/runtime boundaries.
 4. **Validate:** run focused checks first and add only triggered enhanced scenarios.
-5. **Close:** synchronize facts, record evidence and deferred work, commit intended files when in scope, and perform controlled delivery actions only when authorized.
+5. **Close:** synchronize facts, record evidence and deferred work, commit the completed change set by default on the applicable working branch, and perform push, merge, tag, publication, deployment, or other controlled delivery actions only when authorized.
 
 ## Release Delivery Convention
 
-- `cashlenx-spec` controls product delivery scope under `versions/`.
-- App, server, and website all advance to `v1.0.0` for the first stable release.
-- After `v1.0.0`, only affected implementation repositories advance their runtime or displayed version.
+- `cashlenx-spec` controls product delivery scope under `versions/`; implementation version advancement follows `decisions/0002-spec-controlled-versioning-with-project-local-advancement.md`.
 - Release/tag delivery, publication, and deployment are separate actions and require explicit authorization.
 - A closed version records accepted scope and evidence; it does not imply deployment.
 - Do not move or recreate an existing release tag. A correction receives a new version and tag.
@@ -108,4 +107,4 @@ Standard and High-impact work also requires the applicable compatibility, migrat
 
 ## Spec-Only Governance Exception
 
-Information architecture, workflow rules, templates, references, and factual documentation may change directly in `cashlenx-spec` without a product version when runtime behavior and controlled contracts do not change. Validate Markdown structure, paths, encoding, stale facts, `git diff --check` when available, and the unchanged state of implementation repositories.
+Information architecture, workflow rules, templates, references, and factual documentation may change directly in `cashlenx-spec` without a product version when runtime behavior and controlled contracts do not change. Validate Markdown structure and local links, moved paths, encoding, stale or duplicated policy owners, `git diff --check` when available, source-snapshot integrity when touched, and the unchanged state of implementation repositories.

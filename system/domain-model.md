@@ -17,6 +17,12 @@ Related behavior:
 - Account deletion.
 - User database backup/restore.
 
+Role lifecycle:
+
+- Startup bootstraps an administrator only when no administrator account exists.
+- Registration and normal user-management creation create `user` accounts, not administrators.
+- Generic user updates cannot change roles, and administrator accounts cannot be deleted through the normal delete flow.
+
 ### Session And Token
 
 Authentication uses JWT access tokens plus persisted refresh tokens.
@@ -27,6 +33,14 @@ Related behavior:
 - Refresh login is performed by passing `refresh_token` to `POST /open/auth/login`.
 - The Flutter app stores access token, refresh token, and remember-me state in secure storage.
 - The app auth interceptor injects bearer tokens and attempts one silent refresh on eligible 401 responses.
+- Password changes and account deletion revoke the user's persisted refresh tokens.
+
+### Verification Code
+
+A purpose-scoped record used by sign-up, password-reset, and email-change flows.
+
+- New active codes supersede earlier active codes for the same purpose and subject.
+- Codes have an expiry and are marked used after successful completion.
 
 ### Profile
 
@@ -41,7 +55,7 @@ Current app-supported fields:
 Avatar behavior:
 
 - Avatars are selected from fixed preset assets.
-- User-uploaded avatars are not planned.
+- User-uploaded avatars are not supported.
 - The selected preset asset path is stored in `avatar_url`.
 
 ### Configuration And Preferences
@@ -57,6 +71,8 @@ Current app-local preferences include:
 ### Cash Flow
 
 A user-owned income or expense record.
+
+Money calculations use decimal values rather than binary floating-point values.
 
 Current behavior includes:
 
@@ -107,6 +123,12 @@ The server exposes:
 - Admin database backup/restore.
 
 File download endpoints may return binary content instead of the JSON response wrapper.
+
+### Entity Lifecycle And IDs
+
+- Core persisted entities use soft deletion through `is_delete` plus deletion audit metadata.
+- Normal reads exclude soft-deleted records; administrative backup and explicit include-deleted operations are exceptions.
+- Server startup initializes a Snowflake ID generator, while some current entity and validation paths still retain MongoDB ObjectID assumptions. ID changes must account for both behaviors until the legacy dependency is removed.
 
 ### Admin User
 

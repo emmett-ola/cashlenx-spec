@@ -1,115 +1,97 @@
 # Versions
 
-This directory stores CashLenX delivery history and active delivery control for Standard and High-impact work. Use it for concrete version scopes, task contracts, validation evidence, implementation refs, release notes, and known limits.
+This directory stores active delivery control and historical evidence for Standard and High-impact CashLenX work. A version record owns a concrete delivery boundary, task contract, validation, implementation refs, release notes, and accepted limits.
 
-Current behavior belongs in `../system/`. A closed version is evidence, not the current source of truth.
+Current behavior belongs in `../system/`. Deferred candidates belong in `../backlog/`. A closed version is delivery evidence, not the current source of truth.
 
-## Current Planning Position
+## Current State
 
-- Current spec state: pre-baseline. A formal baseline will be created later after the beta readiness boundary is clearer.
-- Current implementation line: active `v0.x` development preparing for beta.
-- Server position: `v0.9.0` implementation and local verification are complete; `v0.10.0` cloud and self-hosted hardening is the active server milestone.
-- App position: core authenticated finance flows are implemented; budget mutation, explicit transaction date-range filtering, complete statistics/reporting UI, and some auth unit coverage remain open.
-- Beta boundary: unfinished app/web surfaces may remain visible when their actions use the existing coming-soon toast and do not claim that the feature is implemented.
-- Deployment position: the current app/server flow has been deployed to a UAT environment and manually confirmed working by the project owner. This is testing deployment evidence, not production evidence.
-- Stable release position: `v1.0.0` remains future stable-release readiness, not the current beta baseline.
+- The spec is pre-baseline and has no active formal version record.
+- Readiness for the first beta baseline is tracked in `../backlog/beta-baseline.md` until its boundary and implementation refs are selected.
+- Active implementation remains on the `v0.x` line and the current API path remains `/api/v0`.
+- Stable-release decisions are recorded in `../decisions/0001-stable-release-api-auth-and-capability-policy.md` and `../decisions/0002-spec-controlled-versioning-with-project-local-advancement.md`.
 
-## Version Plan
+Do not create a version directory merely to hold planning ideas or an audit without a selected delivery boundary.
 
-| Version area | State | Purpose | Notes |
-| --- | --- | --- | --- |
-| Beta baseline | Not opened | Record the first coherent app/server/spec beta baseline once develop readiness is confirmed. | Do not create a baseline directory until the boundary is selected. |
-| `v0.10.0` server hardening | Planned outside spec version record | Cloud and self-hosted hardening, production CORS/rate-limit/secrets/operational endpoint defaults, and shared-cache decision only if multi-instance deployment is adopted. | Track implementation details in server roadmap until a cross-repository spec version is needed. |
-| `v1.0.0` stable readiness | Future | Stable API policy, release pipeline, changelog/version sync, final core workflow readiness, and stable documentation. | Keep `/api/v0` during active `v0.x` development; stable docs point to `/api/v1` only after implemented. |
-| Post-stable maintenance | Future | Low-risk polish and coverage after stable release. | Open only when selected. |
-| Larger finance/platform features | Future | Budget workflow, broader reporting, and platform/deployment expansion. | Keep deferred until product scope and backend support are confirmed. |
+## Record Selection
 
-## Before Opening The Beta Baseline
+| Work level | Required record |
+| --- | --- |
+| Lightweight | No version by default. Keep goal, result, validation, and repository state in task and commit evidence. |
+| Standard | Compact `README.md` with task contract, result, compatibility, validation, states, implementation refs, and known limits. |
+| High-impact | Full template with only the requirement, migration, security, compatibility, recovery, rollout, and scenario evidence triggered by the work. |
 
-- [x] Confirm the beta boundary permits unfinished app/web surfaces to remain visible with the existing coming-soon toast.
-- [x] Confirm explicit transaction date-range filtering is not required before the beta baseline.
-- [x] Confirm complete statistics/reporting UI is not required before the beta baseline.
-- [ ] Confirm the develop branches and implementation refs that define the baseline.
-- [ ] Confirm server `v0.10.0` hardening is explicitly outside the beta baseline.
-- [ ] Record validation evidence for app analyze/tests, server tests, MongoDB smoke flow, MySQL smoke flow, and website build if included.
-- [ ] Promote durable facts into `system/` and keep deferred scope in `backlog/`.
+Promote Lightweight work to Standard when it changes external behavior or a controlled API, schema, auth, workflow, state, compatibility, migration, or deployment boundary. Promote Standard work to High-impact when a Human gate or substantial migration, security, recovery, or rollout plan is required.
 
-## Latest Beta Readiness Audit
+## Version Naming And Buckets
 
-Audit date: `2026-07-30`.
-
-- Candidate app baseline: branch `develop`, commit `cad7da0` (`chore: consolidate environment ignores`).
-- Candidate server baseline: branch `dev/v0.9.0`, commit `5a08082` (`ops: separate database dependency projects`).
-- Candidate website baseline: branch `main`, commit `4afa590` (`chore: consolidate environment ignores`).
-- The server production image builds successfully with the repository-owned Go 1.23 Docker toolchain.
-- The app's prior 158-file line-ending-only delta was reverted before the deployment-script change was committed.
-- App analyze/tests were not rerun because Flutter is unavailable in the current Linux environment.
-- Server tests were not rerun because the host has Go 1.18.1 and the sandbox did not permit the required Docker test process. The containerized production build passed.
-- The website build was not rerun because its installed dependencies contain Windows/Bun executable shims rather than Linux command shims.
-- The project owner reported that the app/server flow is deployed to UAT and works there. Exact deployment refs and automated validation output have not yet been recorded.
-- The independent local MongoDB Compose project was recreated from an empty Docker state on `2026-07-30`; it reached healthy status and passed an authenticated `ping` through `mongosh`. MySQL remained stopped.
-
-This audit does not open or approve a beta baseline. The product boundary and fresh validation evidence are still required by the checklist above.
-
-## Version Bucket Policy
+Open concrete work as `vX.Y.Z-short-name/`.
 
 - `v0.x`: beta and pre-stable development. Keep `/api/v0` unless a specific version opens a compatibility boundary.
-- `v1.0.0`: stable release gate. Include only work required for a credible first formal application release.
+- `v1.0.0`: first stable release gate.
 - `v1.0.x`: small low-risk improvements after stable release.
-- `v1.x.0`: larger features, architecture changes, deployment model changes, or platform capabilities.
-- Lightweight work normally has no version directory. Keep its goal, result, validation, and repository state in task and commit evidence.
-- Standard work normally uses a compact version record. Add detailed evidence files only when the compact record cannot express the decision safely.
-- High-impact work uses the full template and triggered evidence from `../WORKFLOW.md`.
+- `v1.x.0`: larger features, architecture changes, deployment-model changes, or platform capabilities.
+
+Version numbers express product delivery scope. They do not imply deployment, publication, branch promotion, or release tags.
 
 ## Implementation Version Policy
 
-- `cashlenx-spec` controls product delivery versions and defines the version scope.
-- Website, app, and backend all advance to `v1.0.0` for the first stable release.
-- After `v1.0.0`, only project areas affected by a delivery advance their runtime/displayed version.
-- Example: if `v1.0.1` changes only backend behavior, backend advances to `v1.0.1` while app remains at `v1.0.0`.
-- Example: if `v1.0.3` changes only app behavior, app advances to `v1.0.3` while backend remains at its last affected version until a later backend-impacting delivery.
-- Release/tag delivery, publication, and deployment are separate actions and require explicit authorization.
-- Workflow state is separate from deployment state.
+The durable policy is owned by `../decisions/0002-spec-controlled-versioning-with-project-local-advancement.md`. Apply it directly rather than restating it in each version record. Every record identifies affected project areas, their resulting runtime or displayed versions, and any separately authorized release, tag, publication, or deployment action under `../WORKFLOW.md`.
 
 ## State Semantics
 
-- Workflow states: `Draft`, `Ready`, `WIP`, `Testing`, `Closed`, and `Cancelled`.
-- Deployment states: `Not deployed`, `Testing`, `Production`, and `N/A`.
-- `Closed` means the stated scope and required evidence are accepted; it does not imply deployment.
-- Do not close a version merely because code exists.
-- Do not keep a version open merely because deployment has not occurred.
+Workflow states:
+
+- `Draft`: boundary or task contract is still being formed.
+- `Ready`: scope and required decisions are sufficient to start implementation.
+- `WIP`: implementation or documentation synchronization is in progress.
+- `Testing`: scoped implementation is complete and acceptance evidence is being collected.
+- `Closed`: done condition and triggered evidence are accepted.
+- `Cancelled`: the version will not continue; retained decisions or deferred work have been moved to their canonical owners.
+
+Deployment states are `Not deployed`, `Testing`, `Production`, and `N/A`.
+
+`Closed` does not imply deployment. Do not close a version merely because code exists, and do not keep a version open merely because deployment has not occurred.
 
 ## Template
 
-Use `_template/` when opening a new version directory.
+Use `_template/` when opening a version:
 
-Recommended files:
+- `README.md`: required compact task contract, delivery result, validation, states, refs, and close gate.
+- `requirement.md`: optional High-impact scope, evidence, and material decisions.
+- `developing.md`: optional High-impact implementation, migration, recovery, compatibility, or rollout detail.
+- `testing.md`: optional detailed scenario evidence when it does not fit the compact record.
 
-- `README.md`
-- `requirement.md` for High-impact scope and decisions.
-- `developing.md` for High-impact rollout, compatibility, migration, or recovery notes.
-- `testing.md` for detailed validation evidence.
+Do not add optional files with empty placeholders. Create only the evidence areas triggered by the work.
 
-## Workflow
+## Delivery Record Workflow
 
-1. Create `versions/vX.Y.Z-short-name/`.
-2. Classify the work level through `../WORKFLOW.md`.
-3. Fill in the compact `README.md`; add optional High-impact files only when triggered.
-4. Implement in the affected sibling repositories.
-5. Validate touched repositories in proportion to triggered risk.
-6. Move durable behavior into `system/` before closing the version.
-7. Move deferred or rejected items to `backlog/`.
-8. Add ADRs under `decisions/` only for durable product or architecture decisions.
-
-`system/` remains the current source of truth after a version closes.
+1. Classify the work through `../WORKFLOW.md`.
+2. Create `versions/vX.Y.Z-short-name/` only after the delivery boundary is concrete.
+3. Fill in the compact `README.md`; add optional files only when triggered.
+4. Implement repository by repository while preserving independent build and runtime boundaries.
+5. Validate touched repositories in proportion to changed behavior and risk.
+6. Promote durable behavior into `../system/` before closing.
+7. Move deferred or rejected ideas into `../backlog/`.
+8. Add an ADR under `../decisions/` only when a choice should remain discoverable after the version closes.
 
 ## Version Close Gate
 
-- Done condition satisfied.
-- Relevant validation passed and known limits recorded.
-- Workflow state and deployment state recorded separately.
-- Durable facts updated in the canonical `system/` document.
-- Deferred work moved to `backlog/` or retained as an explicit open question.
-- Repository state and compatibility with untouched clients/repositories checked.
-- Triggered contract, migration, security, compatibility, recovery, or deployment evidence recorded.
-- Human decision recorded only when a Human gate was triggered.
+### Required
+
+- The scoped done condition is satisfied.
+- Relevant validation passes and known limits are explicit.
+- Workflow state, deployment state, validation owner/date, and implementation refs are recorded.
+- Durable current facts are updated in the canonical `system/` document.
+- Deferred work is moved to `backlog/` or retained as an explicit open question.
+- Repository state and compatibility with untouched clients or repositories are checked.
+
+### Enhanced When Triggered
+
+- API, schema, auth, workflow, or state changes include positive and negative contract evidence.
+- Migrations or data rewrites include existing-data behavior, repeat safety, and recovery evidence.
+- Security, privacy, credential, or file changes include authorization and sensitive-data evidence.
+- Deployment evidence records target, timing, reversibility, compatibility, and authorization.
+- A Human decision and approver/date are recorded only when a Human gate was triggered.
+
+After closeout, `system/` is authoritative and the version remains historical evidence.

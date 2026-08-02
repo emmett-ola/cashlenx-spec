@@ -21,7 +21,8 @@ This is the reusable charter for CashLenX delivery. It records how to think abou
 
 - `system/` owns verified current product, domain, API, app, server, design, website, operations, and quality facts.
 - `WORKFLOW.md` owns work levels, Human gates, evidence triggers, state semantics, and closeout flow.
-- `versions/` holds proportionate delivery evidence; closed versions are history, not current truth.
+- `backlog/` owns deferred scope, unopened delivery candidates, readiness work without a selected boundary, and unresolved questions.
+- `versions/` holds proportionate delivery control and evidence only after a concrete boundary is selected; closed versions are history, not current truth.
 - `decisions/` owns durable decisions that should remain discoverable after a version closes.
 - `sources/` contains copied source material from sibling projects. It is evidence input, not current truth by itself.
 - `GUIDELINE.md` changes when reusable principles change; `AGENTS.md` changes when future agents need a different enforceable rule.
@@ -29,8 +30,12 @@ This is the reusable charter for CashLenX delivery. It records how to think abou
 ## 4. Stable Boundaries
 
 - Keep app, server, design reference, website, and spec as independent project areas.
+- Respect each implementation repository's established architecture. Flutter work belongs in the owning feature and follows presentation-to-domain-to-data dependency direction; server work follows the HTTP/CLI entry layer, service, mapper, and database boundaries.
+- Keep HTTP controllers and CLI commands as translation layers. Business behavior belongs in services, persistence behavior belongs in mappers, and shared API/CLI capabilities should not diverge into separate business rules.
 - Centralize API base path and version configuration. Business API wrappers and route summaries should avoid duplicating version assumptions outside their configured boundary.
 - Keep external JSON fields, API routes, environment variables, and enum examples exactly named.
+- Preserve MongoDB and MySQL behavior for production-facing persistence changes unless a change is explicitly database-specific and that boundary is documented.
+- Do not hand-edit generated Flutter files such as `*.g.dart` or `*.freezed.dart`; change their sources and regenerate them.
 - Preserve implementation repositories as independently buildable and testable; documentation may describe them but must not become a runtime or build dependency.
 - Use stable naming across Go, Dart, OpenAPI, database, and configuration boundaries.
 - Remove obsolete placeholder notes and duplicate policy owners once their retained value is promoted into the canonical document.
@@ -38,6 +43,8 @@ This is the reusable charter for CashLenX delivery. It records how to think abou
 ## 5. Data, Configuration, And Security
 
 - Treat migrations and OpenAPI as authoritative implementation evidence for persistence and API contracts.
+- Preserve user-data isolation across every server layer: controllers derive identity from authenticated request context, services carry that identity, and mappers enforce user filters for user-owned records.
+- Preserve soft-delete filters and audit metadata when changing entity queries or mutations. Administrator accounts are created only through the bootstrap path; normal creation and registration remain user-role operations, generic user updates cannot change roles, and administrator deletion remains blocked.
 - Keep tracked environment templates free of secrets, and keep ignored local environment files structurally aligned without overwriting real local values.
 - Environment-template synchronization is workspace coordination owned by `cashlenx-spec`, not runtime project functionality. After changing any project `.env.sample`, run `cashlenx-spec/scripts/sync-env.sh` from the workspace so missing keys are added to ignored local `.env` files while existing configured values remain unchanged.
 - `.env.testing` and `.env.production` are separate owner-managed sensitive deployment files. Keep them ignored and never inspect or synchronize their contents without explicit owner authorization.
@@ -49,6 +56,8 @@ This is the reusable charter for CashLenX delivery. It records how to think abou
 
 - Select only quality scenarios triggered by the change; not every task needs a broad release checklist.
 - Test positive behavior and the first blocked, unauthorized, repeated, or failed path whenever the contract makes those cases relevant.
+- Keep unit tests deterministic and isolated from real databases, files, email providers, clocks, randomness, and other external side effects through small seams and in-memory fakes. Run database and filesystem behavior through explicitly selected disposable integration or smoke checks.
+- Treat normal package/unit suites and live integration coverage as separate evidence; passing `go test ./...` or Flutter widget tests does not prove the Docker-backed API/database flow.
 - Treat project-owned compiler warnings, stale facts, broken links, exposed secrets, contradictory policy owners, and mismatched route summaries as defects.
 - Keep workflow state separate from deployment state and report both accurately.
 - Close work when its stated scope and evidence are complete; future scope belongs in `backlog/` or a new version.
