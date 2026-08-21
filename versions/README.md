@@ -7,9 +7,8 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
 ## Current State
 
 - The spec is pre-baseline and the online-design parity series is active.
-- `v0.2.0` through `v0.6.0` are closed. The current Ready delivery boundary is
-  `v0.7.0-design-parity-acceptance`.
-- `v0.7.0` is the final acceptance boundary for the online-design parity series.
+- `v0.2.0` through `v0.7.0` are closed. The online-design parity series is
+  complete; no subsequent delivery boundary is selected by this audit.
 - Readiness for the first beta baseline is tracked in `../backlog/beta-baseline.md` until its boundary and implementation refs are selected.
 - Active implementation remains on the `v0.x` line and the current API path remains `/api/v0`.
 - Stable-release decisions are recorded in `../decisions/0001-stable-release-api-auth-and-capability-policy.md` and `../decisions/0002-spec-controlled-versioning-with-project-local-advancement.md`.
@@ -29,7 +28,7 @@ the online source.
 | 3 | `v0.4.0-transaction-discovery-parity` | Closed | Date-range filtering, active filter chips, result summary, empty-state recovery, and focused tests. |
 | 4 | `v0.5.0-finance-shell-boundaries` | Closed | Split high-change finance surfaces by feature, integrate reporting APIs, and deliver user-scoped budget workflows. |
 | 5 | `v0.6.0-profile-settings-truth` | Closed | Profile/settings parity without pretending unsupported fields or prototype statistics are persisted. |
-| 6 | `v0.7.0-design-parity-acceptance` | Ready | Multi-viewport visual acceptance, regression closeout, durable fact synchronization, and residual-gap disposition. |
+| 6 | `v0.7.0-design-parity-acceptance` | Closed | Multi-viewport visual acceptance, regression closeout, durable fact synchronization, and residual-gap disposition. |
 
 Implement and close one version before starting the next. Each app-affecting
 version advances the app's `pubspec.yaml` version and records its repository

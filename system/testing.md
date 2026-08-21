@@ -29,7 +29,8 @@ flutter analyze
 flutter test
 ```
 
-Run the disposable Flutter-to-server smoke flow on Windows with Docker available:
+The legacy Flutter-to-server commands below are intended targets but are not
+valid current evidence because `integration_test/api_smoke_test.dart` is absent:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/smoke-api.ps1
@@ -41,7 +42,16 @@ Use MySQL 8 instead of MongoDB with:
 powershell -ExecutionPolicy Bypass -File scripts/smoke-api.ps1 -Database mysql
 ```
 
-The smoke flow starts disposable database and API instances, seeds verification records directly, and runs `integration_test/api_smoke_test.dart` without sending email or retaining test data.
+Restore or replace that harness before relying on it. The current focused live
+database evidence is the server-owned disposable flow:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/smoke-budget.ps1 -Database mongodb
+powershell -ExecutionPolicy Bypass -File scripts/smoke-budget.ps1 -Database mysql
+```
+
+It verifies authenticated profile/configuration persistence and budget/ledger
+behavior against both databases without retaining test data.
 
 ### Server
 
@@ -67,6 +77,9 @@ powershell -ExecutionPolicy Bypass -File scripts/smoke-mysql-migrations.ps1
 - Test app infrastructure contracts for HTTP error mapping, error-message resolution, request tracking, route redirect policy, and persistence adapters.
 - Test auth provider states including logged-out startup, remember-me refresh success/failure, login success/failure, logout, password-reset request, and password-reset confirm.
 - Keep widget tests behind fake repositories or data sources and independent of a live API server.
+- Keep committed golden baselines for the 390 px phone, 430 px maximum shell,
+  and 768 px host classes. Generate intentionally with `--update-goldens`, then
+  run the same test without that flag before accepting changes.
 - Keep server unit tests deterministic and free of real database, filesystem, and email-provider mutations. Prefer constructor-injected services and in-memory mapper or side-effect fakes.
 - Keep mapper and database tests separate from normal unit tests through explicit integration naming, build tags, or scripts, and point them only at disposable databases.
 - Live integration coverage should include registration, login, refresh, logout, profile, cash flow, category, statistics, XLSX import, CSV/XLSX export, backup, password reset, and admin APIs.

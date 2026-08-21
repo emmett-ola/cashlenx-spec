@@ -35,6 +35,11 @@ and reversed income/expense semantic colors.
 
 The product is mobile-first. The Flutter Windows runner uses an iPad portrait-like local testing size of `768x1024`.
 
+The parity series accepted a 430 px maximum app shell centered on a `#D1D5DB`
+host at wider viewports. On `2026-08-21`, the live Make manifest exposed 130
+text sources and 54 images; `App.tsx`, `Profile.tsx`, and `Settings.tsx` matched
+the local cache after newline normalization.
+
 ## Useful Reference Areas
 
 - `src/app/components/screens/`

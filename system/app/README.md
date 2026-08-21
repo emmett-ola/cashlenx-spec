@@ -7,7 +7,7 @@
 Current stack:
 
 - Flutter with Dart SDK `>=3.8.0 <4.0.0`.
-- Runtime/displayed version `0.6.0+6` after profile/settings truth delivery.
+- Runtime/displayed version `0.7.0+7` after design-parity acceptance.
 - Feature-first Clean Architecture.
 - Riverpod for state.
 - GoRouter for routing.
@@ -98,6 +98,8 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   confirmed 8 px control radius.
 - Cash-flow semantics are consistent across transaction list and detail
   surfaces: income uses success/green and expense uses error/red.
+- Golden visual baselines cover dashboard layout at 390 px, the 430 px maximum
+  shell width, and a 768 px host, plus settings and profile at shell width.
 - Docker-based Flutter web deployment using `Dockerfile`, `compose.yml`, and nginx route fallback.
 - GitHub Actions web release workflow that builds, analyzes, tests, and publishes static web output to the release repository.
 
