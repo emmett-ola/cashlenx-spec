@@ -26,7 +26,7 @@ CashLenX is a personal-finance application for recording cash flows, organizing 
 
 - Authenticated users land in a mobile-first home shell.
 - Current tabs are Home, Category, Add, Budget, and Settings.
-- The shell contains dashboard, transactions, transaction entry/editing, category management, budget preview, settings, and profile interactions.
+- The shell contains dashboard, transactions, transaction entry/editing, category management, monthly budget management, settings, and profile interactions.
 - Unimplemented app/web actions may remain visible during beta when they use the existing coming-soon toast and do not present placeholder behavior as complete.
 - Shell tabs are not yet confirmed as URL-addressable routes.
 
@@ -65,20 +65,25 @@ CashLenX is a personal-finance application for recording cash flows, organizing 
 ### Statistics And Reporting
 
 - The server exposes statistics summary, breakdown, trends, top expenses, dashboard, chart, import, and export endpoints.
-- The app's expanded statistics screen is not yet a complete product-quality implementation of the full statistics/chart API surface.
+- The app's expanded statistics screen uses yearly summary, monthly comparison,
+  and top-expense APIs with an isolated ledger-derived demo equivalent.
 
 ### Budgeting
 
-- Budget preview exists in the authenticated shell.
-- Budget creation and editing are still coming-soon behavior in the app.
-- Do not describe budget mutation as complete until backend and design scope are confirmed and implemented.
+- Users can browse budgets by month and create, edit, or delete one limit per
+  expense category and month.
+- Budget usage is derived from the cash-flow ledger and exposes spent,
+  remaining, progress, and over-budget feedback.
+- Authenticated users persist budgets through `/budget`; demo users use an
+  isolated mutable in-memory equivalent.
 
 ## Known Product Limits
 
-- Budget creation/editing is incomplete.
-- Explicit transaction date-range filtering in the app UI is incomplete.
-- Full statistics views and chart-backed reporting UI are incomplete.
+- Additional existing statistics chart types do not yet have selected app
+  surfaces beyond yearly summary, monthly comparison, and top expenses.
 - Export/import remains management capability; normal app user UI is deferred.
-- The home shell is still concentrated in a large presentation file and should be split as feature boundaries mature.
+- Dashboard, category, transaction, and settings presentation remain
+  concentrated in the legacy home-shell file; budget and expanded statistics
+  have been extracted.
 
 These remain implementation gaps and must not be described as completed capabilities. Stable-release decisions are owned by `../decisions/0001-stable-release-api-auth-and-capability-policy.md`; deferred scope, beta allowances, and open product questions are owned by `../backlog/`.

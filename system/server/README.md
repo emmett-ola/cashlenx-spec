@@ -2,7 +2,7 @@
 
 ## Snapshot
 
-`../cashlenx-server` is the Go backend for CashLenX. It exposes a Cobra CLI and a Gorilla Mux REST API for authentication, user accounts, cash flows, categories, statistics, import/export, and admin database management.
+`../cashlenx-server` is the Go backend for CashLenX. It exposes a Cobra CLI and a Gorilla Mux REST API for authentication, user accounts, cash flows, categories, monthly budgets, statistics, import/export, and admin database management.
 
 Current stack:
 
@@ -72,6 +72,9 @@ cashlenx-server/
 - Admin bootstrap user initialization on server startup.
 - Cash flow CRUD, date/range queries, summaries, pagination, and filtering.
 - Category CRUD plus tree, children, and name lookup.
+- User-scoped monthly budget CRUD. Limits persist per expense category and
+  `YYYY-MM` period; spent, remaining, and progress values are derived from the
+  authoritative cash-flow ledger.
 - Statistics summary, breakdown, trends, top expenses, dashboard, and chart endpoints.
 - User-scoped export/import backup flows.
 - Admin user management and full database backup/restore.
@@ -113,6 +116,7 @@ High-level command groups:
 - `user`: profile, configuration, password, email, account, and database operations.
 - `cash`: expense, income, list, query, range, summary, update, and delete.
 - `category`: create, list, query, tree, update, and delete.
+- `budget`: create, list, get, update, and delete monthly category budgets.
 - `statistic`: summary, breakdown, trends, top, dashboard, chart, export, and import.
 
 The server start command is `go run main.go open start -p 11063`, not `server start`.
@@ -122,7 +126,7 @@ The server start command is `go run main.go open start -p 11063`, not `server st
 - MongoDB is the default development database.
 - MySQL 8 is also runnable and covered by disposable smoke validation.
 - Production-facing mapper behavior is expected for both backends unless a change is explicitly database-specific.
-- Current mapper owners include cash flow, category, user, user configuration, refresh token, and operation confirmation code packages. Mapper packages select the active implementation by database type.
+- Current mapper owners include cash flow, category, budget, user, user configuration, refresh token, and operation confirmation code packages. Mapper packages select the active implementation by database type.
 - Core entities use soft deletion through `is_delete` and audit metadata. Normal queries must continue to exclude deleted records unless an administrative backup or another explicit include-deleted operation requires them.
 - Independent MongoDB and MySQL Compose projects store data in the named `cashlenx-mongodb-data` and `cashlenx-mysql-data` volumes. Server build/start scripts do not manage dependency lifecycle.
 - MongoDB applied-version tracking is not implemented and remains architecture debt.

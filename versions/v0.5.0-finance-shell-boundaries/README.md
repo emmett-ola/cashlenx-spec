@@ -3,11 +3,11 @@
 ## Status
 
 - Version: `v0.5.0`
-- State: WIP
+- State: Closed
 - Work Level: High-impact
 - Execution Owner: AI
 - Validation Owner: AI
-- Validated At: Pending
+- Validated At: `2026-08-21`
 - Human Gate: Not required
 - Human Decision: N/A
 - Human Decision By/At: N/A
@@ -37,23 +37,50 @@
 
 ## Delivered Result
 
-- Summary: Pending.
-- Changed behavior: Pending.
+- Summary: Extracted budget and expanded-statistics presentation, domain, and
+  data boundaries from the authenticated shell; replaced prototype samples and
+  placeholders with real authenticated APIs plus isolated mutable demo paths;
+  and added the missing user-scoped monthly-budget capability to the server.
+- Changed behavior: The app now supports month-scoped budget list/create/update/
+  delete, expense-category selection, ledger-derived spent/remaining/progress,
+  over-budget feedback, month navigation, refresh, loading/error/empty states,
+  yearly income/expense/balance summaries, monthly comparison, top expenses,
+  and year navigation. Normal users call `/budget` and existing `/statistic`
+  endpoints; demo users remain in memory and never call authenticated APIs.
 - Compatibility: Additive `/api/v0` budget contract plus internal presentation
   refactor; existing clients remain valid.
-- Migration/rollback: Pending additive MongoDB/MySQL budget schema and app/server
-  rollback evidence.
-- Implementation refs: Pending.
+- Migration/rollback: MySQL migrations `013` and `014` add the budget table and
+  preserve cash-flow cents with `DECIMAL(18,2)`; both have down scripts. MongoDB
+  creates partial unique and period indexes at startup. No environment was
+  deployed; rollback is repository revert plus numbered MySQL rollback before
+  accepting new budget writes.
+- Implementation refs: `cashlenx-server` commits `acb3a67` (`feat: add
+  user-scoped monthly budgets`), `2f089ee` (`test: verify budget persistence
+  parity`), and `24bf6e8` (`docs: document budget API and CLI`);
+  `cashlenx-app` commit `25ae098` (`feat: connect budgets and live
+  statistics`). Resulting server version: `0.10.0`. Resulting app version:
+  `0.5.0+5`.
 
 ## Validation
 
-- Commands and results: Pending.
-- Known limits: Pending implementation and triggered migration/security evidence.
+- Commands and results: `go test ./...` passed; `scripts/smoke-budget.ps1
+  -Database mongodb` passed; `scripts/smoke-budget.ps1 -Database mysql` passed;
+  `flutter analyze` passed with no issues; final `flutter test` passed all 41
+  tests. Smoke coverage includes unauthenticated rejection and the disposable
+  create-category, create-budget, create-expense, derived-spending, update,
+  soft-delete, and deleted-read path for each database.
+- Known limits: No deployment or migration against retained data was authorized.
+  The legacy full API smoke script references an absent Flutter integration-test
+  file; focused budget smoke evidence is complete, while restoring that broader
+  harness remains backlog. Dashboard, category, transaction, and settings code
+  still share the legacy shell file; the newly changed budget/statistics paths
+  now have coherent boundaries, and further mechanical extraction carries no
+  user-visible parity change.
 
 ## Close Gate
 
-- [ ] Done condition satisfied.
-- [ ] Relevant validation passed and known limits recorded.
-- [ ] Workflow and deployment states recorded.
-- [ ] Durable facts synchronized.
-- [ ] Implementation refs recorded.
+- [x] Done condition satisfied.
+- [x] Relevant validation passed and known limits recorded.
+- [x] Workflow and deployment states recorded.
+- [x] Durable facts synchronized.
+- [x] Implementation refs recorded.

@@ -7,7 +7,7 @@
 Current stack:
 
 - Flutter with Dart SDK `>=3.8.0 <4.0.0`.
-- Runtime/displayed version `0.4.0+4` after transaction discovery parity.
+- Runtime/displayed version `0.5.0+5` after finance shell boundary delivery.
 - Feature-first Clean Architecture.
 - Riverpod for state.
 - GoRouter for routing.
@@ -25,7 +25,9 @@ Current stack:
 - `lib/core/config/app_config.dart`: environment loading and API base URL composition.
 - `lib/core/services/secure_storage_service.dart`: token and remember-me persistence.
 - `lib/network/cashlenx_api.dart`: app API adapter methods.
-- `lib/features/home/presentation/pages/home_page.dart`: authenticated shell and major finance UI surfaces.
+- `lib/features/home/presentation/pages/home_page.dart`: authenticated shell and legacy finance UI surfaces.
+- `lib/features/budget/`: typed budget domain/data/presentation boundary.
+- `lib/features/statistics/`: typed expanded-statistics domain/data/presentation boundary.
 - `lib/features/profile/presentation/pages/profile_page.dart`: profile and avatar/currency controls.
 - `lib/features/demo/data/demo_data_store.dart`: editable demo-mode data store.
 - `lib/theme/app_theme.dart`: theme mode and theme color providers.
@@ -75,6 +77,12 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   recovery expose the current filter state.
 - Add and edit transactions share amount/keypad, category, date, description, remark, and attachment-placeholder behavior. Their category selectors remember the last income and expense selections independently while the transaction type changes.
 - Hierarchical category management.
+- Monthly category-budget CRUD for authenticated users through `/budget`, with
+  ledger-derived usage, month navigation, loading/error/empty recovery, and a
+  mutable isolated demo equivalent.
+- Expanded yearly statistics aggregate existing summary, monthly-comparison,
+  and top-expense endpoints instead of prototype test data; demo statistics are
+  derived from the demo ledger.
 - Localized transaction dates, calendar month titles, weekday labels, and first-day-of-week behavior through Flutter localizations.
 - Profile fetch/update for `nickname`, `avatar_url`, and `gender`. Avatars come from the fixed preset library; the fallback asset is `assets/images/avatars/f9b59ca5421b2b7ef2e31c2ba4d827f48d22594a.png`.
 - Theme color, currency, language, about, and logout settings.
@@ -89,10 +97,12 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 
 ## Known App Gaps
 
-- Budget creation/editing is still coming-soon behavior.
-- Expanded statistics uses test presentation data rather than the full statistics/chart API surface.
 - Auth provider/repository unit coverage is lighter than live integration coverage.
-- The home shell should be split by feature as areas mature.
+- Dashboard, category, transaction, and settings presentation still share the
+  legacy home-shell file; budget and expanded statistics now have independent
+  feature boundaries.
+- Transaction attachments and export/import do not yet have selected mobile/web
+  product workflows.
 
 ## Generated Files
 

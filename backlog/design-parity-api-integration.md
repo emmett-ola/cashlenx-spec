@@ -12,8 +12,8 @@ version closes.
 | Capability | App state | Server state | Selected boundary | Required outcome |
 | --- | --- | --- | --- | --- |
 | Transaction date range | Type/category/search filters exist. | `GET /cash/range` exists. | `v0.4.0` | Connect or equivalently filter the authoritative result, validate inclusive ranges, and retain demo parity. |
-| Statistics and charts | Dashboard uses real data, but expanded statistics still presents samples. | Summary, breakdown, trends, top expenses, dashboard, and chart APIs exist. | `v0.5.0` | Add typed app adapters/providers and replace sample-only reporting while retaining explicit loading/error/empty states. |
-| Budget CRUD | Summary UI exists; mutations are coming-soon placeholders. | No budget routes, model, mapper, or service exists. | `v0.5.0` | Define `/api/v0/budget` contracts, implement user-scoped CRUD for MongoDB and MySQL, document OpenAPI/CLI behavior, connect Flutter and demo repositories, and test ownership and validation. |
+| Statistics and charts | Delivered in `v0.5.0`: typed yearly summary, monthly comparison, and top-expense adapters replace sample-only expanded reporting with loading/error/empty states. | Summary, breakdown, trends, top expenses, dashboard, and chart APIs exist. | Delivered `v0.5.0` | Retain typed real/demo adapters and extend to other existing chart endpoints only when a selected product surface needs them. |
+| Budget CRUD | Delivered in `v0.5.0`: authenticated API and isolated demo CRUD, month navigation, derived usage, and recovery states. | Delivered in server `0.10.0`: user-scoped CRUD, OpenAPI, CLI, MongoDB indexes, and MySQL migrations. | Delivered `v0.5.0` | Preserve user isolation and dual-database parity in future changes. |
 | User configuration | Currency, language, and theme are app-local. | Authenticated user configuration CRUD already supports these preferences. | `v0.6.0` | Reconcile local startup state with server configuration without breaking offline/demo behavior. |
 | Extended profile | Phone, location, and birth date appear in presentation but are not persisted. | Profile update supports nickname, avatar, and gender only. | `v0.6.0` | Add optional typed fields across schema, both persistence backends, OpenAPI/CLI, and Flutter, or remove edit affordances until the same version delivers the contract. |
 | Transaction attachments | App and design expose an attachment affordance without persistence. | No upload/storage contract exists. | Post-parity contract version | Keep the affordance explicitly unavailable, prewire an attachment repository boundary, and select storage, size/type, authorization, deletion, and recovery rules before enabling it. |
@@ -31,3 +31,12 @@ version closes.
   successful save.
 - Every selected item needs positive, negative, authorization, compatibility,
   and recovery evidence appropriate to its data impact.
+
+## Delivery Tooling Backlog
+
+- Restore or replace `cashlenx-app/integration_test/api_smoke_test.dart`. The
+  existing `scripts/smoke-api.ps1` invokes that absent file, so it is not valid
+  current evidence for the documented whole-product database smoke flow.
+  `v0.5.0` added and passed a focused disposable budget smoke for MongoDB and
+  MySQL; broader registration/profile/import/export smoke remains a separate
+  harness repair.

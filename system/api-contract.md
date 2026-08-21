@@ -38,7 +38,7 @@ Route groups:
 - `/open/*`: public by convention.
 - `/auth/tokens`: authenticated token-management API.
 - `/admin/*`: authenticated admin API.
-- `/user/*`, `/cash/*`, `/category/*`, and `/statistic/*`: authenticated user-scoped APIs.
+- `/user/*`, `/cash/*`, `/category/*`, `/budget/*`, and `/statistic/*`: authenticated user-scoped APIs.
 
 `POST /open/auth/logout` is public and idempotent. It returns OK without credentials, revokes one session when a valid `refresh_token` is provided, and revokes all sessions when a valid bearer access token is provided without `refresh_token`.
 
@@ -113,6 +113,19 @@ These endpoints bypass JWT and OpenAPI validation. Production deployments should
 - `GET /category/{id}`
 - `PUT /category/{id}`
 - `DELETE /category/{id}`
+
+### Budget
+
+- `POST /budget`
+- `GET /budget?period=YYYY-MM`
+- `GET /budget/{id}`
+- `PUT /budget/{id}`
+- `DELETE /budget/{id}`
+
+Budgets are unique within the active user/category/period scope. Only expense
+categories may be budgeted. List/get responses derive `spent_amount`,
+`remaining`, and `progress` from user-owned cash flows rather than persisting
+duplicate ledger totals.
 
 ### Statistics, Dashboard, Chart, Import, And Export
 

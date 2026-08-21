@@ -6,7 +6,7 @@ This document records current domain concepts at specification level. Exact pers
 
 ### User
 
-A registered account that owns profile data, configuration, cash flows, categories, and user-scoped import/export data.
+A registered account that owns profile data, configuration, cash flows, categories, budgets, and user-scoped import/export data.
 
 Related behavior:
 
@@ -113,6 +113,17 @@ Current server capabilities include:
 - Top expenses by daily, monthly, and yearly period.
 - Dashboard data by period and date.
 - Chart data for income/expense, category distribution, monthly comparison, and spending heatmap.
+
+### Budget
+
+A user-owned monthly spending limit for one expense category.
+
+- Active scope is unique by user, category, and `YYYY-MM` period.
+- The persisted value is the limit amount.
+- Spent, remaining, and progress values are derived from cash flows in the same
+  user/category/month scope.
+- Normal deletion is soft deletion with audit metadata.
+- MongoDB and MySQL are both supported persistence backends.
 
 ### Import, Export, Backup, And Restore
 
