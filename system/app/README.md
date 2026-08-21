@@ -7,6 +7,7 @@
 Current stack:
 
 - Flutter with Dart SDK `>=3.8.0 <4.0.0`.
+- Runtime/displayed version `0.2.0+2` after the online-design foundation.
 - Feature-first Clean Architecture.
 - Riverpod for state.
 - GoRouter for routing.
@@ -70,6 +71,11 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 - Profile fetch/update for `nickname`, `avatar_url`, and `gender`. Avatars come from the fixed preset library; the fallback asset is `assets/images/avatars/f9b59ca5421b2b7ef2e31c2ba4d827f48d22594a.png`.
 - Theme color, currency, language, about, and logout settings.
 - The selected theme color drives primary controls, accents, selected states, and highlights. Splash and pre-splash visuals remain brand-stable rather than following the selected theme color.
+- Live Figma Make colors, 4 px spacing increments, and 8/16/24 px radii are
+  centralized in `AppDesignTokens`. Shared auth fields and actions use the
+  confirmed 8 px control radius.
+- Cash-flow semantics are consistent across transaction list and detail
+  surfaces: income uses success/green and expense uses error/red.
 - Docker-based Flutter web deployment using `Dockerfile`, `compose.yml`, and nginx route fallback.
 - GitHub Actions web release workflow that builds, analyzes, tests, and publishes static web output to the release repository.
 

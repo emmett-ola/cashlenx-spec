@@ -3,11 +3,11 @@
 ## Status
 
 - Version: `v0.2.0`
-- State: WIP
+- State: Closed
 - Work Level: Standard
 - Execution Owner: AI
 - Validation Owner: AI
-- Validated At: Pending
+- Validated At: `2026-08-21`
 - Human Gate: Not required
 - Human Decision: N/A
 - Human Decision By/At: N/A
@@ -42,17 +42,25 @@
 
 ## Delivered Result
 
-- Summary: In progress.
-- Changed behavior: Pending.
+- Summary: Established the live Figma Make token foundation in Flutter, aligned
+  shared auth control geometry, and corrected cash-flow color semantics.
+- Changed behavior: Shared auth fields and actions now use 8 px radii and the
+  confirmed live-design fills; app theme colors, spacing, and radii have named
+  tokens; income renders success/green and expense renders error/red.
 - Compatibility: UI-only foundation; no API or data-schema change.
 - Migration/rollback: No data migration. Revert the app commit to restore the
   prior visual constants and semantic colors.
-- Implementation refs: Pending.
+- Implementation refs: `cashlenx-app` commit `4aea738` (`feat: establish online
+  design foundation`). Runtime/displayed app version: `0.2.0+2`.
 
 ## Validation
 
 - Baseline `flutter analyze`: Passed on `2026-08-21` with no issues.
 - Baseline `flutter test`: Passed on `2026-08-21`; 28 tests passed.
+- Final `flutter analyze`: Passed on `2026-08-21` with no issues.
+- Focused design-foundation, theme, auth, and home tests: Passed on
+  `2026-08-21`; 5 tests passed.
+- Final `flutter test`: Passed on `2026-08-21`; 30 tests passed.
 - Negative/auth/compatibility evidence when applicable: Demo/API boundaries are
   unchanged.
 - Known limits: Screen-specific parity is intentionally deferred to later
@@ -60,11 +68,11 @@
 
 ## Close Gate
 
-- [ ] Done condition satisfied.
-- [ ] Relevant validation passed and known limits recorded.
-- [ ] Workflow state and deployment state recorded separately.
-- [ ] Durable facts updated in the canonical `system/` document.
-- [ ] Deferred work moved to `backlog/` or recorded as an open question.
-- [ ] Implementation refs and final repository state recorded.
-- [ ] Triggered contract, migration, security, compatibility, recovery, or deployment evidence recorded.
+- [x] Done condition satisfied.
+- [x] Relevant validation passed and known limits recorded.
+- [x] Workflow state and deployment state recorded separately.
+- [x] Durable facts updated in the canonical `system/` document.
+- [x] Deferred work moved to `backlog/` or recorded as an open question.
+- [x] Implementation refs and final repository state recorded.
+- [x] Triggered contract, migration, security, compatibility, recovery, or deployment evidence recorded.
 - [x] Human decision recorded only when a Human gate was triggered.

@@ -3,7 +3,7 @@
 ## Status
 
 - Version: `v0.3.0`
-- State: Ready
+- State: WIP
 - Work Level: Standard
 - Execution Owner: AI
 - Validation Owner: AI
@@ -13,7 +13,7 @@
 - Human Decision By/At: N/A
 - Deployment State: Not deployed
 - Deployment Evidence: N/A
-- Started: Pending closure of `v0.2.0`
+- Started: `2026-08-21`
 - Target: Complete before `v0.4.0`
 - Affected project areas: `cashlenx-spec`, `cashlenx-app`
 
@@ -24,9 +24,11 @@
 - Context: The live design uses photographic onboarding panels, official logo
   artwork, and compact rounded controls. Flutter has the complete real auth and
   setup flows but uses substitute onboarding art and a setup logo placeholder.
-- Constraints: Preserve real verification, password reset, remember-me, secure
-  storage, auth redirects, demo isolation, and localized copy. Network imagery
-  must have deterministic loading/error behavior.
+- Constraints: The existing app presentation may be replaced or substantially
+  refactored to follow the live design. Preserve or reconnect real verification,
+  password reset, remember-me, secure storage, auth redirects, demo isolation,
+  and localized copy. Network imagery must have deterministic loading/error
+  behavior.
 - Done when: Entry surfaces match confirmed geometry and visual hierarchy,
   official assets are used, all real behaviors remain operational, focused
   widget tests cover fallbacks and navigation, and app analyze/tests pass.
