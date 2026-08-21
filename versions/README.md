@@ -6,12 +6,35 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
 
 ## Current State
 
-- The spec is pre-baseline and has no active formal version record.
+- The spec is pre-baseline and the online-design parity series is active.
+- `v0.2.0-online-design-foundation` is the current WIP delivery boundary.
+- `v0.3.0` through `v0.6.0` have concrete Ready boundaries and must be
+  implemented in order. `v0.7.0` is the final acceptance boundary and remains
+  Draft until the preceding versions close.
 - Readiness for the first beta baseline is tracked in `../backlog/beta-baseline.md` until its boundary and implementation refs are selected.
 - Active implementation remains on the `v0.x` line and the current API path remains `/api/v0`.
 - Stable-release decisions are recorded in `../decisions/0001-stable-release-api-auth-and-capability-policy.md` and `../decisions/0002-spec-controlled-versioning-with-project-local-advancement.md`.
 
 Do not create a version directory merely to hold planning ideas or an audit without a selected delivery boundary.
+
+## Active Online-Design Parity Series
+
+The series uses the live Figma Make file as the visual reference and treats the
+local React/Vite export as a validated cache only when its relevant files match
+the online source.
+
+| Order | Version | State | Delivery boundary |
+| --- | --- | --- | --- |
+| 1 | `v0.2.0-online-design-foundation` | WIP | Online-source authority, Flutter design tokens, shared control geometry, and consistent cash-flow semantics. |
+| 2 | `v0.3.0-entry-flow-parity` | Ready | Splash, onboarding, authentication, and currency/setup visual parity while retaining real app behavior. |
+| 3 | `v0.4.0-transaction-discovery-parity` | Ready | Date-range filtering, active filter chips, result summary, empty-state recovery, and focused tests. |
+| 4 | `v0.5.0-finance-shell-boundaries` | Ready | Split the oversized authenticated shell by feature and align dashboard, categories, budget preview, and statistics presentation. |
+| 5 | `v0.6.0-profile-settings-truth` | Ready | Profile/settings parity without pretending unsupported fields or prototype statistics are persisted. |
+| 6 | `v0.7.0-design-parity-acceptance` | Draft | Multi-viewport visual acceptance, regression closeout, durable fact synchronization, and residual-gap disposition. |
+
+Implement and close one version before starting the next. Each app-affecting
+version advances the app's `pubspec.yaml` version and records its repository
+commit independently from the spec commit.
 
 ## Record Selection
 
