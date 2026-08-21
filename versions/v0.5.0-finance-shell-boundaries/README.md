@@ -3,7 +3,7 @@
 ## Status
 
 - Version: `v0.5.0`
-- State: Ready
+- State: WIP
 - Work Level: High-impact
 - Execution Owner: AI
 - Validation Owner: AI
@@ -13,7 +13,7 @@
 - Human Decision By/At: N/A
 - Deployment State: Not deployed
 - Deployment Evidence: N/A
-- Started: Pending closure of `v0.4.0`
+- Started: `2026-08-21`
 - Target: Complete before `v0.6.0`
 - Affected project areas: `cashlenx-spec`, `cashlenx-app`, `cashlenx-server`
 

@@ -7,9 +7,9 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
 ## Current State
 
 - The spec is pre-baseline and the online-design parity series is active.
-- `v0.2.0-online-design-foundation` and `v0.3.0-entry-flow-parity` are closed.
-  The current WIP delivery boundary is `v0.4.0-transaction-discovery-parity`.
-- `v0.5.0` and `v0.6.0` have concrete Ready boundaries and must be
+- `v0.2.0` through `v0.4.0` are closed. The current WIP delivery boundary is
+  `v0.5.0-finance-shell-boundaries`.
+- `v0.6.0` has a concrete Ready boundary and must be
   implemented in order. `v0.7.0` is the final acceptance boundary and remains
   Draft until the preceding versions close.
 - Readiness for the first beta baseline is tracked in `../backlog/beta-baseline.md` until its boundary and implementation refs are selected.
@@ -28,8 +28,8 @@ the online source.
 | --- | --- | --- | --- |
 | 1 | `v0.2.0-online-design-foundation` | Closed | Online-source authority, Flutter design tokens, shared control geometry, and consistent cash-flow semantics. |
 | 2 | `v0.3.0-entry-flow-parity` | Closed | Splash, onboarding, authentication, and currency/setup visual parity while retaining real app behavior. |
-| 3 | `v0.4.0-transaction-discovery-parity` | WIP | Date-range filtering, active filter chips, result summary, empty-state recovery, and focused tests. |
-| 4 | `v0.5.0-finance-shell-boundaries` | Ready | Split the oversized authenticated shell by feature and align dashboard, categories, budget preview, and statistics presentation. |
+| 3 | `v0.4.0-transaction-discovery-parity` | Closed | Date-range filtering, active filter chips, result summary, empty-state recovery, and focused tests. |
+| 4 | `v0.5.0-finance-shell-boundaries` | WIP | Split the oversized authenticated shell by feature, integrate reporting APIs, and deliver user-scoped budget workflows. |
 | 5 | `v0.6.0-profile-settings-truth` | Ready | Profile/settings parity without pretending unsupported fields or prototype statistics are persisted. |
 | 6 | `v0.7.0-design-parity-acceptance` | Draft | Multi-viewport visual acceptance, regression closeout, durable fact synchronization, and residual-gap disposition. |
 

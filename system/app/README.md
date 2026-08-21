@@ -7,7 +7,7 @@
 Current stack:
 
 - Flutter with Dart SDK `>=3.8.0 <4.0.0`.
-- Runtime/displayed version `0.3.0+3` after entry-flow parity.
+- Runtime/displayed version `0.4.0+4` after transaction discovery parity.
 - Feature-first Clean Architecture.
 - Riverpod for state.
 - GoRouter for routing.
@@ -69,6 +69,10 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 - Real API-backed dashboard and finance flows for normal users.
 - Session-local editable data for demo users. Choosing demo mode resets the demo store before entering the session, and demo mode does not call authenticated APIs.
 - Transaction list, add, edit, delete, category selection, date selection, validation, and server error handling.
+- Transaction discovery supports type, category, inclusive from/to date, and
+  search filters. Authenticated ranges use `/cash/range`; demo ranges stay
+  local. Removable active chips, localized result summaries, and filtered-empty
+  recovery expose the current filter state.
 - Add and edit transactions share amount/keypad, category, date, description, remark, and attachment-placeholder behavior. Their category selectors remember the last income and expense selections independently while the transaction type changes.
 - Hierarchical category management.
 - Localized transaction dates, calendar month titles, weekday labels, and first-day-of-week behavior through Flutter localizations.
@@ -89,7 +93,6 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 - Expanded statistics uses test presentation data rather than the full statistics/chart API surface.
 - Auth provider/repository unit coverage is lighter than live integration coverage.
 - The home shell should be split by feature as areas mature.
-- Date-range filtering should be added explicitly to the transaction list.
 
 ## Generated Files
 

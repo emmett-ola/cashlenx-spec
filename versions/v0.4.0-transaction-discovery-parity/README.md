@@ -3,11 +3,11 @@
 ## Status
 
 - Version: `v0.4.0`
-- State: WIP
+- State: Closed
 - Work Level: Standard
 - Execution Owner: AI
 - Validation Owner: AI
-- Validated At: Pending
+- Validated At: `2026-08-21`
 - Human Gate: Not required
 - Human Decision: N/A
 - Human Decision By/At: N/A
@@ -32,21 +32,31 @@
 
 ## Delivered Result
 
-- Summary: Pending.
-- Changed behavior: Pending.
+- Summary: Completed transaction discovery parity with inclusive server-backed
+  date ranges, active filter feedback, result summaries, and empty-state
+  recovery while retaining search.
+- Changed behavior: Authenticated date selection calls `/cash/range`; demo mode
+  filters its isolated store; type, category, date, and search filters produce
+  removable chips and a localized filtered result count; clearing a filtered
+  empty state restores the list.
 - Compatibility: Additive UI behavior; no API or schema change.
 - Migration/rollback: No data migration; revert the app commit.
-- Implementation refs: Pending.
+- Implementation refs: `cashlenx-app` commit `68e17b8` (`feat: complete
+  transaction discovery filters`). Runtime/displayed app version: `0.4.0+4`.
 
 ## Validation
 
-- Commands and results: Pending.
-- Known limits: Pending.
+- Commands and results: `flutter analyze` passed with no issues; focused
+  transaction tests passed (5 tests); final `flutter test` passed (37 tests),
+  all on `2026-08-21`.
+- Known limits: Search remains an accepted product enhancement beyond the live
+  prototype. Open-ended ranges use `2000-01-01` and `2100-12-31` as explicit
+  transport bounds for the existing two-ended API.
 
 ## Close Gate
 
-- [ ] Done condition satisfied.
-- [ ] Relevant validation passed and known limits recorded.
-- [ ] Workflow and deployment states recorded.
-- [ ] Durable facts synchronized.
-- [ ] Implementation refs recorded.
+- [x] Done condition satisfied.
+- [x] Relevant validation passed and known limits recorded.
+- [x] Workflow and deployment states recorded.
+- [x] Durable facts synchronized.
+- [x] Implementation refs recorded.
