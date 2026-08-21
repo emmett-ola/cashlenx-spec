@@ -51,6 +51,9 @@ Current app-supported fields:
 - `nickname`
 - `avatar_url`
 - `gender`
+- `phone_number`
+- `location`
+- `birth_date` (`YYYY-MM-DD` when populated)
 
 Avatar behavior:
 
@@ -60,9 +63,8 @@ Avatar behavior:
 
 ### Configuration And Preferences
 
-The server exposes user configuration endpoints. The app currently keeps some preferences locally.
-
-Current app-local preferences include:
+The server exposes per-user configuration endpoints. The app synchronizes these
+preferences for authenticated users and retains a local offline fallback:
 
 - Currency.
 - Theme color.

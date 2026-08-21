@@ -7,7 +7,7 @@
 Current stack:
 
 - Flutter with Dart SDK `>=3.8.0 <4.0.0`.
-- Runtime/displayed version `0.5.0+5` after finance shell boundary delivery.
+- Runtime/displayed version `0.6.0+6` after profile/settings truth delivery.
 - Feature-first Clean Architecture.
 - Riverpod for state.
 - GoRouter for routing.
@@ -29,6 +29,8 @@ Current stack:
 - `lib/features/budget/`: typed budget domain/data/presentation boundary.
 - `lib/features/statistics/`: typed expanded-statistics domain/data/presentation boundary.
 - `lib/features/profile/presentation/pages/profile_page.dart`: profile and avatar/currency controls.
+- `lib/features/settings/data/user_configuration_sync.dart`: authenticated and
+  demo configuration synchronization while retaining local offline fallback.
 - `lib/features/demo/data/demo_data_store.dart`: editable demo-mode data store.
 - `lib/theme/app_theme.dart`: theme mode and theme color providers.
 - `lib/shared/widgets/app_surface.dart`: shared panels, cards, and list tiles.
@@ -84,8 +86,12 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   and top-expense endpoints instead of prototype test data; demo statistics are
   derived from the demo ledger.
 - Localized transaction dates, calendar month titles, weekday labels, and first-day-of-week behavior through Flutter localizations.
-- Profile fetch/update for `nickname`, `avatar_url`, and `gender`. Avatars come from the fixed preset library; the fallback asset is `assets/images/avatars/f9b59ca5421b2b7ef2e31c2ba4d827f48d22594a.png`.
-- Theme color, currency, language, about, and logout settings.
+- Profile fetch/update for `nickname`, `avatar_url`, `gender`, `phone_number`,
+  `location`, and `birth_date`. Avatars come from the fixed preset library; the fallback asset is `assets/images/avatars/f9b59ca5421b2b7ef2e31c2ba4d827f48d22594a.png`.
+- Theme color, currency, and language synchronize through the authenticated user
+  configuration API while local preferences remain the offline fallback; demo
+  configuration is isolated in memory. About reads package version/build
+  metadata, and logout remains available.
 - The selected theme color drives primary controls, accents, selected states, and highlights. Splash and pre-splash visuals remain brand-stable rather than following the selected theme color.
 - Live Figma Make colors, 4 px spacing increments, and 8/16/24 px radii are
   centralized in `AppDesignTokens`. Shared auth fields and actions use the

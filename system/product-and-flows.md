@@ -56,11 +56,14 @@ CashLenX is a personal-finance application for recording cash flows, organizing 
 
 ### Profile And Preferences
 
-- Fetch and update API-supported profile fields: `nickname`, `avatar_url`, and `gender`.
+- Fetch and update API-supported profile fields: `nickname`, `avatar_url`,
+  `gender`, `phone_number`, `location`, and `birth_date`.
 - Use fixed preset avatar assets; user-uploaded avatars are not supported.
 - Store selected avatar preset path in `avatar_url`.
-- Keep currency preference app-local through the app currency provider.
-- Configure theme color and language in settings.
+- Synchronize currency, theme color, and language through the authenticated user
+  configuration API while retaining local offline values.
+- Keep demo profile and configuration changes in the isolated session store.
+- Display installed package version and build number in About.
 
 ### Statistics And Reporting
 

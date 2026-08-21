@@ -6,6 +6,7 @@
 
 Current stack:
 
+- Runtime contract version `0.11.0` on the `/api/v0` path.
 - Go `1.23.0`.
 - Cobra CLI.
 - Gorilla Mux HTTP routing.

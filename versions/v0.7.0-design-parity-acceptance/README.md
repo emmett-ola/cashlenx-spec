@@ -3,7 +3,7 @@
 ## Status
 
 - Version: `v0.7.0`
-- State: Draft
+- State: Ready
 - Work Level: Standard
 - Execution Owner: AI
 - Validation Owner: AI
@@ -13,7 +13,7 @@
 - Human Decision By/At: N/A
 - Deployment State: Not deployed
 - Deployment Evidence: N/A
-- Started: Pending closure of `v0.6.0`
+- Started: Pending implementation
 - Target: Close the online-design parity series
 - Affected project areas: `cashlenx-spec`, `cashlenx-app`
 

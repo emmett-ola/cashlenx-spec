@@ -3,17 +3,17 @@
 ## Status
 
 - Version: `v0.6.0`
-- State: Ready
+- State: Closed
 - Work Level: High-impact
 - Execution Owner: AI
 - Validation Owner: AI
-- Validated At: Pending
+- Validated At: `2026-08-21`
 - Human Gate: Not required
 - Human Decision: N/A
 - Human Decision By/At: N/A
 - Deployment State: Not deployed
 - Deployment Evidence: N/A
-- Started: Pending closure of `v0.5.0`
+- Started: `2026-08-21`
 - Target: Complete before `v0.7.0`
 - Affected project areas: `cashlenx-spec`, `cashlenx-app`, `cashlenx-server`
 
@@ -35,22 +35,46 @@
 
 ## Delivered Result
 
-- Summary: Pending.
-- Changed behavior: Pending.
+- Summary: Added durable extended profile fields across the API and both
+  databases, connected the app's phone/location/birth-date editors, synchronized
+  language/currency/theme preferences with the existing user configuration
+  contract, and replaced hard-coded About metadata with package metadata.
+- Changed behavior: Authenticated users now read and write profile phone,
+  location, and ISO birth date through `/user/profile`; configuration is loaded
+  from `/user/configuration` at authenticated-shell startup and written after
+  settings changes. Local preferences remain the offline fallback. Demo profile
+  and configuration changes persist in the isolated session store and reset on
+  the next demo session.
 - Compatibility: Additive optional profile fields and configuration integration;
   existing clients remain valid.
-- Migration/rollback: Pending additive schema and app rollback evidence.
-- Implementation refs: Pending.
+- Migration/rollback: MySQL migration `015` adds nullable `phone_number`,
+  `location`, and `birth_date` columns and includes a down migration. MongoDB
+  accepts the additive optional fields without a data rewrite. No environment
+  was deployed; rollback is repository revert plus migration `015` rollback
+  before depending on new profile writes.
+- Implementation refs: `cashlenx-server` commit `8d4d2c9` (`feat: persist
+  profile and settings truth`); `cashlenx-app` commit `9d53ab7` (`feat:
+  synchronize profile and user settings`). Resulting server version: `0.11.0`.
+  Resulting app version: `0.6.0+6`.
 
 ## Validation
 
-- Commands and results: Pending.
-- Known limits: Pending implementation and triggered migration/security evidence.
+- Commands and results: `go test ./...` passed; focused disposable MongoDB and
+  MySQL smokes passed and each verified authenticated extended-profile update/
+  read, configuration update/read, and the existing budget ledger workflow;
+  `flutter analyze` passed with no issues; `flutter test` passed all 43 tests.
+  Existing controller authorization tests cover rejection of unauthenticated
+  user profile and configuration requests.
+- Known limits: The profile PATCH-like request still uses non-nullable strings,
+  so an empty value means "leave unchanged" rather than an explicit clear;
+  nullable clearing semantics are backlog. Offline configuration writes remain
+  local and surface the server error, but no durable retry queue exists. No
+  retained database was migrated and no deployment was authorized.
 
 ## Close Gate
 
-- [ ] Done condition satisfied.
-- [ ] Relevant validation passed and known limits recorded.
-- [ ] Workflow and deployment states recorded.
-- [ ] Durable facts synchronized.
-- [ ] Implementation refs recorded.
+- [x] Done condition satisfied.
+- [x] Relevant validation passed and known limits recorded.
+- [x] Workflow and deployment states recorded.
+- [x] Durable facts synchronized.
+- [x] Implementation refs recorded.

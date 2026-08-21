@@ -87,6 +87,11 @@ These endpoints bypass JWT and OpenAPI validation. Production deployments should
 - `GET /admin/database/backup`
 - `POST /admin/database/restore`
 
+`PUT /user/profile` supports optional `nickname`, `avatar_url`, `gender`,
+`phone_number`, `location`, and `birth_date`; non-empty birth dates use
+`YYYY-MM-DD`. User configuration persists `display_language`, `currency_code`,
+and `active_theme_color` per authenticated user.
+
 ### Cash Flow
 
 - `POST /cash/expense`
