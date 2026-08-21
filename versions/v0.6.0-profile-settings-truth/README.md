@@ -4,7 +4,7 @@
 
 - Version: `v0.6.0`
 - State: Ready
-- Work Level: Standard
+- Work Level: High-impact
 - Execution Owner: AI
 - Validation Owner: AI
 - Validated At: Pending
@@ -15,7 +15,7 @@
 - Deployment Evidence: N/A
 - Started: Pending closure of `v0.5.0`
 - Target: Complete before `v0.7.0`
-- Affected project areas: `cashlenx-spec`, `cashlenx-app`
+- Affected project areas: `cashlenx-spec`, `cashlenx-app`, `cashlenx-server`
 
 ## Task Contract
 
@@ -25,25 +25,27 @@
   statistics. Flutter currently renders some unsupported fields as editable but
   saves only API-supported nickname/avatar/gender and app-local currency. The
   About panel also hard-codes `1.0.0` while the package is on the `v0.x` line.
-- Constraints: Preserve fixed avatar presets, local currency, theme and language
-  persistence, API-supported profile fields, and demo isolation. Do not add
-  backend fields without a separate contract version.
-- Done when: Unsupported fields cannot be mistaken for saved data, settings and
-  profile geometry match the live design where truthful, package version/build
-  metadata is displayed, and focused tests pass.
+- Constraints: Preserve fixed avatar presets and demo isolation. Reconcile
+  offline/local currency, theme, and language with the existing server
+  configuration contract. New optional profile fields require versioned API,
+  OpenAPI/CLI, MongoDB, MySQL, authorization, and compatibility evidence.
+- Done when: Every editable profile/settings value persists through its truthful
+  real or demo data source, settings and profile geometry match the live design,
+  package version/build metadata is displayed, and focused tests pass.
 
 ## Delivered Result
 
 - Summary: Pending.
 - Changed behavior: Pending.
-- Compatibility: No API or schema change.
-- Migration/rollback: No data migration; revert the app commit.
+- Compatibility: Additive optional profile fields and configuration integration;
+  existing clients remain valid.
+- Migration/rollback: Pending additive schema and app rollback evidence.
 - Implementation refs: Pending.
 
 ## Validation
 
 - Commands and results: Pending.
-- Known limits: Backend persistence remains limited to the documented fields.
+- Known limits: Pending implementation and triggered migration/security evidence.
 
 ## Close Gate
 

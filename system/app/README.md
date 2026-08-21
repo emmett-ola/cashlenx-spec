@@ -7,7 +7,7 @@
 Current stack:
 
 - Flutter with Dart SDK `>=3.8.0 <4.0.0`.
-- Runtime/displayed version `0.2.0+2` after the online-design foundation.
+- Runtime/displayed version `0.3.0+3` after entry-flow parity.
 - Feature-first Clean Architecture.
 - Riverpod for state.
 - GoRouter for routing.
@@ -59,6 +59,10 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 ## Current Implemented Behavior
 
 - Splash, login, registration, password reset, and demo mode.
+- Live-design onboarding uses three photographic Unsplash panels with branded
+  loading/error fallbacks. Splash and shared auth branding are localized.
+- First-login setup uses the official teal logo and exposes the complete
+  21-currency catalog confirmed in the live design.
 - Token-backed auth persistence with remember-me state.
 - One silent token refresh attempt on eligible 401 responses.
 - Authenticated home shell with Home, Category, Add, Budget, and Settings tabs.

@@ -31,9 +31,9 @@
 | T-04 | Search | Flutter has a real search field; the live design stores search state but renders no search input. | Preserve the working Flutter capability and document the accepted deviation. | `v0.4.0` |
 | S-01 | App structure | Authenticated presentation is concentrated in a 7,062-line `home_page.dart`; the design separates screens and reusable components. | Split by feature while preserving provider/API behavior, then align reusable surfaces. | `v0.5.0` |
 | S-02 | Dashboard data | Live design uses hard-coded category/chart data and derived summary defaults; Flutter uses real APIs or the demo store. | Preserve Flutter data authority and port only visual intent. | `v0.5.0` |
-| S-03 | Budget | Both surfaces present budget summaries; create/edit actions are not backed by a confirmed app/server mutation contract. | Keep actions explicitly coming soon; do not promote prototype local storage into product behavior. | `v0.5.0` |
-| S-04 | Statistics | Both expanded-statistics surfaces use test presentation data. | Keep the test-data notice and defer real reporting scope unless a separate API-backed version opens. | `v0.5.0` |
-| P-01 | Profile persistence | Design fields for phone, location, birth date, and account statistics are prototype-only. Flutter renders editable placeholders but saves only nickname, avatar, gender, and local currency. | Prevent users from mistaking unsupported fields for persisted data; retain only truthful editable behavior. | `v0.6.0` |
+| S-03 | Budget | Both surfaces present budget summaries; create/edit actions are not backed by an app/server mutation contract. | Implement a user-scoped server contract and connect real/demo app repositories; do not promote prototype local storage into authenticated behavior. | `v0.5.0` |
+| S-04 | Statistics | The expanded app surface uses test presentation data although the server already exposes reporting and chart APIs. | Integrate the existing typed APIs and remove sample-only reporting as the authoritative path. | `v0.5.0` |
+| P-01 | Profile persistence | Design fields for phone, location, and birth date are prototype-only. Flutter renders editable placeholders but the server saves only nickname, avatar, and gender. | Extend the versioned server/profile contract and both persistence backends, then connect Flutter without fake saves. | `v0.6.0` |
 | P-02 | Version display | App `pubspec.yaml` is `0.1.0+1`, while the About panel hard-codes `1.0.0`. | Display package version/build metadata and advance it with affected versions. | `v0.6.0` |
 | P-03 | Design source defect | Online `Settings.tsx` imports a missing, unused `ThemeColorSelector` module. | Do not reproduce the broken import in Flutter; retain the working shared color picker. | `v0.6.0` |
 | I-01 | Localization | Design and app use different key vocabularies. The app defines all 210 statically referenced literal keys and supports English, simplified Chinese, and traditional Chinese. | Preserve app key ownership; validate new visible copy in all three languages. | All |
@@ -47,8 +47,11 @@
 - Prototype values must not be presented as persisted user data.
 - Amount semantics use income success/green and expense error/red even where the
   prototype is reversed.
-- Budget mutation and full statistics remain outside this series unless their
-  server contracts are separately confirmed and opened as concrete scope.
+- Existing presentation may be replaced or removed while following the live
+  design, but no product capability may be silently dropped.
+- Missing server capabilities are implemented in the selected version or
+  represented by a truthful disabled/prewired app boundary and the canonical
+  API integration backlog.
 
 ## Done When
 

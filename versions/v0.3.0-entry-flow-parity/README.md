@@ -3,11 +3,11 @@
 ## Status
 
 - Version: `v0.3.0`
-- State: WIP
+- State: Closed
 - Work Level: Standard
 - Execution Owner: AI
 - Validation Owner: AI
-- Validated At: Pending
+- Validated At: `2026-08-21`
 - Human Gate: Not required
 - Human Decision: N/A
 - Human Decision By/At: N/A
@@ -35,21 +35,30 @@
 
 ## Delivered Result
 
-- Summary: Pending.
-- Changed behavior: Pending.
+- Summary: Rebuilt the onboarding artwork hierarchy from the refreshed live
+  source, localized shared entry branding, and aligned both currency setup
+  paths with official assets and the complete currency catalog.
+- Changed behavior: Onboarding now uses the three live-design Unsplash sources
+  with deterministic in-app fallbacks; setup uses the official teal logo;
+  currency selection covers all 21 confirmed options; English slide 2/3 copy
+  now matches the live source; splash and auth branding react to app language.
 - Compatibility: No API or schema change.
 - Migration/rollback: No data migration; revert the app commit.
-- Implementation refs: Pending.
+- Implementation refs: `cashlenx-app` commit `4a83ec1` (`feat: align entry
+  flows with live design`). Runtime/displayed app version: `0.3.0+3`.
 
 ## Validation
 
-- Commands and results: Pending.
-- Known limits: Pending.
+- Commands and results: `flutter analyze` passed with no issues; focused entry,
+  auth, and foundation tests passed (7 tests); final `flutter test` passed (33
+  tests), all on `2026-08-21`.
+- Known limits: Onboarding photos are remote Unsplash resources by design. A
+  deterministic branded fallback remains visible while loading or on failure.
 
 ## Close Gate
 
-- [ ] Done condition satisfied.
-- [ ] Relevant validation passed and known limits recorded.
-- [ ] Workflow and deployment states recorded.
-- [ ] Durable facts synchronized.
-- [ ] Implementation refs recorded.
+- [x] Done condition satisfied.
+- [x] Relevant validation passed and known limits recorded.
+- [x] Workflow and deployment states recorded.
+- [x] Durable facts synchronized.
+- [x] Implementation refs recorded.

@@ -6,8 +6,12 @@ The first beta boundary is tracked in `beta-baseline.md` until its implementatio
 
 ## Product Gaps
 
+The design-to-app-to-API capability matrix and selected delivery targets are
+maintained in `design-parity-api-integration.md`.
+
 - Explicit date-range filtering in the app transaction list.
-- Full statistics summary, trends, breakdown, top-expense screens, chart-backed reporting, and period controls.
+- Complete the existing server statistics integration in the app: summary,
+  trends, breakdown, top-expense screens, charts, and period controls.
 - Export/import UI scope and priority.
 - URL-addressable shell tabs.
 - App home shell decomposition by feature.
