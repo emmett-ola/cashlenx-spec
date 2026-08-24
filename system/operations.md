@@ -102,6 +102,11 @@ flutter run
   without credential validation.
 - `TIMEZONE` is the only operator-facing Server timezone setting. Compose maps
   it to the API, MongoDB, and MySQL containers' standard `TZ` environment value.
+  The supported contract is `UTC` or a region-based IANA name such as
+  `Asia/Shanghai`. Every start entry point rejects fixed offsets, ambiguous
+  abbreviations, and POSIX-sign `Etc/GMT` forms by key name before creating its
+  container. API startup also verifies the name against the Go timezone
+  database; Compose itself only passes the selected string through.
 
 ## Operational Endpoints
 
