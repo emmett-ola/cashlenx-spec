@@ -24,6 +24,9 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
   one set of atomic credentials, ports, and database names.
 - `v0.8.8-runtime-image-package-independence` is closed with an APK-independent
   Server image build and retained health/timezone behavior.
+- `v0.8.9-shared-docker-network-and-layout` is closed with one external network
+  shared by application and dependency containers and a project-local Docker
+  definition layout.
 - Readiness for the first beta baseline is tracked in `../backlog/beta-baseline.md` until its boundary and implementation refs are selected.
 - Active implementation remains on the `v0.x` line and the current API path remains `/api/v0`.
 - Stable-release decisions are recorded in `../decisions/0001-stable-release-api-auth-and-capability-policy.md` and `../decisions/0002-spec-controlled-versioning-with-project-local-advancement.md`.
@@ -58,6 +61,7 @@ the online source.
 | `v0.8.6-configurable-persistence-storage` | Closed | Configurable MongoDB/MySQL named volumes and absolute host bind paths with persistence-safe lifecycle behavior. |
 | `v0.8.7-derived-database-uris` | Closed | Local and Docker database URIs derived without duplicated credential, port, or database constants. |
 | `v0.8.8-runtime-image-package-independence` | Closed | APK-independent Server image build using embedded timezone data and the base image health utility. |
+| `v0.8.9-shared-docker-network-and-layout` | Closed | Shared external network lifecycle, container-DNS dependency routes, and Docker definitions under each project's `docker/` tree. |
 
 Implement and close one version before starting the next. Each app-affecting
 version advances the app's `pubspec.yaml` version and records its repository

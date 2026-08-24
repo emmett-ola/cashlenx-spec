@@ -101,7 +101,9 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   surfaces: income uses success/green and expense uses error/red.
 - Golden visual baselines cover dashboard layout at 390 px, the 430 px maximum
   shell width, and a 768 px host, plus settings and profile at shell width.
-- Docker-based Flutter web deployment using `Dockerfile`, `compose.yml`, and nginx route fallback.
+- Docker-based Flutter web deployment using `docker/Dockerfile`,
+  `docker/compose.yml`, explicit project/container names, the shared absolute
+  `DOCKER_NETWORK_NAME`, and nginx route fallback.
 - GitHub Actions web release workflow that builds, analyzes, tests, and publishes static web output to the release repository.
 
 ## Known App Gaps

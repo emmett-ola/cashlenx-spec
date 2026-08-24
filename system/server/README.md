@@ -171,9 +171,10 @@ CORS -> Logging -> Metrics -> Auth -> OpenAPI schema validation -> Router
 - Database URI values may reference atomic values defined earlier with `${NAME}`;
   both Docker Compose and the current dotenv loader expand that form.
 - Local and Docker-specific database URIs derive their credentials, ports, and
-  database names from the same atomic keys. Only the runtime-context hostname
-  differs, and Compose injects the Docker URI without repeating atomic fallback
-  constants.
+  database names from the same atomic keys. Direct routes use published host
+  ports; Docker routes use the configured dependency container name and internal
+  port on the absolute `DOCKER_NETWORK_NAME`. Compose injects the Docker URI without
+  repeating atomic fallback constants.
 - Every Server example assignment is active. Optional capabilities use explicit
   lowercase booleans; API startup validation ignores disabled capabilities and
   unselected database credentials. Dependency script selection, rather than an
@@ -183,7 +184,11 @@ CORS -> Logging -> Metrics -> Auth -> OpenAPI schema validation -> Router
   includes Go-embedded IANA timezone data. Supported values are `UTC` and region-based IANA
   names. Fixed offsets, abbreviations, and POSIX-sign `Etc/GMT` forms are
   rejected, and API startup verifies the name against the Go timezone database.
-- The Server Dockerfile has no Alpine package-install step. Its Compose
+- Server Docker and Compose definitions live under `docker/`; dependency
+  definitions live under `docker/dependencies/<name>/`. All API and database
+  services use explicit project and container name keys and one shared absolute
+  `DOCKER_NETWORK_NAME`.
+- The Server `docker/Dockerfile` has no Alpine package-install step. Its Compose
   healthcheck uses the runtime image's BusyBox `wget`, keeping image builds
   independent from Alpine package-index availability.
 - Database connection values map to internal keys `db.mongodb.url` and `db.mysql.url`; legacy `mongodb.uri` and `mysql.uri` keys are not registered.

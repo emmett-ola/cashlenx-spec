@@ -29,3 +29,7 @@ Use this site as a derived documentation surface. Current facts should be mainta
 
 The tracked `.env.example` keeps every website container assignment active;
 operators change values directly rather than uncommenting settings.
+Docker build and Compose definitions live under `docker/`. Website project and
+container names are explicit, and the service joins the absolute
+`DOCKER_NETWORK_NAME`; its start script creates that network when needed and its
+stop script removes it only when no containers remain attached.

@@ -31,17 +31,18 @@ scripts/stop.sh
 ```
 
 The root scripts manage the server container only. `start.sh` uses the existing
-image and waits for the Compose healthcheck. `stop.sh` removes the API container
-and project network but preserves the image, bind-mounted logs, database
-dependency projects, and their named volumes. Database dependency lifecycle
-remains explicit and independent.
+image, ensures the shared external network exists, and waits for the Compose
+healthcheck. `stop.sh` removes the API container but preserves the image,
+bind-mounted logs, database dependency projects, and their named volumes. It
+removes the shared network only when no containers remain attached. Database
+dependency lifecycle remains explicit and independent.
 
 MongoDB owns `docker/dependencies/mongodb/` and
 `scripts/dependencies/mongodb/`; MySQL owns matching `mysql/` directories. Each
 dependency exposes `build.sh`, `start.sh`, and `stop.sh`. Build pulls the
-configured upstream image, start launches only that dependency and waits for
-health, and stop removes its container and project network while preserving its
-image and persistent storage. Each dependency keeps its existing named volume
+configured upstream image, start launches only that dependency on the shared
+network and waits for health, and stop removes its container while preserving
+its image and persistent storage. Each dependency keeps its existing named volume
 by default. An empty `*_DATA_PATH` uses the configurable
 `*_DATA_VOLUME_NAME`; an absolute data path selects a host bind mount. Root
 Server scripts never select a dependency from `DB_TYPE` or manage dependency
@@ -61,7 +62,11 @@ flutter run
 
 ## Runtime Project Boundaries
 
-- The app has Docker-based Flutter web deployment through `Dockerfile`, `compose.yml`, nginx route fallback, and `scripts/build.sh`, `scripts/start.sh`, and `scripts/stop.sh`.
+- Every Dockerfile and Compose definition lives under its owning repository's
+  `docker/` tree. Dependency definitions remain under
+  `docker/dependencies/<name>/`; root `.dockerignore` files remain beside their
+  build contexts.
+- The app has Docker-based Flutter web deployment through `docker/Dockerfile`, `docker/compose.yml`, nginx route fallback, and `scripts/build.sh`, `scripts/start.sh`, and `scripts/stop.sh`.
 - The app GitHub Actions web-release workflow analyzes, tests, builds, and publishes static web output to the release repository.
 - The server provides the same build/start/stop script contract and owns only the API container. MongoDB and MySQL are independent optional Compose projects under `docker/dependencies/`.
 - MongoDB and MySQL each provide their own explicit build/start/stop scripts
@@ -69,6 +74,15 @@ flutter run
   `ENV_FILE` selection and do not invoke the API lifecycle.
 - The product-introduction website has a multi-stage Bun/nginx Docker image, Compose service, and the same build/start/stop script contract.
 - In every runtime project, `build.sh` compiles the program inside its image build, `start.sh` starts or updates containers from an existing image with `--no-build --wait`, and `stop.sh` uses Compose `down --remove-orphans` without `--volumes` or image removal.
+- Compose project, container, and shared-network identities are explicit
+  environment values with defaults. App, Server, Website, MongoDB, and MySQL
+  each have an owning `*_PROJECT_NAME` and container-name key; all repositories
+  use the same absolute `DOCKER_NETWORK_NAME`. Separate project identities
+  preserve independent lifecycle and prevent `--remove-orphans` from treating
+  sibling services as part of the same Compose project. Every start script
+  creates the network idempotently. Every stop script attempts removal only
+  after its own Compose project is down and only when Docker reports zero
+  connected containers.
 - Default host ports are `11063` for the server API, `11064` for the Flutter app web build, and `11065` for the product-introduction website. Environment files may override them.
 - Default container names are `cashlenx-server`, `cashlenx-app`, and `cashlenx-website`.
 - Project Compose files bind published ports to `127.0.0.1` by default for a host reverse proxy and expose configurable CPU, memory, PID, graceful-stop, and health settings.
@@ -95,10 +109,11 @@ flutter run
   the Server dotenv loader expand this form; shell default expressions such as
   `${NAME:-default}` are not portable across both loaders.
 - Direct local and Docker-specific MongoDB/MySQL URIs both derive credentials,
-  ports, and database names from the same earlier atomic keys. Their hostnames
-  differ by runtime network context. Compose injects the Docker URI variables
-  directly and does not rebuild them with credential, port, or database
-  fallback constants.
+  ports, and database names from the same earlier atomic keys. Direct runtime
+  routes use the published host ports; Docker routes use configured container
+  names and internal ports on the shared network. Compose injects the Docker URI
+  variables directly and does not rebuild them with credential, port, or
+  database fallback constants.
 - `../scripts/sync-env.sh` owns workspace environment-template synchronization.
 - Run it after changing any implementation `.env.example`; it appends missing keys to ignored local `.env` files without overwriting configured values.
 - Each runtime project keeps ignored `.env.testing` and `.env.production` files for owner-managed sensitive deployment values. The synchronization workflow must not inspect or maintain their contents without explicit owner authorization.
@@ -144,8 +159,9 @@ If the UAT database is project-managed, explicitly prepare and start the selecte
 dependency before the Server by running its dependency `build.sh` and
 `start.sh`. Start the Server next, then the Flutter web app, then the
 product-introduction website. Each `start.sh` waits for its project Compose
-healthcheck. To remove a project's runtime container and network while retaining
-its image and persistent data, run `scripts/stop.sh` in that project.
+healthcheck. To remove a project's runtime container while retaining its image
+and persistent data, run `scripts/stop.sh` in that project. The final stop also
+removes the now-unused shared network.
 Reverse-proxy routing and TLS remain owned by the UAT host and are outside the
 project-local scripts.
 
