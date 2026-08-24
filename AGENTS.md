@@ -23,7 +23,7 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 ## Repository Boundaries
 
 - Treat `cashlenx-spec`, `cashlenx-app`, `cashlenx-server`, `cashlenx-design`, and `cashlenx-website` as separate project areas.
-- Use an existing `develop` branch as the default implementation working branch. Inspect branch and worktree state before switching; do not create, replace, or switch branches when doing so would displace unrelated user work.
+- Use `develop` as the default working branch in implementation repositories, `testing` only for explicitly authorized test-environment promotion, and `main` only for explicitly authorized production release promotion. Do not retain or create the legacy implementation branch name `test`. Keep `cashlenx-spec` on its sole `main` branch. Inspect branch and worktree state before switching; do not create, replace, or switch branches when doing so would displace unrelated user work.
 - `cashlenx-spec` is the specification workspace and should not contain runtime code.
 - Sibling repositories are source-of-truth inputs for implementation facts.
 - Sibling implementation repositories must not import, read, link to, build from, test against, or otherwise depend on `cashlenx-spec`.
@@ -52,7 +52,7 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 ## Editing Practices
 
 - Prefer small, stable documents over large mixed notes.
-- After completing a request or coherent change set, create a repository-local commit by default unless the user explicitly asks not to commit. Implementation commits use the existing `develop` branch by default; spec-only commits use the current spec governance branch. Stage only intended files. A commit does not authorize push, merge, tag, publication, or deployment.
+- After completing a request or coherent change set, create a repository-local commit by default unless the user explicitly asks not to commit. Implementation commits use `develop` by default; spec-only commits use the spec repository's sole `main` branch. Stage only intended files. A commit or working-branch push does not authorize implementation promotion to `testing` or `main`, tag creation, publication, or deployment.
 - Keep product requirements separate from implementation notes.
 - At the spec root, keep conventional governance entry points uppercase (`AGENTS.md`, `README.md`, `WORKFLOW.md`, and `GUIDELINE.md`). Below the root, reserve uppercase `README.md` for directory indexes and use lowercase names for other project-authored documents.
 - Keep tracked text files on LF line endings through `.gitattributes`, and end files with exactly one newline.

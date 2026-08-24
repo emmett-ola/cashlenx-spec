@@ -18,7 +18,7 @@ The local workspace contains these project areas:
 
 The outer workspace is not assumed to be a Git repository.
 
-Implementation work uses each repository's existing `develop` branch by default and commits each completed request or coherent change set locally unless the user opts out. `cashlenx-spec` currently remains on `main`; repository-local commits do not imply push, merge, tag, publication, or deployment.
+Implementation repositories use `develop` as the default working branch, `testing` as the shared test-environment branch, and `main` as the production release branch. Changes are promoted in the direction `develop` -> `testing` -> `main`; the legacy branch name `test` is not retained. `cashlenx-spec` uses `main` as its only branch. Repository-local commits and branch pushes do not by themselves authorize promotion, publication, or deployment.
 
 ## Current Map
 

@@ -10,6 +10,15 @@ This workflow keeps CashLenX specification and delivery work proportionate to ri
 - Match planning, validation, and documentation effort to the risk of the change.
 - Keep app, server, website, and design reference boundaries explicit.
 
+## Branch Model
+
+- Implementation repositories use `develop` as the default development and integration branch.
+- Implementation repositories use `testing` as the shared test and acceptance branch. It receives explicitly selected changes from `develop` and is the only branch name for the test environment; do not retain or create `test`.
+- Implementation repositories use `main` as the production release branch. It receives validated changes from `testing`, except through an explicitly approved production hotfix workflow.
+- Normal implementation promotion flows in one direction: `develop` -> `testing` -> `main`.
+- `cashlenx-spec` uses `main` as its only branch; specification commits do not represent an implementation release or deployment.
+- Creating commits, reconciling history, or pushing a working branch does not itself authorize implementation promotion or deployment.
+
 ## Work Levels
 
 | Level | Typical work | Default authority | Version record |
@@ -29,7 +38,7 @@ When levels overlap, use the highest applicable level. Technical difficulty alon
 5. Validate in proportion to the behavior and risk changed.
 6. Synchronize the canonical `system/` fact when implementation behavior changes.
 7. When an implementation `.env.example` changes, run `cashlenx-spec/scripts/sync-env.sh` for local `.env` structure and preserve every existing configured value unless an explicit migration requires changing it. Do not inspect or synchronize owner-managed `.env.testing` or `.env.production` files without explicit authorization.
-8. Commit the completed request or coherent change set by default unless the user explicitly opts out. Implementation commits use an existing `develop` branch by default; spec-only commits use the current spec governance branch. Stage only intended files and keep push, merge, tag, publication, and deployment as separately authorized actions.
+8. Commit the completed request or coherent change set by default unless the user explicitly opts out. Implementation commits use `develop` by default; spec-only commits use the spec repository's sole `main` branch. Stage only intended files and keep implementation promotion to `testing` or `main`, tag creation, publication, and deployment as separately authorized actions.
 9. Recheck repository state and report validation, changed files, known limits, commits, and delivery actions.
 
 Lightweight work does not require a persisted task contract, scenario matrix, or broad implementation build unless its impact triggers one.
