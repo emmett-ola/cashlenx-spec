@@ -90,6 +90,11 @@ flutter run
   username, password, and database name has one definition. Docker Compose and
   the Server dotenv loader expand this form; shell default expressions such as
   `${NAME:-default}` are not portable across both loaders.
+- Direct local and Docker-specific MongoDB/MySQL URIs both derive credentials,
+  ports, and database names from the same earlier atomic keys. Their hostnames
+  differ by runtime network context. Compose injects the Docker URI variables
+  directly and does not rebuild them with credential, port, or database
+  fallback constants.
 - `../scripts/sync-env.sh` owns workspace environment-template synchronization.
 - Run it after changing any implementation `.env.example`; it appends missing keys to ignored local `.env` files without overwriting configured values.
 - Each runtime project keeps ignored `.env.testing` and `.env.production` files for owner-managed sensitive deployment values. The synchronization workflow must not inspect or maintain their contents without explicit owner authorization.

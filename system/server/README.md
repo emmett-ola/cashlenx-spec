@@ -170,6 +170,10 @@ CORS -> Logging -> Metrics -> Auth -> OpenAPI schema validation -> Router
 - Runtime configuration is loaded from `.env` and process environment through `util/config_util.go`.
 - Database URI values may reference atomic values defined earlier with `${NAME}`;
   both Docker Compose and the current dotenv loader expand that form.
+- Local and Docker-specific database URIs derive their credentials, ports, and
+  database names from the same atomic keys. Only the runtime-context hostname
+  differs, and Compose injects the Docker URI without repeating atomic fallback
+  constants.
 - Every Server example assignment is active. Optional capabilities use explicit
   lowercase booleans; API startup validation ignores disabled capabilities and
   unselected database credentials. Dependency script selection, rather than an
