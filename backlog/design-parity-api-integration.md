@@ -35,8 +35,9 @@ version closes.
 ## Delivery Tooling Backlog
 
 - Restore or replace `cashlenx-app/integration_test/api_smoke_test.dart`. The
-  existing `scripts/smoke-api.ps1` invokes that absent file, so it is not valid
-  current evidence for the documented whole-product database smoke flow.
+  invalid wrapper that invoked the absent file was removed during deployment
+  script consolidation, so no whole-product database smoke harness currently
+  ships with the app.
   `v0.5.0` added and passed a focused disposable budget smoke for MongoDB and
   MySQL; broader registration/profile/import/export smoke remains a separate
   harness repair.

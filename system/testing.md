@@ -29,25 +29,14 @@ flutter analyze
 flutter test
 ```
 
-The legacy Flutter-to-server commands below are intended targets but are not
-valid current evidence because `integration_test/api_smoke_test.dart` is absent:
+The app repository currently has no maintained live Flutter-to-server harness.
+Restore or replace that coverage before relying on a whole-product database
+smoke claim. The current focused live database evidence is the server-owned
+disposable flow, run from `../cashlenx-server`:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts/smoke-api.ps1
-```
-
-Use MySQL 8 instead of MongoDB with:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/smoke-api.ps1 -Database mysql
-```
-
-Restore or replace that harness before relying on it. The current focused live
-database evidence is the server-owned disposable flow:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/smoke-budget.ps1 -Database mongodb
-powershell -ExecutionPolicy Bypass -File scripts/smoke-budget.ps1 -Database mysql
+powershell -ExecutionPolicy Bypass -File test/scripts/budget-smoke.ps1 -Database mongodb
+powershell -ExecutionPolicy Bypass -File test/scripts/budget-smoke.ps1 -Database mysql
 ```
 
 It verifies authenticated profile/configuration persistence and budget/ledger
@@ -60,15 +49,17 @@ From `../cashlenx-server`:
 ```bash
 go build -o cashlenx main.go
 go test ./...
-scripts/ci-test.sh
+go test -v -race -covermode=atomic -coverprofile=coverage.out ./...
 ```
 
-`scripts/ci-test.sh` runs the package suite with the race detector and an atomic coverage profile. CI also builds the server and container image and generates the Swagger UI artifact, but it does not run the live database-backed smoke flow.
+CI runs the package suite with the race detector and an atomic coverage profile.
+It also builds the server and container image, generates the Swagger UI
+artifact, and runs the MongoDB API smoke flow in a separate workflow.
 
 Validate numbered MySQL migrations against a disposable MySQL 8 instance on Windows with:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts/smoke-mysql-migrations.ps1
+powershell -ExecutionPolicy Bypass -File test/scripts/mysql-migrations-smoke.ps1
 ```
 
 ## Testing Strategy
