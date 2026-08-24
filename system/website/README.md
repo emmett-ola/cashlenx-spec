@@ -26,3 +26,6 @@ npm run build
 ```
 
 Use this site as a derived documentation surface. Current facts should be maintained in `cashlenx-spec/system/` first.
+
+The tracked `.env.example` keeps every website container assignment active;
+operators change values directly rather than uncommenting settings.

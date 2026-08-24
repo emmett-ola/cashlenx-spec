@@ -50,11 +50,15 @@ From `../cashlenx-server`:
 go build -o cashlenx main.go
 go test ./...
 go test -v -race -covermode=atomic -coverprofile=coverage.out ./...
+test/scripts/dependency-lifecycle-smoke.sh
 ```
 
 CI runs the package suite with the race detector and an atomic coverage profile.
 It also builds the server and container image, generates the Swagger UI
 artifact, and runs the MongoDB API smoke flow in a separate workflow.
+The dependency lifecycle smoke uses a fake Docker command to validate script
+selection, enable-aware credential checks, file boundaries, and persistence-safe
+stop calls without pulling images or changing containers.
 
 Validate numbered MySQL migrations against a disposable MySQL 8 instance on Windows with:
 

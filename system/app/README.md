@@ -18,7 +18,8 @@ Current stack:
 ## Important Entry Points
 
 - `pubspec.yaml`: dependencies, assets, and launcher icon configuration.
-- `.env.example`: local environment template.
+- `.env.example`: local environment template with every assignment active;
+  operators change values directly rather than uncommenting settings.
 - `lib/main.dart`: config, provider scope, theme, i18n, and router startup.
 - `lib/routing/app_router.dart`: GoRouter setup and auth redirects.
 - `lib/core/i18n/app_i18n.dart`: translations and language selection.

@@ -167,6 +167,13 @@ CORS -> Logging -> Metrics -> Auth -> OpenAPI schema validation -> Router
 - Runtime configuration is loaded from `.env` and process environment through `util/config_util.go`.
 - Database URI values may reference atomic values defined earlier with `${NAME}`;
   both Docker Compose and the current dotenv loader expand that form.
+- Every Server example assignment is active. Optional capabilities use explicit
+  lowercase booleans; API startup validation ignores disabled capabilities and
+  unselected database credentials. Dependency script selection, rather than an
+  enable flag or `DB_TYPE`, owns database-container lifecycle.
+- `TIMEZONE` is the single application and container timezone source; Compose
+  maps it to the standard container `TZ` variable, and the Server runtime image
+  includes IANA timezone data.
 - Database connection values map to internal keys `db.mongodb.url` and `db.mysql.url`; legacy `mongodb.uri` and `mysql.uri` keys are not registered.
 - API version, schema validation, authentication lifetime, registration, bootstrap administrator, CORS, host/port, timezone, Snowflake worker, verification-code, SMTP, logging, and database selection are configuration-owned behaviors.
 - Automated registration and password-reset tests must replace email delivery and must not contact a real provider.

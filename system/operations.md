@@ -74,11 +74,15 @@ flutter run
 ## Configuration Synchronization
 
 - Each runtime repository ignores `.env*` and tracks only `.env.example` as its
-  layered configuration catalog. Existing local variants remain untracked.
+  explicit configuration catalog. Existing local variants remain untracked.
 - Each `.env.example` documents accepted values, formats, units, and operational
-  meaning where a key is not self-explanatory. It remains the canonical guide;
-  ignored operator-managed environment files are not rewritten for comment-only
-  template changes.
+  meaning where a key is not self-explanatory. Every assignment is active;
+  operators change values directly rather than enabling configuration by
+  uncommenting lines.
+- Optional Server capabilities use explicit lowercase boolean settings such as
+  `SMTP_ENABLED`. Disabled capability values remain present but are ignored by
+  API startup validation. MongoDB/MySQL lifecycle has no enable flag: the
+  selected dependency script determines which container project is managed.
 - Server database URIs may reuse earlier atomic values with `${NAME}` so each
   username, password, and database name has one definition. Docker Compose and
   the Server dotenv loader expand this form; shell default expressions such as
@@ -88,13 +92,16 @@ flutter run
 - Each runtime project keeps ignored `.env.testing` and `.env.production` files for owner-managed sensitive deployment values. The synchronization workflow must not inspect or maintain their contents without explicit owner authorization.
 - Runtime lifecycle scripts use `.env` by default and accept a repository-local
   override through `ENV_FILE`. They reject missing files, paths outside the
-  repository, and symlinks. Build permits placeholders; start rejects active
-  `CHANGE_ME` and known legacy weak values without printing their contents; stop
-  requires the selected file but does not validate its values.
+  repository, and symlinks. Build permits placeholders; start rejects relevant
+  `CHANGE_ME`, invalid booleans, and known legacy weak values without printing
+  their contents. Server start validates only its selected database and enabled
+  capabilities. Stop requires the selected file but does not validate values.
 - Server dependency lifecycle scripts use the same file-selection boundary.
   Their starts validate only credentials owned by the selected dependency;
   their builds permit incomplete credentials and their stops remain available
   without credential validation.
+- `TIMEZONE` is the only operator-facing Server timezone setting. Compose maps
+  it to the API, MongoDB, and MySQL containers' standard `TZ` environment value.
 
 ## Operational Endpoints
 
