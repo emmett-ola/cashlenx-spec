@@ -12,10 +12,10 @@ This workflow keeps CashLenX specification and delivery work proportionate to ri
 
 ## Branch Model
 
-- Implementation repositories use `develop` as the default development and integration branch.
-- Implementation repositories use `testing` as the shared test and acceptance branch. It receives explicitly selected changes from `develop` and is the only branch name for the test environment; do not retain or create `test`.
-- Implementation repositories use `main` as the production release branch. It receives validated changes from `testing`, except through an explicitly approved production hotfix workflow.
-- Normal implementation promotion flows in one direction: `develop` -> `testing` -> `main`.
+- The code repositories (`cashlenx-app`, `cashlenx-server`, and `cashlenx-website`) use `develop` as the default development and integration branch.
+- The code repositories use `testing` as the shared test and acceptance branch. It receives explicitly selected changes from `develop` and is the only branch name for the test environment; do not retain or create `test`.
+- The code repositories use `main` as the production release branch. It receives validated changes from `testing`, except through an explicitly approved production hotfix workflow.
+- Normal code promotion flows in one direction: `develop` -> `testing` -> `main`.
 - `cashlenx-spec` uses `main` as its only branch; specification commits do not represent an implementation release or deployment.
 - Creating commits, reconciling history, or pushing a working branch does not itself authorize implementation promotion or deployment.
 

@@ -23,7 +23,7 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 ## Repository Boundaries
 
 - Treat `cashlenx-spec`, `cashlenx-app`, `cashlenx-server`, `cashlenx-design`, and `cashlenx-website` as separate project areas.
-- Use `develop` as the default working branch in implementation repositories, `testing` only for explicitly authorized test-environment promotion, and `main` only for explicitly authorized production release promotion. Do not retain or create the legacy implementation branch name `test`. Keep `cashlenx-spec` on its sole `main` branch. Inspect branch and worktree state before switching; do not create, replace, or switch branches when doing so would displace unrelated user work.
+- In `cashlenx-app`, `cashlenx-server`, and `cashlenx-website`, use `develop` as the default working branch, `testing` only for explicitly authorized test-environment promotion, and `main` only for explicitly authorized production release promotion. Do not retain or create the legacy code branch name `test`. Keep `cashlenx-spec` on its sole `main` branch. Inspect branch and worktree state before switching; do not create, replace, or switch branches when doing so would displace unrelated user work.
 - `cashlenx-spec` is the specification workspace and should not contain runtime code.
 - Sibling repositories are source-of-truth inputs for implementation facts.
 - Sibling implementation repositories must not import, read, link to, build from, test against, or otherwise depend on `cashlenx-spec`.
