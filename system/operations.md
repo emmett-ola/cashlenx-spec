@@ -73,6 +73,10 @@ flutter run
 - Default container names are `cashlenx-server`, `cashlenx-app`, and `cashlenx-website`.
 - Project Compose files bind published ports to `127.0.0.1` by default for a host reverse proxy and expose configurable CPU, memory, PID, graceful-stop, and health settings.
 - Runtime images record the source commit through the OCI `org.opencontainers.image.revision` label when built with the project scripts.
+- The Server image build performs no Alpine package installation. Go embeds the
+  IANA timezone database, and the API healthcheck uses BusyBox `wget` already
+  present in the selected Alpine runtime image, so Alpine package-index
+  availability is not a Server image-build dependency.
 
 ## Configuration Synchronization
 

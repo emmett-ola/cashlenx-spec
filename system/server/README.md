@@ -180,9 +180,12 @@ CORS -> Logging -> Metrics -> Auth -> OpenAPI schema validation -> Router
   enable flag or `DB_TYPE`, owns database-container lifecycle.
 - `TIMEZONE` is the single application and container timezone source; Compose
   maps it to the standard container `TZ` variable, and the Server runtime image
-  includes IANA timezone data. Supported values are `UTC` and region-based IANA
+  includes Go-embedded IANA timezone data. Supported values are `UTC` and region-based IANA
   names. Fixed offsets, abbreviations, and POSIX-sign `Etc/GMT` forms are
   rejected, and API startup verifies the name against the Go timezone database.
+- The Server Dockerfile has no Alpine package-install step. Its Compose
+  healthcheck uses the runtime image's BusyBox `wget`, keeping image builds
+  independent from Alpine package-index availability.
 - Database connection values map to internal keys `db.mongodb.url` and `db.mysql.url`; legacy `mongodb.uri` and `mysql.uri` keys are not registered.
 - API version, schema validation, authentication lifetime, registration, bootstrap administrator, CORS, host/port, timezone, Snowflake worker, verification-code, SMTP, logging, and database selection are configuration-owned behaviors.
 - Automated registration and password-reset tests must replace email delivery and must not contact a real provider.
