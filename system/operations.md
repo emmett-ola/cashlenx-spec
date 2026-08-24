@@ -41,8 +41,11 @@ MongoDB owns `docker/dependencies/mongodb/` and
 dependency exposes `build.sh`, `start.sh`, and `stop.sh`. Build pulls the
 configured upstream image, start launches only that dependency and waits for
 health, and stop removes its container and project network while preserving its
-image and named data volume. Root Server scripts never select a dependency from
-`DB_TYPE` or manage dependency lifecycle.
+image and persistent storage. Each dependency keeps its existing named volume
+by default. An empty `*_DATA_PATH` uses the configurable
+`*_DATA_VOLUME_NAME`; an absolute data path selects a host bind mount. Root
+Server scripts never select a dependency from `DB_TYPE` or manage dependency
+lifecycle.
 
 ### App
 
@@ -100,6 +103,12 @@ flutter run
   Their starts validate only credentials owned by the selected dependency;
   their builds permit incomplete credentials and their stops remain available
   without credential validation.
+- MongoDB and MySQL storage defaults remain the named volumes
+  `cashlenx-mongodb-data` and `cashlenx-mysql-data`. Operators may change the
+  matching `*_DATA_VOLUME_NAME`, or set an absolute `*_DATA_PATH` to use a host
+  bind mount. Relative paths, filesystem roots, and parent traversal are
+  rejected by dependency start. Changing the selected source does not copy,
+  migrate, or delete data, and dependency stop preserves both storage forms.
 - `TIMEZONE` is the only operator-facing Server timezone setting. Compose maps
   it to the API, MongoDB, and MySQL containers' standard `TZ` environment value.
   The supported contract is `UTC` or a region-based IANA name such as

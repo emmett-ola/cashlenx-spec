@@ -133,8 +133,11 @@ The server start command is `go run main.go open start -p 11063`, not `server st
   build/start/stop scripts under database-specific `docker/dependencies/` and
   `scripts/dependencies/` directories. Their named
   `cashlenx-mongodb-data` and `cashlenx-mysql-data` volumes survive dependency
-  stop. Root Server scripts manage only the API and never select a dependency
-  from `DB_TYPE`.
+  stop and remain the defaults. Empty `MONGO_DATA_PATH` and `MYSQL_DATA_PATH`
+  values select the configurable named-volume identities; absolute values
+  select host bind mounts. Dependency stop preserves either form. Changing the
+  source does not migrate existing data. Root Server scripts manage only the API
+  and never select a dependency from `DB_TYPE`.
 - MongoDB applied-version tracking is not implemented and remains architecture debt.
 
 Persistence-shape changes must account for mapper code, migrations, Docker initialization assets when applicable, and backup/restore or import/export formats.

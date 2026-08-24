@@ -18,6 +18,8 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
   capability switches, and one application/container timezone key.
 - `v0.8.5-timezone-contract` is closed with a shared unambiguous timezone format
   contract for the Server application and containers.
+- `v0.8.6-configurable-persistence-storage` is closed with configurable database
+  named-volume identities and absolute host bind paths.
 - Readiness for the first beta baseline is tracked in `../backlog/beta-baseline.md` until its boundary and implementation refs are selected.
 - Active implementation remains on the `v0.x` line and the current API path remains `/api/v0`.
 - Stable-release decisions are recorded in `../decisions/0001-stable-release-api-auth-and-capability-policy.md` and `../decisions/0002-spec-controlled-versioning-with-project-local-advancement.md`.
@@ -49,6 +51,7 @@ the online source.
 | `v0.8.3-dependency-lifecycle-and-env-reuse` | Closed | Explicit MongoDB/MySQL lifecycle scripts and single-definition database environment values. |
 | `v0.8.4-explicit-env-controls` | Closed | Active environment assignments, enable-aware validation, and one application/container timezone source. |
 | `v0.8.5-timezone-contract` | Closed | UTC or region-based IANA timezone validation shared by the Server application and containers. |
+| `v0.8.6-configurable-persistence-storage` | Closed | Configurable MongoDB/MySQL named volumes and absolute host bind paths with persistence-safe lifecycle behavior. |
 
 Implement and close one version before starting the next. Each app-affecting
 version advances the app's `pubspec.yaml` version and records its repository
