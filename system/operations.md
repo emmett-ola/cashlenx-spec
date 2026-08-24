@@ -9,7 +9,7 @@ This document owns current runtime, container, configuration-synchronization, an
 From `../cashlenx-server`:
 
 ```bash
-cp .env.sample .env
+cp .env.example .env
 docker compose --env-file .env -f docker/dependencies/compose.mongodb.yml up -d --wait
 go run main.go open start -p 11063
 ```
@@ -43,7 +43,8 @@ flutter pub get
 flutter run
 ```
 
-`.env` is listed as a Flutter asset and is required for app startup. Use `.env.sample` as the local template and do not commit real secrets.
+`.env` is listed as a Flutter asset and is required for app startup. Use
+`.env.example` as the local template and do not commit real secrets.
 
 ## Runtime Project Boundaries
 
@@ -59,9 +60,16 @@ flutter run
 
 ## Configuration Synchronization
 
+- Each runtime repository ignores `.env*` and tracks only `.env.example` as its
+  layered configuration catalog. Existing local variants remain untracked.
 - `../scripts/sync-env.sh` owns workspace environment-template synchronization.
-- Run it after changing any implementation `.env.sample`; it appends missing keys to ignored local `.env` files without overwriting configured values.
+- Run it after changing any implementation `.env.example`; it appends missing keys to ignored local `.env` files without overwriting configured values.
 - Each runtime project keeps ignored `.env.testing` and `.env.production` files for owner-managed sensitive deployment values. The synchronization workflow must not inspect or maintain their contents without explicit owner authorization.
+- Runtime lifecycle scripts use `.env` by default and accept a repository-local
+  override through `ENV_FILE`. They reject missing files, paths outside the
+  repository, and symlinks. Build permits placeholders; start rejects active
+  `CHANGE_ME` and known legacy weak values without printing their contents; stop
+  requires the selected file but does not validate its values.
 
 ## Operational Endpoints
 

@@ -28,7 +28,7 @@ When levels overlap, use the highest applicable level. Technical difficulty alon
 4. Preserve unrelated user work and implement the smallest complete change.
 5. Validate in proportion to the behavior and risk changed.
 6. Synchronize the canonical `system/` fact when implementation behavior changes.
-7. When an implementation `.env.sample` changes, run `cashlenx-spec/scripts/sync-env.sh` for local `.env` structure and preserve every existing configured value unless an explicit migration requires changing it. Do not inspect or synchronize owner-managed `.env.testing` or `.env.production` files without explicit authorization.
+7. When an implementation `.env.example` changes, run `cashlenx-spec/scripts/sync-env.sh` for local `.env` structure and preserve every existing configured value unless an explicit migration requires changing it. Do not inspect or synchronize owner-managed `.env.testing` or `.env.production` files without explicit authorization.
 8. Commit the completed request or coherent change set by default unless the user explicitly opts out. Implementation commits use an existing `develop` branch by default; spec-only commits use the current spec governance branch. Stage only intended files and keep push, merge, tag, publication, and deployment as separately authorized actions.
 9. Recheck repository state and report validation, changed files, known limits, commits, and delivery actions.
 

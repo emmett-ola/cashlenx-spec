@@ -31,7 +31,7 @@ This catalog helps select validation scenarios. It is not a universal checklist;
 
 - Secrets stay out of tracked files, logs, and examples.
 - CORS, `/metrics`, pprof, token storage, refresh behavior, and file access require production-safe defaults or explicit documented deferrals before stable release.
-- `.env.sample` and ignored local `.env` structure should remain aligned without overwriting local secret values.
+- `.env.example` and ignored local `.env` structure should remain aligned without overwriting local secret values.
 
 ## Operations
 

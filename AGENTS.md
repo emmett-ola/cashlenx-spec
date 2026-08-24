@@ -63,7 +63,7 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 - Do not keep empty placeholder documentation directories. Create a new information area only when a concrete artifact and authority boundary exist.
 - Never copy credentials supplied in chat, tickets, screenshots, examples, `.env`, or logs into tracked files.
 - Treat sibling `.env.testing` and `.env.production` files as owner-managed sensitive configuration. Do not read, print, diff, parse, synchronize, or expose their contents unless the project owner explicitly authorizes that exact access. Existence and Git-ignore checks are allowed without reading contents.
-- Treat local `.env` structural synchronization as spec-owned workspace coordination. After editing any sibling `.env.sample`, run `scripts/sync-env.sh` from this spec area; do not add spec-workflow scripts to implementation repositories.
+- Treat local `.env` structural synchronization as spec-owned workspace coordination. After editing any sibling `.env.example`, run `scripts/sync-env.sh` from this spec area; do not add spec-workflow scripts to implementation repositories.
 
 ## Validation Habits
 

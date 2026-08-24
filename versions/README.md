@@ -8,8 +8,9 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
 
 - The spec is pre-baseline and the online-design parity series is active.
 - `v0.2.0` through `v0.8.0` are closed. The online-design parity series and the
-  deployment-script lifecycle consolidation are complete; no subsequent
-  delivery boundary is currently selected.
+  deployment-script lifecycle consolidation are complete.
+- `v0.8.1-env-example-and-selection` is closed; no subsequent delivery boundary
+  is currently selected.
 - Readiness for the first beta baseline is tracked in `../backlog/beta-baseline.md` until its boundary and implementation refs are selected.
 - Active implementation remains on the `v0.x` line and the current API path remains `/api/v0`.
 - Stable-release decisions are recorded in `../decisions/0001-stable-release-api-auth-and-capability-policy.md` and `../decisions/0002-spec-controlled-versioning-with-project-local-advancement.md`.
@@ -36,6 +37,7 @@ the online source.
 | Version | State | Delivery boundary |
 | --- | --- | --- |
 | `v0.8.0-deployment-script-lifecycle` | Closed | Uniform image build, health-gated image start, and persistence-safe project stop entry points. |
+| `v0.8.1-env-example-and-selection` | Closed | Tracked environment example convention and repository-local lifecycle selection. |
 
 Implement and close one version before starting the next. Each app-affecting
 version advances the app's `pubspec.yaml` version and records its repository
