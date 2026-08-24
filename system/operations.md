@@ -10,14 +10,16 @@ From `../cashlenx-server`:
 
 ```bash
 cp .env.example .env
-docker compose --env-file .env -f docker/dependencies/compose.mongodb.yml up -d --wait
+scripts/dependencies/mongodb/build.sh
+scripts/dependencies/mongodb/start.sh
 go run main.go open start -p 11063
 ```
 
 Use MySQL 8 instead of MongoDB with:
 
 ```bash
-docker compose --env-file .env -f docker/dependencies/compose.mysql.yml up -d --wait
+scripts/dependencies/mysql/build.sh
+scripts/dependencies/mysql/start.sh
 ```
 
 For the project-owned server container flow:
@@ -28,11 +30,19 @@ scripts/start.sh
 scripts/stop.sh
 ```
 
-These scripts manage the server container only. `start.sh` uses the existing
+The root scripts manage the server container only. `start.sh` uses the existing
 image and waits for the Compose healthcheck. `stop.sh` removes the API container
 and project network but preserves the image, bind-mounted logs, database
 dependency projects, and their named volumes. Database dependency lifecycle
 remains explicit and independent.
+
+MongoDB owns `docker/dependencies/mongodb/` and
+`scripts/dependencies/mongodb/`; MySQL owns matching `mysql/` directories. Each
+dependency exposes `build.sh`, `start.sh`, and `stop.sh`. Build pulls the
+configured upstream image, start launches only that dependency and waits for
+health, and stop removes its container and project network while preserving its
+image and named data volume. Root Server scripts never select a dependency from
+`DB_TYPE` or manage dependency lifecycle.
 
 ### App
 
@@ -51,6 +61,9 @@ flutter run
 - The app has Docker-based Flutter web deployment through `Dockerfile`, `compose.yml`, nginx route fallback, and `scripts/build.sh`, `scripts/start.sh`, and `scripts/stop.sh`.
 - The app GitHub Actions web-release workflow analyzes, tests, builds, and publishes static web output to the release repository.
 - The server provides the same build/start/stop script contract and owns only the API container. MongoDB and MySQL are independent optional Compose projects under `docker/dependencies/`.
+- MongoDB and MySQL each provide their own explicit build/start/stop scripts
+  under `scripts/dependencies/`. They accept the same repository-local
+  `ENV_FILE` selection and do not invoke the API lifecycle.
 - The product-introduction website has a multi-stage Bun/nginx Docker image, Compose service, and the same build/start/stop script contract.
 - In every runtime project, `build.sh` compiles the program inside its image build, `start.sh` starts or updates containers from an existing image with `--no-build --wait`, and `stop.sh` uses Compose `down --remove-orphans` without `--volumes` or image removal.
 - Default host ports are `11063` for the server API, `11064` for the Flutter app web build, and `11065` for the product-introduction website. Environment files may override them.
@@ -66,6 +79,10 @@ flutter run
   meaning where a key is not self-explanatory. It remains the canonical guide;
   ignored operator-managed environment files are not rewritten for comment-only
   template changes.
+- Server database URIs may reuse earlier atomic values with `${NAME}` so each
+  username, password, and database name has one definition. Docker Compose and
+  the Server dotenv loader expand this form; shell default expressions such as
+  `${NAME:-default}` are not portable across both loaders.
 - `../scripts/sync-env.sh` owns workspace environment-template synchronization.
 - Run it after changing any implementation `.env.example`; it appends missing keys to ignored local `.env` files without overwriting configured values.
 - Each runtime project keeps ignored `.env.testing` and `.env.production` files for owner-managed sensitive deployment values. The synchronization workflow must not inspect or maintain their contents without explicit owner authorization.
@@ -74,6 +91,10 @@ flutter run
   repository, and symlinks. Build permits placeholders; start rejects active
   `CHANGE_ME` and known legacy weak values without printing their contents; stop
   requires the selected file but does not validate its values.
+- Server dependency lifecycle scripts use the same file-selection boundary.
+  Their starts validate only credentials owned by the selected dependency;
+  their builds permit incomplete credentials and their stops remain available
+  without credential validation.
 
 ## Operational Endpoints
 
@@ -89,10 +110,13 @@ scripts/build.sh
 scripts/start.sh
 ```
 
-Start the server first, then the Flutter web app, then the product-introduction
-website. Each `start.sh` waits for its project Compose healthcheck. To remove a
-project's runtime container and network while retaining its image and persistent
-data, run `scripts/stop.sh` in that project. Reverse-proxy routing and TLS remain
-owned by the UAT host and are outside the project-local scripts.
+If the UAT database is project-managed, explicitly prepare and start the selected
+dependency before the Server by running its dependency `build.sh` and
+`start.sh`. Start the Server next, then the Flutter web app, then the
+product-introduction website. Each `start.sh` waits for its project Compose
+healthcheck. To remove a project's runtime container and network while retaining
+its image and persistent data, run `scripts/stop.sh` in that project.
+Reverse-proxy routing and TLS remain owned by the UAT host and are outside the
+project-local scripts.
 
 This sequence describes mechanics only. Deployment authorization, target, implementation refs, results, and current deployment state require delivery evidence outside `system/`.

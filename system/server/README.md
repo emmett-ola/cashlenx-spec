@@ -129,7 +129,12 @@ The server start command is `go run main.go open start -p 11063`, not `server st
 - Production-facing mapper behavior is expected for both backends unless a change is explicitly database-specific.
 - Current mapper owners include cash flow, category, budget, user, user configuration, refresh token, and operation confirmation code packages. Mapper packages select the active implementation by database type.
 - Core entities use soft deletion through `is_delete` and audit metadata. Normal queries must continue to exclude deleted records unless an administrative backup or another explicit include-deleted operation requires them.
-- Independent MongoDB and MySQL Compose projects store data in the named `cashlenx-mongodb-data` and `cashlenx-mysql-data` volumes. Server build/start scripts do not manage dependency lifecycle.
+- Independent MongoDB and MySQL projects own Compose, initialization assets, and
+  build/start/stop scripts under database-specific `docker/dependencies/` and
+  `scripts/dependencies/` directories. Their named
+  `cashlenx-mongodb-data` and `cashlenx-mysql-data` volumes survive dependency
+  stop. Root Server scripts manage only the API and never select a dependency
+  from `DB_TYPE`.
 - MongoDB applied-version tracking is not implemented and remains architecture debt.
 
 Persistence-shape changes must account for mapper code, migrations, Docker initialization assets when applicable, and backup/restore or import/export formats.
@@ -160,6 +165,8 @@ CORS -> Logging -> Metrics -> Auth -> OpenAPI schema validation -> Router
 ## Configuration Boundaries
 
 - Runtime configuration is loaded from `.env` and process environment through `util/config_util.go`.
+- Database URI values may reference atomic values defined earlier with `${NAME}`;
+  both Docker Compose and the current dotenv loader expand that form.
 - Database connection values map to internal keys `db.mongodb.url` and `db.mysql.url`; legacy `mongodb.uri` and `mysql.uri` keys are not registered.
 - API version, schema validation, authentication lifetime, registration, bootstrap administrator, CORS, host/port, timezone, Snowflake worker, verification-code, SMTP, logging, and database selection are configuration-owned behaviors.
 - Automated registration and password-reset tests must replace email delivery and must not contact a real provider.
