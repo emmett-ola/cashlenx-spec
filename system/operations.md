@@ -62,6 +62,10 @@ flutter run
 
 - Each runtime repository ignores `.env*` and tracks only `.env.example` as its
   layered configuration catalog. Existing local variants remain untracked.
+- Each `.env.example` documents accepted values, formats, units, and operational
+  meaning where a key is not self-explanatory. It remains the canonical guide;
+  ignored operator-managed environment files are not rewritten for comment-only
+  template changes.
 - `../scripts/sync-env.sh` owns workspace environment-template synchronization.
 - Run it after changing any implementation `.env.example`; it appends missing keys to ignored local `.env` files without overwriting configured values.
 - Each runtime project keeps ignored `.env.testing` and `.env.production` files for owner-managed sensitive deployment values. The synchronization workflow must not inspect or maintain their contents without explicit owner authorization.
