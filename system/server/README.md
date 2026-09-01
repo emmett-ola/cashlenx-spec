@@ -31,13 +31,13 @@ Current stack:
 Start the local API server with:
 
 ```bash
-go run main.go open start -p 11063
+go run main.go open start -p 10063
 ```
 
 Local API base URL:
 
 ```text
-http://localhost:11063/api/v0
+http://127.0.0.1:10063/api/v0
 ```
 
 ## Repository Layout
@@ -120,7 +120,7 @@ High-level command groups:
 - `budget`: create, list, get, update, and delete monthly category budgets.
 - `statistic`: summary, breakdown, trends, top, dashboard, chart, export, and import.
 
-The server start command is `go run main.go open start -p 11063`, not `server start`.
+The server start command is `go run main.go open start -p 10063`, not `server start`.
 
 ## Persistence
 

@@ -12,7 +12,7 @@ From `../cashlenx-server`:
 cp .env.example .env
 scripts/dependencies/mongodb/build.sh
 scripts/dependencies/mongodb/start.sh
-go run main.go open start -p 11063
+go run main.go open start -p 10063
 ```
 
 Use MySQL 8 instead of MongoDB with:
@@ -60,6 +60,18 @@ flutter run
 `.env` is listed as a Flutter asset and is required for app startup. Use
 `.env.example` as the local template and do not commit real secrets.
 
+## Environment Endpoints
+
+| Environment | App | API |
+| --- | --- | --- |
+| Development | `http://127.0.0.1:10064` | `http://127.0.0.1:10063/api/v0` |
+| Testing | `https://app.test.cashlenx.com` | `https://api.test.cashlenx.com/api/v0` |
+| Production | `https://app.cashlenx.com` | `https://api.cashlenx.com/api/v0` |
+
+Testing and production public endpoints are terminated and routed by their host
+reverse proxy. Their project-local container ports remain independently
+configurable and are not implied by the public HTTPS URLs.
+
 ## Runtime Project Boundaries
 
 - Every Dockerfile and Compose definition lives under its owning repository's
@@ -83,7 +95,9 @@ flutter run
   creates the network idempotently. Every stop script attempts removal only
   after its own Compose project is down and only when Docker reports zero
   connected containers.
-- Default host ports are `11063` for the server API, `11064` for the Flutter app web build, and `11065` for the product-introduction website. Environment files may override them.
+- Default development host ports are `10063` for the server API and `10064` for
+  the Flutter app web build. The product-introduction website defaults to
+  `11065`. Environment files may override them.
 - Default container names are `cashlenx-server`, `cashlenx-app`, and `cashlenx-website`.
 - Project Compose files bind published ports to `127.0.0.1` by default for a host reverse proxy and expose configurable CPU, memory, PID, graceful-stop, and health settings.
 - Runtime images record the source commit through the OCI `org.opencontainers.image.revision` label when built with the project scripts.

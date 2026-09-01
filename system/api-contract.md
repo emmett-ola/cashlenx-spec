@@ -3,7 +3,7 @@
 ## Current Version
 
 - Public API path: `/api/v0`.
-- Server default local base URL: `http://localhost:11063/api/v0`.
+- Server default local base URL: `http://127.0.0.1:10063/api/v0`.
 - The API path version is configurable through `API_VERSION`.
 
 The detailed contract lives in `../cashlenx-server/docs/openapi.yaml`. This document is a human-readable summary.
@@ -163,7 +163,7 @@ The Flutter app builds its API base URL from `.env`:
 - `API_PORT`
 - `API_VERSION`
 
-The app sample target is `http://localhost:11063/api/v0`.
+The app development target is `http://127.0.0.1:10063/api/v0`.
 
 All app HTTP calls should go through:
 
