@@ -41,10 +41,10 @@ MongoDB owns `docker/dependencies/mongodb/` and
 `scripts/dependencies/mongodb/`; MySQL owns matching `mysql/` directories. Each
 dependency exposes `build.sh`, `start.sh`, and `stop.sh`. Build pulls the
 configured upstream image, start launches only that dependency on the shared
-network and waits for health, and stop removes its container while preserving
-its image and persistent storage. Each dependency keeps its existing named volume
-by default. An empty `*_DATA_PATH` uses the configurable
-`*_DATA_VOLUME_NAME`; an absolute data path selects a host bind mount. Root
+network and waits on an in-container readiness probe, and stop removes its
+container while preserving its image and persistent storage. Each dependency
+keeps its existing named volume by default. An empty `*_DATA_PATH` uses the
+configurable `*_DATA_VOLUME_NAME`; an absolute data path selects a host bind mount. Root
 Server scripts never select a dependency from `DB_TYPE` or manage dependency
 lifecycle.
 
@@ -85,7 +85,13 @@ configurable and are not implied by the public HTTPS URLs.
   under `scripts/dependencies/`. They accept the same repository-local
   `ENV_FILE` selection and do not invoke the API lifecycle.
 - The product-introduction website has a multi-stage Bun/nginx Docker image, Compose service, and the same build/start/stop script contract.
-- In every runtime project, `build.sh` compiles the program inside its image build, `start.sh` starts or updates containers from an existing image with `--no-build --wait`, and `stop.sh` uses Compose `down --remove-orphans` without `--volumes` or image removal.
+- In every runtime project, `build.sh` compiles the program inside its image
+  build, `start.sh` starts or updates containers from an existing image with
+  `--no-build` and then runs the service's readiness command inside the target
+  container, and `stop.sh` uses Compose `down --remove-orphans` without
+  `--volumes` or image removal. Start scripts do not require Compose `up --wait`
+  or Compose-managed health status, so the lifecycle also works with compatible
+  frontends such as nerdctl whose Compose surface omits those features.
 - Compose project, container, and shared-network identities are explicit
   environment values with defaults. App, Server, Website, MongoDB, and MySQL
   each have an owning `*_PROJECT_NAME` and container-name key; all repositories
