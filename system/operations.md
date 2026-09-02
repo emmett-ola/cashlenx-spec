@@ -136,13 +136,18 @@ configurable and are not implied by the public HTTPS URLs.
   database fallback constants.
 - `../scripts/sync-env.sh` owns workspace environment-template synchronization.
 - Run it after changing any implementation `.env.example`; it appends missing keys to ignored local `.env` files without overwriting configured values.
-- Each runtime project keeps ignored `.env.testing` and `.env.production` files for owner-managed sensitive deployment values. The synchronization workflow must not inspect or maintain their contents without explicit owner authorization.
+- Each runtime project may keep ignored `.env.local`, `.env.testing`, and
+  `.env.production` files for owner-managed sensitive deployment values. The
+  synchronization workflow must not inspect or maintain their contents without
+  explicit owner authorization.
 - Runtime lifecycle scripts use `.env` by default and accept a repository-local
-  override through `ENV_FILE`. They reject missing files, paths outside the
-  repository, and symlinks. Build permits placeholders; start rejects relevant
-  `CHANGE_ME`, invalid booleans, and known legacy weak values without printing
-  their contents. Server start validates only its selected database and enabled
-  capabilities. Stop requires the selected file but does not validate values.
+  override through `ENV_FILE`. `.env` and an explicit `ENV_FILE` may be symbolic
+  links when their fully resolved targets remain regular files inside the owning
+  repository; broken links and links resolving outside the repository are
+  rejected. Build permits placeholders; start rejects relevant `CHANGE_ME`,
+  invalid booleans, and known legacy weak values without printing their contents.
+  Server start validates only its selected database and enabled capabilities.
+  Stop requires the selected file but does not validate values.
 - Server dependency lifecycle scripts use the same file-selection boundary.
   Their starts validate only credentials owned by the selected dependency;
   their builds permit incomplete credentials and their stops remain available
