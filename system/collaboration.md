@@ -4,7 +4,7 @@
 
 CashLenX uses Jira, Confluence, and the project repositories as complementary collaboration surfaces. Each fact or action has one primary owner so humans and agents can work together without duplicated plans or drifting technical claims.
 
-All routine Jira and Confluence operations are performed through the authorized Atlassian Rovo integration. Browser-based Atlassian administration is outside the default workflow and requires an explicit user request.
+All routine Jira and Confluence operations are performed through the authorized Atlassian Rovo integration. Standing authorization covers in-scope reads, creation, edits, links, comments, workflow transitions, and targeted deletion. Clearing or fully resetting a project, space, or equivalent collaboration surface requires fresh explicit user authorization for that specific operation. Browser-based Atlassian administration is outside the default workflow and requires an explicit user request.
 
 ## Ownership
 

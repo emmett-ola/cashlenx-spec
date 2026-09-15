@@ -24,6 +24,7 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 ## Collaboration System
 
 - Use the authorized Atlassian Rovo integration for Jira and Confluence reads, searches, creation, updates, comments, links, and workflow transitions. Do not manage Atlassian content through a browser session unless the user explicitly requests browser-based administration.
+- Standing authorization covers routine in-scope Jira and Confluence reads, creation, edits, links, comments, workflow transitions, and targeted deletion through Atlassian Rovo. A bulk clear, complete project or space reset, or equivalent removal of an entire collaboration surface requires fresh explicit user authorization for that operation.
 - Jira project `CLX` is the primary system for active product versions, executable work, priorities, dependencies, ownership, acceptance criteria, and delivery state.
 - Represent each active product version with one outcome-based Jira epic and connect its executable stories and tasks to that epic. Keep implementation, release, and deployment state distinct.
 - Confluence is the maintained instruction and context layer for users and developers. Keep it concise, English-only, and linked to authoritative repository facts instead of copying large technical specifications.
