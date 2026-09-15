@@ -117,6 +117,35 @@ Do not request a Human response before it is actionable. Prepare the options, ev
 - A completed Jira version epic records accepted scope and linked evidence; it does not imply deployment.
 - Do not move or recreate an existing release tag. A correction receives a new version and tag.
 
+## Release Candidate Gate
+
+Run this gate for every product release candidate. It is the reusable acceptance contract for local execution and future CI/CD; automation may implement it but must not weaken its semantics.
+
+1. **Jira preflight:** run the blocker scan for the version epic and every selected child. Stop on an unresolved dependency, `human-action-required`, incomplete acceptance criterion, or unrecorded required decision.
+2. **Source preflight:** record exact repository branches and commits, confirm intended worktrees contain no unrelated change, confirm the candidate ancestry is suitable for any requested fast-forward, and identify every affected project area.
+3. **Version contract:** verify the selected product version against each affected runtime/display version, API path, OpenAPI document, image label, artifact name, changelog, and release note. Generated metadata must derive from an authoritative source and must not act as an independent fallback.
+4. **Database preflight:** compare the currently delivered database boundary with the candidate, enumerate ordered migrations and recovery requirements, verify migration identity and immutability, and state explicitly when no database change is required. Source delivery never proves that an environment ran a migration.
+5. **Repository validation:** run focused checks first, then the required package tests, static analysis, contract tests, builds, and generated-file checks for every affected repository.
+6. **Image validation:** build candidate images from controlled contexts, verify required runtime contents and version/revision metadata, and prove that environment files, credentials, Git state, logs, local data, and unrelated outputs are absent.
+7. **Production-like rehearsal:** use generated disposable secrets and isolated names to run the selected production topology locally. Do not read `.env.testing` or `.env.production`. Verify ingress, health, restart, graceful shutdown, persistence, backup/restore, failure behavior, and safe teardown.
+8. **Whole-product acceptance:** exercise the selected stable user journeys through built client and server artifacts against the primary database profile, then run the required compatibility suite against every supported alternate database.
+9. **Evidence manifest:** emit a safe machine-readable record containing the version, commits, image and artifact identities, migration classification, validation results, timestamps, known limits, and requested delivery actions. Do not include secret values.
+10. **Delivery authority:** perform only delivery actions covered by recorded standing or per-action authorization. Keep candidate acceptance, tags, artifact publication, branch promotion, runtime deployment, database migration, and production acceptance as separate states.
+11. **Post-delivery verification:** verify remote refs and immutable tags, deployed identities when deployment occurred, health and smoke evidence, migration state when applicable, and rollback readiness. Synchronize Jira, canonical facts, and affected Confluence guidance.
+
+The gate fails closed. Do not bypass a failed check, force-push a delivery branch, move an existing release tag, or substitute a build result for runtime, migration, or acceptance evidence.
+
+## Production Promotion Database Preflight
+
+Before promoting an implementation repository to `main` or deploying a candidate that changes Server or persistence behavior:
+
+1. Resolve the exact current delivered commit and requested target commit.
+2. Inspect every intervening migration, schema, initialization, backup/restore, and compatibility change.
+3. Produce the complete ordered migration and operational instruction list, or state `No database change required`.
+4. Classify each action as already evidenced, required before runtime update, required after runtime update, or unverified.
+5. Record repeat safety, rollback or forward-fix behavior, supported database engines, and the evidence required to declare completion.
+6. Stop before any destructive, ambiguous, or non-recoverable data action unless its specific Human gate has been satisfied.
+
 ## Definition Of Done
 
 Every task is done when:
@@ -129,6 +158,8 @@ Every task is done when:
 - the completion blocker scan finds no unresolved dependency or Human gate that prevents review or closure.
 
 Standard and High-impact work also requires the applicable compatibility, migration, security, operational, and Jira closeout evidence.
+
+A product version is release-ready only when the release-candidate gate passes for the exact candidate commits and artifacts. Release-ready does not itself mean tagged, published, promoted, deployed, migrated, or accepted in production.
 
 ## Version And Deployment Semantics
 

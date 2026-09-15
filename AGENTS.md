@@ -64,6 +64,8 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 - Add ADRs under `decisions/` only for choices that should remain discoverable after a version closes.
 - Use `versions/_template/` only when an explicit repository-local closeout snapshot is required; Jira remains the active control surface.
 - Do not treat Jira or a version record as the current implementation source of truth after delivery; `system/` is the current-facts layer.
+- Before any release tag, artifact publication, `testing` or `main` promotion, or deployment, execute the release-candidate gate in `WORKFLOW.md`. Stop on unresolved Jira blockers, version drift, migration uncertainty, missing validation, dirty or divergent source, unsafe environment handling, or absent authority for the requested delivery action.
+- Never infer database migration, runtime deployment, or production acceptance from a commit, branch, tag, image, or Jira status. Record each state and its evidence separately.
 
 ## Editing Practices
 

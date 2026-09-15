@@ -63,3 +63,24 @@ This is the reusable charter for CashLenX delivery. It records how to think abou
 - Treat project-owned compiler warnings, stale facts, broken links, exposed secrets, contradictory policy owners, and mismatched route summaries as defects.
 - Keep workflow state separate from deployment state and report both accurately.
 - Close work when its stated scope and evidence are complete; future scope belongs in `backlog/` or a new version.
+
+## 7. Container And Lifecycle Governance
+
+- Keep App, Server, Website, and database projects independently buildable and runnable. Cross-project rehearsal may orchestrate their public entry points but must not become a runtime or build dependency.
+- Keep build, start, stop, validation, and publication as separate explicit operations. Start must use an already built candidate; stop must preserve images and persistent data unless an explicitly named destructive operation says otherwise.
+- Prefer lockfile-driven multi-stage builds with reusable dependency layers and a minimal runtime image. Verify required runtime contents after every candidate build.
+- Use an allowlist build context or equivalently complete exclusions. Environment files, credentials, Git state, logs, local data, caches, build outputs, and unrelated workspace files must not enter the Docker context or final image.
+- Embed the selected semantic version and exact source revision in image and runtime metadata. Image tags alone are mutable pointers and are not sufficient provenance.
+- Give every local rehearsal isolated project, container, network, port, volume, log, and test-data identities. Generate disposable secrets for the run and never reuse or inspect owner-managed Testing or Production configuration.
+- Use explicit health/readiness checks, bounded resources, a graceful stop contract, deterministic dependency order, failure diagnostics, and safe rerun/teardown behavior.
+- Test the same container and script contracts locally that future CI/CD will execute. CI integration changes the executor, not the acceptance semantics.
+
+## 8. Database, Backup, And Release Evidence
+
+- Give every database migration an immutable identity, deterministic order, checksum, applied-state record, and explicit fresh-install versus existing-install boundary. A dirty, missing, reordered, or modified applied migration fails closed.
+- Keep runtime business logic independent from migration filenames and file enumeration. Migration delivery and execution are operational concerns with separate evidence.
+- Classify each database change as forward-compatible, compatibility-breaking, destructive, repair, or baseline-only. Record existing-data behavior, repeat safety, rollout order, and rollback or forward-fix behavior before delivery.
+- Run database contract tests and disposable fresh, repeat, upgrade, failure, and recovery scenarios for every supported engine affected by the change.
+- Treat backup creation and restore success as separate evidence. A production-ready backup flow uses locking, an internally consistent snapshot, explicit format/version metadata, checksums, atomic publication, retention, failure notification, and scheduled disposable restore drills.
+- Generate one checksummed release evidence manifest tied to exact source commits, artifacts, images, migrations, tests, and rehearsal results. Never include credentials or sensitive telemetry bodies.
+- Keep implementation completion, candidate acceptance, tag creation, artifact publication, branch promotion, runtime deployment, database execution, and production acceptance as distinct recorded states.
