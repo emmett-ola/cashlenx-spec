@@ -46,6 +46,15 @@ Every executable story, task, or bug contains:
 
 Use a small controlled label set for project area, concern, and decision state. Do not encode status, priority, or assignee into the summary.
 
+## Human Intervention And Blockers
+
+- Apply `human-decision` to every item that contains a Human gate and place a `Human intervention gate` section near the top of its description. The section records the trigger, exact requested decision or authorization, blocked transition, and current state.
+- Apply `human-action-required` only when Human input is required now. It is mutually exclusive with `agent-ready` and prevents the stated transition until the response is recorded in Jira.
+- Apply `blocked` while an unresolved linked dependency or external condition prevents the next planned transition. It is mutually exclusive with `agent-ready`. Represent Jira-to-Jira dependencies with issue links, not labels alone.
+- Before planning or starting work and before moving work to `In Review` or `Done`, inspect linked blockers, the parent/version state, Human-gate markers, comments, and acceptance conditions.
+- When a blocker is found or changes, record a concise `Blocker scan` comment in Jira and alert the user in the active conversation. State the issue key, exact Human action when applicable, and what cannot proceed.
+- Prepare decision options, evidence, and a recommendation before requesting Human input unless the missing input prevents preparation itself.
+
 ## Workflow And Evidence
 
 Jira workflow states are `To Do`, `In Progress`, `In Review`, and `Done`.

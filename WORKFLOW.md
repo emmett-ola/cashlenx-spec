@@ -34,13 +34,13 @@ When levels overlap, use the highest applicable level. Technical difficulty alon
 1. State the goal and observable done condition.
 2. Inspect relevant evidence and Git status in every repository that may be touched.
 3. Identify the authoritative documents and repositories actually affected.
-4. For Standard and High-impact work, use a Jira issue connected to the selected version epic and keep its task contract current.
+4. For Standard and High-impact work, use a Jira issue connected to the selected version epic and keep its task contract current. Before planning or starting the item, run the Jira blocker scan defined below.
 5. Preserve unrelated user work and implement the smallest complete change.
 6. Validate in proportion to the behavior and risk changed.
 7. Synchronize the canonical `system/` fact when implementation behavior changes.
 8. When an implementation `.env.example` changes, run `cashlenx-spec/scripts/sync-env.sh` for local `.env` structure and preserve every existing configured value unless an explicit migration requires changing it. Do not inspect or synchronize owner-managed `.env.testing` or `.env.production` files without explicit authorization.
 9. Commit the completed request or coherent change set by default unless the user explicitly opts out. Implementation commits use `develop` by default; spec-only commits use the spec repository's sole `main` branch. Stage only intended files and keep implementation promotion to `testing` or `main`, tag creation, publication, and deployment as separately authorized actions.
-10. Update the Jira issue with validation, implementation refs, known limits, and accurate delivery, release, and deployment state.
+10. Before moving a Jira item to `In Review` or `Done`, run the blocker scan again. Update the issue with validation, implementation refs, known limits, and accurate delivery, release, and deployment state.
 11. Recheck repository state and report validation, changed files, known limits, commits, and delivery actions.
 
 Lightweight work does not require a persisted task contract, scenario matrix, or broad implementation build unless its impact triggers one.
@@ -70,6 +70,26 @@ Request a Human decision only when one of these remains unresolved:
 
 Human approval covers only the stated decision or operation. Reversible implementation choices, focused tests, documentation synchronization, and repository-local commits inside an approved outcome remain AI responsibilities.
 
+### Jira Human-Intervention Markers
+
+- `human-decision` means the item contains a Human gate at some point in its lifecycle. Keep a prominent `Human intervention gate` section near the top of the description stating the trigger, exact input or authorization required, the transition it blocks, and its current state.
+- `human-action-required` means a concrete Human response is required now. While present, the issue must not carry `agent-ready`, and the agent must not cross the stated blocked transition.
+- `blocked` means an unresolved Jira dependency or other external condition prevents the next planned transition. It must not coexist with `agent-ready`. Use the issue link as the authoritative dependency when another Jira item is responsible.
+- Remove `human-action-required` promptly after the decision or authorization is recorded. Remove `blocked` when no unresolved blocking condition remains. Preserve `human-decision` until all Human gates in the item are satisfied or no longer apply.
+- Record the decision or authorization in Jira with the decision, decision maker, date, scope, and any constraints. A conversation-only approval is copied into Jira before dependent work crosses the gate.
+
+### Jira Blocker Scan
+
+Run this scan when planning or starting an item and before moving it to `In Review` or `Done`:
+
+1. Inspect inward `Blocks` links and confirm every blocking issue has reached the state required by the task contract.
+2. Inspect the parent epic and selected version for unresolved prerequisites or a stopped delivery boundary.
+3. Inspect `human-decision`, `human-action-required`, `blocked`, and `agent-ready` labels and the `Human intervention gate` section.
+4. Check comments and the task contract for an unanswered decision, authorization, acceptance condition, or newly discovered external dependency.
+5. If clear, continue and keep labels accurate. If blocked, do not cross the affected transition; add or update a concise `Blocker scan` Jira comment with the scan point, blocker, exact Human action when applicable, and consequence, then alert the user in the active conversation.
+
+Do not request a Human response before it is actionable. Prepare the options, evidence, and recommendation first unless the unresolved input prevents that preparation itself.
+
 ## Enhanced Evidence When Triggered
 
 | Trigger | Additional evidence |
@@ -85,10 +105,10 @@ Human approval covers only the stated decision or operation. Reversible implemen
 ## Delivery Flow
 
 1. **Understand:** load governance, inspect relevant facts, identify the selected Jira version epic, and select the work level.
-2. **Decide:** create or refine the Jira task contract, choose the smallest safe approach, and obtain only triggered Human decisions.
+2. **Decide:** create or refine the Jira task contract, run the planning/start blocker scan, choose the smallest safe approach, and obtain only triggered Human decisions.
 3. **Implement:** move the Jira item to `In Progress`, work repository by repository, and preserve independent build/runtime boundaries.
-4. **Validate:** run focused checks first, add only triggered enhanced scenarios, and move complete work to `In Review` with evidence.
-5. **Close:** synchronize facts and Confluence guidance when affected, record implementation refs and deferred work, commit the coherent change set by default, and move the Jira item to `Done` only when acceptance is satisfied. Push, merge, tag, publication, deployment, and other controlled delivery actions occur only when authorized.
+4. **Validate:** run focused checks first, add only triggered enhanced scenarios, run the completion blocker scan, and move complete unblocked work to `In Review` with evidence.
+5. **Close:** synchronize facts and Confluence guidance when affected, record implementation refs and deferred work, commit the coherent change set by default, run the completion blocker scan again if relevant state changed, and move the Jira item to `Done` only when acceptance is satisfied and no closing gate remains. Push, merge, tag, publication, deployment, and other controlled delivery actions occur only when authorized.
 
 ## Release Delivery Convention
 
@@ -106,6 +126,7 @@ Every task is done when:
 - current facts are synchronized when behavior changed;
 - intended repository changes are identified and unrelated work is preserved;
 - Jira state, implementation state, deployment state, commits, and delivery actions are reported accurately when applicable.
+- the completion blocker scan finds no unresolved dependency or Human gate that prevents review or closure.
 
 Standard and High-impact work also requires the applicable compatibility, migration, security, operational, and Jira closeout evidence.
 
