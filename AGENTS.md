@@ -1,6 +1,6 @@
 # CashLenX Spec Agent Guide
 
-This file is for agent behavior and operating rules only. Delivery workflow belongs in `WORKFLOW.md`, reusable engineering principles in `GUIDELINE.md`, current facts in `system/`, delivery evidence in `versions/`, deferred work in `backlog/`, durable decisions in `decisions/`, and copied source material in `sources/`.
+This file is for agent behavior and operating rules only. Delivery workflow belongs in `WORKFLOW.md`, reusable engineering principles in `GUIDELINE.md`, current facts in `system/`, active delivery in Jira, retained delivery evidence in `versions/`, deferred work in `backlog/`, durable decisions in `decisions/`, and copied source material in `sources/`.
 
 ## Startup Rules
 
@@ -18,7 +18,17 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 
 - All repository artifacts in `cashlenx-spec` must be written in English.
 - User conversation may be in Chinese, but engineering files and spec files must remain English-only unless the user explicitly requests a translation deliverable.
+- English is the default working language for code, documentation, Jira, Confluence, commit messages, and engineering artifacts across the CashLenX workspace. Use another language only when the selected work explicitly requires localized or i18n content.
 - Preserve exact API route names, field names, enum values, command names, package names, and file paths.
+
+## Collaboration System
+
+- Jira project `CLX` is the primary system for active product versions, executable work, priorities, dependencies, ownership, acceptance criteria, and delivery state.
+- Represent each active product version with one outcome-based Jira epic and connect its executable stories and tasks to that epic. Keep implementation, release, and deployment state distinct.
+- Confluence is the maintained instruction and context layer for users and developers. Keep it concise, English-only, and linked to authoritative repository facts instead of copying large technical specifications.
+- `system/` remains authoritative for verified current behavior, `decisions/` for durable decisions, and implementation repositories and active contracts for exact runtime truth.
+- Existing records under `versions/` preserve completed delivery evidence. Do not create a new active version directory when Jira already owns that delivery boundary unless a repository snapshot is explicitly required for durable release evidence.
+- When Jira or Confluence conflicts with implementation or the canonical spec, verify the implementation, correct the spec, and then synchronize Atlassian content.
 
 ## Repository Boundaries
 
@@ -33,7 +43,8 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 ## Spec Layering
 
 - `system/` contains durable current facts.
-- `versions/` contains delivery records, release scopes, validation evidence, and version-specific notes after a concrete boundary is selected.
+- Jira contains active delivery boundaries, product versions, executable work, acceptance criteria, and workflow state.
+- `versions/` contains completed repository-local delivery evidence and retained version-specific records.
 - `backlog/` contains deferred candidates, readiness work without a selected delivery boundary, and open product questions.
 - `decisions/` contains ADR-style durable product or architecture decisions.
 - `sources/` contains copied Markdown source documents from sibling projects.
@@ -42,12 +53,13 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 
 ## Version Workflow Rules
 
-- Open new work as `versions/vX.Y.Z-short-name/` when it has a concrete delivery boundary.
-- Use `versions/_template/` for version directories that need a task contract, delivery result, triggered evidence, and closeout record.
-- Move durable behavior into `system/` before closing a version.
-- Move deferred or rejected ideas into `backlog/`.
+- Open a concrete product version as an outcome-based Jira epic and place executable work under it.
+- Use Jira for task contracts, acceptance criteria, delivery state, dependencies, and validation summaries.
+- Move durable implemented behavior into `system/` before closing a version epic.
+- Move deferred or rejected ideas into `backlog/` and keep Jira limited to selected or actionable work.
 - Add ADRs under `decisions/` only for choices that should remain discoverable after a version closes.
-- Do not treat a version design document as the current source of truth after implementation; `system/` is the current-facts layer.
+- Use `versions/_template/` only when an explicit repository-local closeout snapshot is required; Jira remains the active control surface.
+- Do not treat Jira or a version record as the current implementation source of truth after delivery; `system/` is the current-facts layer.
 
 ## Editing Practices
 
@@ -70,4 +82,4 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 - For spec-only work, inspect the resulting file tree and run text checks for non-English/CJK content where practical.
 - If the spec repository is under Git, run `git diff --check` when write access and Git metadata are available.
 - Do not run app/server/design/website builds for spec-only edits unless the documentation change depends on fresh implementation validation.
-- Validate in proportion to changed behavior and risk. Use `WORKFLOW.md` to decide whether a compact version record or enhanced evidence is required.
+- Validate in proportion to changed behavior and risk. Use `WORKFLOW.md` to decide the required Jira record and whether an explicit repository-local closeout snapshot is needed.

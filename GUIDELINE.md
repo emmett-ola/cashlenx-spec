@@ -1,6 +1,6 @@
 # CashLenX Engineering And Product Guideline
 
-This is the reusable charter for CashLenX delivery. It records how to think about product, architecture, quality, and documentation. Execution workflow belongs in `WORKFLOW.md`, agent-enforced rules in `AGENTS.md`, current facts in `system/`, version evidence in `versions/`, durable decisions in `decisions/`, and deferred work in `backlog/`.
+This is the reusable charter for CashLenX delivery. It records how to think about product, architecture, quality, and documentation. Execution workflow belongs in `WORKFLOW.md`, agent-enforced rules in `AGENTS.md`, current facts in `system/`, active versions and work in Jira, retained version evidence in `versions/`, durable decisions in `decisions/`, and deferred work in `backlog/`.
 
 ## 1. Evidence First
 
@@ -22,10 +22,12 @@ This is the reusable charter for CashLenX delivery. It records how to think abou
 - `system/` owns verified current product, domain, API, app, server, design, website, operations, and quality facts.
 - `WORKFLOW.md` owns work levels, Human gates, evidence triggers, state semantics, and closeout flow.
 - `backlog/` owns deferred scope, unopened delivery candidates, readiness work without a selected boundary, and unresolved questions.
-- `versions/` holds proportionate delivery control and evidence only after a concrete boundary is selected; closed versions are history, not current truth.
+- Jira project `CLX` owns selected product versions, executable work, priority, dependencies, acceptance criteria, and delivery state.
+- `versions/` holds completed repository-local evidence and explicit closeout snapshots; it is not the active work tracker or current truth.
 - `decisions/` owns durable decisions that should remain discoverable after a version closes.
 - `sources/` contains copied source material from sibling projects. It is evidence input, not current truth by itself.
 - `GUIDELINE.md` changes when reusable principles change; `AGENTS.md` changes when future agents need a different enforceable rule.
+- Confluence owns maintained English instructions and shared context for users and developers, but it must link to canonical repository facts instead of becoming a duplicate technical specification.
 
 ## 4. Stable Boundaries
 

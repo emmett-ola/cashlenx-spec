@@ -34,4 +34,4 @@ Recommended sections:
 ## Current Decisions
 
 - `0001-stable-release-api-auth-and-capability-policy.md`
-- `0002-spec-controlled-versioning-with-project-local-advancement.md`
+- `0002-jira-controlled-delivery-with-project-local-advancement.md`

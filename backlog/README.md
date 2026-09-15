@@ -18,6 +18,7 @@ maintained in `design-parity-api-integration.md`.
 - Accessibility review for contrast, labels, tap targets, keyboard navigation, and responsive behavior.
 - Hardened secure storage and token lifecycle behavior per platform.
 - MongoDB applied-version migration tracking.
+- Define operator-owned backup scheduling, retention, encryption, failure notification, and restore-drill expectations for selected cloud and self-hosted deployment profiles.
 
 ## Engineering Debt
 

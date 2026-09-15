@@ -27,10 +27,12 @@ The code repositories (`cashlenx-app`, `cashlenx-server`, and `cashlenx-website`
 | `WORKFLOW.md` | Risk-proportionate delivery workflow, evidence rules, Human gates, state semantics, and closeout rules. |
 | `GUIDELINE.md` | Reusable engineering and product principles. |
 | `system/` | Durable current facts: product flows, domain model, API contract, app, server, design, website, operations, and testing. |
-| `versions/` | Versioned delivery records, validation evidence, and templates. |
+| `versions/` | Completed repository-local delivery records, validation evidence, and templates for explicit snapshots. |
 | `backlog/` | Deferred candidates, known gaps, and open product questions. |
 | `decisions/` | ADR-style durable decisions. |
 | `sources/` | Copied Markdown source material and import inventory from sibling projects, excluding their `README.md` files. |
+| Jira `CLX` | Active product versions, executable work, acceptance criteria, priorities, dependencies, and workflow state. |
+| Confluence | Maintained English instructions and collaboration context for users and developers. |
 
 ## Reading Order
 
@@ -38,14 +40,16 @@ The code repositories (`cashlenx-app`, `cashlenx-server`, and `cashlenx-website`
 2. `WORKFLOW.md`: work levels, evidence triggers, Human gates, version states, and closeout rules.
 3. `GUIDELINE.md`: reusable product and engineering principles.
 4. `system/README.md`: stable current system facts.
-5. `versions/README.md`: version-record policy, state semantics, templates, and close gate.
-6. `backlog/README.md`: deferred work and open questions.
-7. `decisions/README.md`: durable decisions.
+5. `system/collaboration.md`: Jira, Confluence, and repository ownership rules.
+6. `versions/README.md`: retained delivery evidence and optional snapshot policy.
+7. `backlog/README.md`: deferred work and open questions.
+8. `decisions/README.md`: durable decisions.
 
 ## Source Of Truth Rules
 
 - `system/` is the canonical current-facts layer.
-- `versions/` is delivery history and active delivery control after durable facts are promoted.
+- Jira `CLX` owns active product-version and task delivery control.
+- `versions/` preserves completed repository-local delivery evidence and explicit closeout snapshots.
 - `backlog/` owns deferred scope and unresolved questions.
 - `decisions/` owns durable decisions that should remain discoverable after a version closes.
 - `sources/` and design reference material are evidence inputs, not proof of current implementation by themselves.
@@ -55,8 +59,8 @@ The code repositories (`cashlenx-app`, `cashlenx-server`, and `cashlenx-website`
 - For website documentation structure, inspect `../cashlenx-website/src/App.tsx` and `../cashlenx-website/docs/`.
 - When this spec conflicts with implementation, implementation wins until the spec is corrected.
 
-Current implementation maturity belongs in `system/`; unopened delivery candidates and readiness work belong in `backlog/`; opened delivery state and evidence belong in `versions/`.
+Current implementation maturity belongs in `system/`; unopened delivery candidates and readiness work belong in `backlog/`; selected versions and delivery work belong in Jira; completed durable facts return to `system/` and `decisions/`.
 
 ## Working Rule
 
-Keep all files in this spec workspace in English. Agent-specific rules belong in `AGENTS.md`; workflow rules belong in `WORKFLOW.md`; reusable principles belong in `GUIDELINE.md`; current facts belong in `system/`; opened delivery evidence belongs in `versions/`; deferred work belongs in `backlog/`; durable choices belong in `decisions/`.
+Keep all files in this spec workspace in English. English is also the default for code, Jira, Confluence, commits, and engineering artifacts unless selected i18n work requires localized content. Agent-specific rules belong in `AGENTS.md`; workflow rules belong in `WORKFLOW.md`; reusable principles belong in `GUIDELINE.md`; current facts belong in `system/`; active delivery belongs in Jira; retained closeout evidence belongs in `versions/`; deferred work belongs in `backlog/`; durable choices belong in `decisions/`.

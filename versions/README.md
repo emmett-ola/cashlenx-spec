@@ -1,6 +1,6 @@
 # Versions
 
-This directory stores active delivery control and historical evidence for Standard and High-impact CashLenX work. A version record owns a concrete delivery boundary, task contract, validation, implementation refs, release notes, and accepted limits.
+This directory preserves completed repository-local delivery evidence and provides templates for explicit closeout snapshots. Jira project `CLX` owns active product versions, task contracts, validation summaries, implementation refs, and delivery state.
 
 Current behavior belongs in `../system/`. Deferred candidates belong in `../backlog/`. A closed version is delivery evidence, not the current source of truth.
 
@@ -29,9 +29,9 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
   definition layout.
 - Readiness for the first beta baseline is tracked in `../backlog/beta-baseline.md` until its boundary and implementation refs are selected.
 - Active implementation remains on the `v0.x` line and the current API path remains `/api/v0`.
-- Stable-release decisions are recorded in `../decisions/0001-stable-release-api-auth-and-capability-policy.md` and `../decisions/0002-spec-controlled-versioning-with-project-local-advancement.md`.
+- Stable-release decisions are recorded in `../decisions/0001-stable-release-api-auth-and-capability-policy.md` and `../decisions/0002-jira-controlled-delivery-with-project-local-advancement.md`.
 
-Do not create a version directory merely to hold planning ideas or an audit without a selected delivery boundary.
+Do not create a version directory for active planning, routine Jira work, or an audit. Create a repository-local snapshot only when durable closeout evidence explicitly needs to live with the specification.
 
 ## Active Online-Design Parity Series
 
@@ -63,23 +63,23 @@ the online source.
 | `v0.8.8-runtime-image-package-independence` | Closed | APK-independent Server image build using embedded timezone data and the base image health utility. |
 | `v0.8.9-shared-docker-network-and-layout` | Closed | Shared external network lifecycle, container-DNS dependency routes, and Docker definitions under each project's `docker/` tree. |
 
-Implement and close one version before starting the next. Each app-affecting
+Use Jira version epics to select and sequence active delivery. Each app-affecting
 version advances the app's `pubspec.yaml` version and records its repository
 commit independently from the spec commit.
 
 ## Record Selection
 
-| Work level | Required record |
+| Work level | Required active record |
 | --- | --- |
-| Lightweight | No version by default. Keep goal, result, validation, and repository state in task and commit evidence. |
-| Standard | Compact `README.md` with task contract, result, compatibility, validation, states, implementation refs, and known limits. |
-| High-impact | Full template with only the requirement, migration, security, compatibility, recovery, rollout, and scenario evidence triggered by the work. |
+| Lightweight | Jira is optional unless the work is already tracked or benefits from shared visibility. |
+| Standard | Jira story or task under the selected product-version epic. |
+| High-impact | Jira issue with the task contract, triggered evidence, and recorded Human decision. |
 
-Promote Lightweight work to Standard when it changes external behavior or a controlled API, schema, auth, workflow, state, compatibility, migration, or deployment boundary. Promote Standard work to High-impact when a Human gate or substantial migration, security, recovery, or rollout plan is required.
+A repository-local closeout snapshot is optional and must not duplicate active Jira state. Promote Lightweight work to Standard when it changes external behavior or a controlled API, schema, auth, workflow, state, compatibility, migration, or deployment boundary. Promote Standard work to High-impact when a Human gate or substantial migration, security, recovery, or rollout plan is required.
 
 ## Version Naming And Buckets
 
-Open concrete work as `vX.Y.Z-short-name/`.
+Name Jira version epics with the selected product version and outcome. When an explicit repository snapshot is required, use `vX.Y.Z-short-name/`.
 
 - `v0.x`: beta and pre-stable development. Keep `/api/v0` unless a specific version opens a compatibility boundary.
 - `v1.0.0`: first stable release gate.
@@ -90,11 +90,11 @@ Version numbers express product delivery scope. They do not imply deployment, pu
 
 ## Implementation Version Policy
 
-The durable policy is owned by `../decisions/0002-spec-controlled-versioning-with-project-local-advancement.md`. Apply it directly rather than restating it in each version record. Every record identifies affected project areas, their resulting runtime or displayed versions, and any separately authorized release, tag, publication, or deployment action under `../WORKFLOW.md`.
+The durable policy is owned by `../decisions/0002-jira-controlled-delivery-with-project-local-advancement.md`. Apply it directly rather than restating it in each retained version record. Every version epic and explicit snapshot identifies affected project areas, their resulting runtime or displayed versions, and any separately authorized release, tag, publication, or deployment action under `../WORKFLOW.md`.
 
-## State Semantics
+## Retained Record State Semantics
 
-Workflow states:
+The following states describe records already retained in this directory and do not replace the active Jira workflow:
 
 - `Draft`: boundary or task contract is still being formed.
 - `Ready`: scope and required decisions are sufficient to start implementation.
@@ -118,16 +118,16 @@ Use `_template/` when opening a version:
 
 Do not add optional files with empty placeholders. Create only the evidence areas triggered by the work.
 
-## Delivery Record Workflow
+## Optional Snapshot Workflow
 
 1. Classify the work through `../WORKFLOW.md`.
-2. Create `versions/vX.Y.Z-short-name/` only after the delivery boundary is concrete.
-3. Fill in the compact `README.md`; add optional files only when triggered.
-4. Implement repository by repository while preserving independent build and runtime boundaries.
-5. Validate touched repositories in proportion to changed behavior and risk.
-6. Promote durable behavior into `../system/` before closing.
-7. Move deferred or rejected ideas into `../backlog/`.
-8. Add an ADR under `../decisions/` only when a choice should remain discoverable after the version closes.
+2. Use the selected Jira version epic and linked work items for active delivery.
+3. Implement repository by repository while preserving independent build and runtime boundaries.
+4. Validate touched repositories in proportion to changed behavior and risk and record the summary and refs in Jira.
+5. Promote durable behavior into `../system/` before closing the Jira epic.
+6. Move deferred or rejected ideas into `../backlog/`.
+7. Add an ADR under `../decisions/` only when a choice should remain discoverable after the version closes.
+8. Create `versions/vX.Y.Z-short-name/` only when an explicit repository-local closeout snapshot is required; include only evidence that must remain with the spec.
 
 ## Version Close Gate
 
