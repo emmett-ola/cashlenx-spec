@@ -50,10 +50,26 @@ The build enforces the Flutter lockfile and automatically checks the resulting
 static runtime payload, public build metadata, OCI version/revision labels, and
 prohibited file absence.
 
-The app repository currently has no maintained live Flutter-to-server harness.
-Restore or replace that coverage before relying on a whole-product database
-smoke claim. The current focused live database evidence is the server-owned
-disposable flow, run from `../cashlenx-server`:
+The App owns a containerized Playwright journey gate. The specification owns
+the complete local orchestration, including safe local environment
+configuration, an isolated built App container, the live Server and selected
+database, disposable user/data setup, cleanup, and checksummed evidence:
+
+```bash
+bash scripts/whole-product-acceptance.sh
+```
+
+The browser runs inside the App container network namespace and reaches the
+built client through loopback, preserving the secure-context requirement of
+encrypted Flutter Web session storage without weakening Chromium security.
+Acceptance covers real login and first-login setup, remembered-session reload,
+stable destinations, seeded transactions, unknown-route recovery, and an
+editable Demo journey that is rejected if it calls authenticated APIs. Results
+are retained under ignored `.artifacts/browser/<run-id>/`; secrets and test
+accounts are not retained.
+
+The focused dual-database evidence remains the server-owned disposable flow,
+run from `../cashlenx-server`:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File test/scripts/budget-smoke.ps1 -Database mongodb

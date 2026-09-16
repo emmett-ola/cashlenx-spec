@@ -230,6 +230,11 @@ acceptance evidence remain tracked in Jira until delivered.
   database fallback constants.
 - `../scripts/sync-env.sh` owns workspace environment-template synchronization.
 - Run it after changing any implementation `.env.example`; it appends missing keys to ignored local `.env` files without overwriting configured values.
+- `../scripts/configure-local-env.sh` selects the standard loopback ports,
+  shared network, and Docker frontend for all local runtime projects. It creates
+  strong local-only secrets only when a required value is empty or still a
+  placeholder, preserves existing configured secrets, and never reads Testing
+  or Production environment files or prints secret values.
 - Each runtime project may keep ignored `.env.local`, `.env.testing`, and
   `.env.production` files for owner-managed sensitive deployment values. The
   synchronization workflow must not inspect or maintain their contents without
