@@ -37,7 +37,11 @@ This catalog helps select validation scenarios. It is not a universal checklist;
 
 - Server, app, website, and database startup commands should remain accurate for their owning repositories.
 - Deployment state is separate from workflow state.
-- Production deployment, release tags, branch promotion, and shared-environment mutation require explicit authorization.
+- Production deployment, release tags, branch promotion, and shared-environment
+  mutation require recorded standing or per-action authority and all applicable
+  gates to pass. A failed gate, destructive or ambiguous production-data
+  action, security exception, secret change, history rewrite, or tag mutation
+  requires a new explicit Human decision.
 
 ## Maintainability
 

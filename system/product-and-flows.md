@@ -29,8 +29,10 @@ Current English authentication branding uses the subtitle `Your Financial Compan
 - Authenticated users land in a mobile-first home shell.
 - Current tabs are Home, Category, Add, Budget, and Settings.
 - The shell contains dashboard, transactions, transaction entry/editing, category management, monthly budget management, settings, and profile interactions.
-- Unimplemented app/web actions may remain visible during beta when they use the existing coming-soon toast and do not present placeholder behavior as complete.
-- Shell tabs are not yet confirmed as URL-addressable routes.
+- Stable surfaces may not present unfinished placeholder behavior as complete.
+- The selected Flutter Web top-level and detail surfaces must become
+  URL-addressable and pass refresh, back-navigation, and deep-link acceptance
+  before `v1.0.0` closes.
 
 ### Cash Flow Tracking
 
@@ -92,3 +94,5 @@ Current English authentication branding uses the subtitle `Your Financial Compan
   have been extracted.
 
 These remain implementation gaps and must not be described as completed capabilities. Stable-release decisions are owned by `../decisions/0001-stable-release-api-auth-and-capability-policy.md`; deferred scope, beta allowances, and open product questions are owned by `../backlog/`.
+The complete accepted `v1.0.0` product and platform boundary is owned by
+`../decisions/0003-v1-product-deployment-and-autonomous-release-charter.md`.

@@ -12,13 +12,10 @@ maintained in `design-parity-api-integration.md`.
 - Select app surfaces for the remaining server statistic chart types beyond the
   delivered yearly summary, monthly comparison, and top expenses.
 - Export/import UI scope and priority.
-- URL-addressable shell tabs.
 - App home shell decomposition by feature.
 - Additional auth provider/repository unit coverage.
 - Accessibility review for contrast, labels, tap targets, keyboard navigation, and responsive behavior.
 - Hardened secure storage and token lifecycle behavior per platform.
-- MongoDB applied-version migration tracking.
-- Define operator-owned backup scheduling, retention, encryption, failure notification, and restore-drill expectations for selected cloud and self-hosted deployment profiles.
 
 ## Engineering Debt
 
@@ -27,13 +24,12 @@ maintained in `design-parity-api-integration.md`.
 - Replace legacy database-helper `panic` and `log.Fatal` behavior with explicit error propagation where practical.
 - Decide whether eager MongoDB initialization in the Cobra root command should remain asymmetric with MySQL initialization.
 - Retire or rewrite `cashlenx-server/docker/mongodb/init-mongo-demo.js`; its legacy single-user fixture does not match current ownership, audit, category-type, or BSON date behavior.
-- Select and document the future production email-provider strategy before treating SMTP delivery as a stable operational capability.
+- Provider-specific email integrations remain deferred; the stable contract is
+  vendor-neutral SMTP with deployment-owned credentials.
 
 ## Open Product Questions
 
 - What should the final splash subtitle be?
-- Which target platform should drive UI decisions first: mobile, web, or equal priority?
-- Which statistics views are required for the first stable release?
 
 ## Candidate Future Version Areas
 
@@ -45,5 +41,9 @@ maintained in `design-parity-api-integration.md`.
   `../decisions/0001-stable-release-api-auth-and-capability-policy.md` together
   with the selected statistics slice, release validation, changelog/version
   synchronization, and production-safe defaults.
-- Post-stable maintenance: auth test coverage hardening, additional statistics polish, export/import UI if selected, URL-addressable shell tabs, shell decomposition, accessibility polish, and spec-to-website content pipeline.
-- Larger finance/platform features: Budget as a major feature, Kubernetes/Helm support if selected, multi-instance assumptions, shared cache decisions, and MongoDB migration tracking.
+- Post-stable maintenance: auth test coverage hardening, additional statistics
+  polish, export/import UI if selected, shell decomposition, accessibility
+  polish, and a spec-to-website content pipeline.
+- Larger platform features: Kubernetes/Helm support if selected,
+  multi-instance assumptions, shared cache decisions, and organization-level
+  multi-tenancy.

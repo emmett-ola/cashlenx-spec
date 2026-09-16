@@ -30,7 +30,9 @@ English is the default working language for code, documentation, Jira, Confluenc
 - Connect every selected story and task to its version epic.
 - Keep unselected ideas in `backlog/`; do not fill Jira with speculative work.
 - Use issue links for cross-version or cross-area dependencies.
-- Treat release publication, tags, branch promotion, and deployment as separately authorized actions.
+- Treat release publication, tags, branch promotion, and deployment as separate
+  evidenced actions. Apply the standing authority in the accepted delivery
+  charter only after every applicable gate passes.
 
 ## Jira Work Item Contract
 
@@ -54,6 +56,11 @@ Use a small controlled label set for project area, concern, and decision state. 
 - Before planning or starting work and before moving work to `In Review` or `Done`, inspect linked blockers, the parent/version state, Human-gate markers, comments, and acceptance conditions.
 - When a blocker is found or changes, record a concise `Blocker scan` comment in Jira and alert the user in the active conversation. State the issue key, exact Human action when applicable, and what cannot proceed.
 - Prepare decision options, evidence, and a recommendation before requesting Human input unless the missing input prevents preparation itself.
+- The accepted `v1.0.0` charter provides standing authority for routine
+  delivery actions after their automated gates pass. Do not create redundant
+  Human gates for those actions. Preserve explicit Human gates for force-push,
+  existing-tag mutation, secret exposure or change, destructive or ambiguous
+  production-data migration, security exceptions, and failed-gate bypass.
 
 ## Workflow And Evidence
 

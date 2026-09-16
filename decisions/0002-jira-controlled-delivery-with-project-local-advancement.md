@@ -19,6 +19,10 @@ CashLenX has separate specification, app, backend, website, and design-reference
 - Website, app, and backend all advance to `v1.0.0` for the first stable release.
 - After `v1.0.0`, only affected implementation projects advance their runtime or displayed version.
 - If a product version changes only backend behavior, the backend advances while the app remains at its last affected version. The equivalent rule applies to app-only and website-only delivery.
+- Recorded standing delivery authority may cover routine tags, publication,
+  clean fast-forward promotion, and non-destructive deployment after every
+  applicable gate passes. Exceptional actions remain subject to their explicit
+  Human gates.
 
 ## Consequences
 
@@ -34,3 +38,4 @@ CashLenX has separate specification, app, backend, website, and design-reference
 - `../system/collaboration.md`
 - `../WORKFLOW.md`
 - `../versions/README.md`
+- `0003-v1-product-deployment-and-autonomous-release-charter.md`

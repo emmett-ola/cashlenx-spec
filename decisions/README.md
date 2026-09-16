@@ -35,3 +35,4 @@ Recommended sections:
 
 - `0001-stable-release-api-auth-and-capability-policy.md`
 - `0002-jira-controlled-delivery-with-project-local-advancement.md`
+- `0003-v1-product-deployment-and-autonomous-release-charter.md`

@@ -74,6 +74,15 @@ configurable and are not implied by the public HTTPS URLs.
 
 ## Runtime Project Boundaries
 
+The approved `v1.0.0` production profile is a single node with one application
+instance serving isolated users, MongoDB as the primary production database,
+and MySQL as a required compatibility profile. Flutter Web is the certified
+client distribution. Multi-instance orchestration, Kubernetes, Helm, shared
+cache, and organization-level multi-tenancy are outside the stable boundary.
+Local rehearsal, self-hosted production, and a cloud VM or container host must
+use the same container contract. These are accepted targets; implementation and
+acceptance evidence remain tracked in Jira until delivered.
+
 - Every Dockerfile and Compose definition lives under its owning repository's
   `docker/` tree. Dependency definitions remain under
   `docker/dependencies/<name>/`; root `.dockerignore` files remain beside their
@@ -190,4 +199,9 @@ removes the now-unused shared network.
 Reverse-proxy routing and TLS remain owned by the UAT host and are outside the
 project-local scripts.
 
-This sequence describes mechanics only. Deployment authorization, target, implementation refs, results, and current deployment state require delivery evidence outside `system/`.
+This sequence describes mechanics only. The standing authority in
+`../decisions/0003-v1-product-deployment-and-autonomous-release-charter.md` may
+cover a deployment after every applicable gate passes and the external target
+and credentials are configured. Target, implementation refs, results,
+migration state, and current deployment state still require separate evidence
+outside `system/`.

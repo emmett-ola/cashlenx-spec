@@ -2,7 +2,8 @@
 
 ## Status
 
-Accepted
+Accepted. The Budget scope decision is superseded by
+`0003-v1-product-deployment-and-autonomous-release-charter.md`.
 
 ## Context
 
@@ -16,7 +17,8 @@ Accepted
 - Logout keeps the existing backend-supported ability to revoke a specified session or all sessions.
 - Demo mode remains a normal available feature with local demo data.
 - Export/import remains a management capability and is not exposed as a normal app user workflow in `v1.0.0`.
-- Budget is not part of `v1.0.0`; it is planned as a `v1.1.0` major feature.
+- The implemented monthly category-budget workflow is part of `v1.0.0` under
+  the later accepted charter.
 
 ## Consequences
 
@@ -25,9 +27,11 @@ Accepted
 - The app should not implement an independent remember-me expiry timer.
 - The app should keep demo mode visible and intentional.
 - Export/import UI should not be added for normal app users in `v1.0.0`.
-- Budget must not appear as an unfinished primary stable workflow in `v1.0.0`.
+- Budget must pass the same stable acceptance boundary as the other selected
+  `v1.0.0` workflows.
 
 ## References
 
 - `../versions/README.md`
 - `../backlog/README.md`
+- `0003-v1-product-deployment-and-autonomous-release-charter.md`
