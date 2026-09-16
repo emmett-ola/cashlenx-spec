@@ -155,9 +155,11 @@ function Invoke-Profile([string]$engine, [string]$appPath, [string]$serverPath, 
 
     $appEnv = Join-Path $appPath ".env.rehearsal"
     Copy-Item (Join-Path $appPath ".env.example") $appEnv
-    $appSettings = @{ APP_ENV="prod"; API_SCHEME="https"; API_DOMAIN="rehearsal.cashlenx.invalid"; API_PORT="$ingressPort"; DOCKER_NETWORK_NAME=$network;
+    $appSettings = @{ APP_ENV="prod"; API_SCHEME="https"; API_DOMAIN="rehearsal.cashlenx.invalid"; API_PORT="$ingressPort"; API_VERSION="api/v1"; DOCKER_NETWORK_NAME=$network;
         APP_PROJECT_NAME="cashlenx-rehearsal-app-$suffix"; CONTAINER_NAME=$appContainer; IMAGE_NAME="cashlenx-rehearsal-app"; IMAGE_TAG=$runId; WEB_PORT="$appPort" }
     foreach ($entry in $appSettings.GetEnumerator()) { Set-EnvValue $appEnv $entry.Key $entry.Value }
+    $appRuntimeEnvironment = $appSettings.Clone()
+    $appRuntimeEnvironment["ENV_FILE"] = ".env.rehearsal"
 
     $websiteEnv = Join-Path $websitePath ".env.rehearsal"
     Copy-Item (Join-Path $websitePath ".env.example") $websiteEnv
@@ -168,14 +170,14 @@ function Invoke-Profile([string]$engine, [string]$appPath, [string]$serverPath, 
     $script:active = @{ Engine=$engine; Server=$serverPath; App=$appPath; Website=$websitePath; Network=$network; Volume=$volume; Ingress=$null }
     try {
         Invoke-GitBash $serverPath "scripts/build.sh" @{ ENV_FILE=".env.rehearsal" }
-        Invoke-GitBash $appPath "scripts/build.sh" @{ ENV_FILE=".env.rehearsal" }
+        Invoke-GitBash $appPath "scripts/build.sh" $appRuntimeEnvironment
         Invoke-GitBash $websitePath "scripts/build.sh" @{ ENV_FILE=".env.rehearsal" }
         Invoke-GitBash $serverPath "scripts/dependencies/$engine/build.sh" @{ ENV_FILE=".env.rehearsal" }
         $databaseStartEnvironment = @{ ENV_FILE=".env.rehearsal" }
         if ($engine -eq "mysql") { $databaseStartEnvironment.CONTAINER_READINESS_TIMEOUT_SECONDS = "360" }
         Invoke-GitBash $serverPath "scripts/dependencies/$engine/start.sh" $databaseStartEnvironment
         Invoke-GitBash $serverPath "scripts/start.sh" @{ ENV_FILE=".env.rehearsal" }
-        Invoke-GitBash $appPath "scripts/start.sh" @{ ENV_FILE=".env.rehearsal" }
+        Invoke-GitBash $appPath "scripts/start.sh" $appRuntimeEnvironment
         Invoke-GitBash $websitePath "scripts/start.sh" @{ ENV_FILE=".env.rehearsal" }
 
         $ingressDir = Join-Path $worktreeRoot "ingress-$engine"
@@ -254,6 +256,7 @@ location / { proxy_pass http://${appContainer}:8080; } } }
         $manifest = [ordered]@{
             schema_version=2; run_id=$runId; database=$engine; result="passed"; completed_at=(Get-Date).ToUniversalTime().ToString("o");
             execution=[ordered]@{ frontend="docker"; engine_version=$dockerRuntime.engine_version; compose_version=$dockerRuntime.compose_version; production_like=$true };
+            app_public_configuration=[ordered]@{ environment="prod"; scheme="https"; domain="rehearsal.cashlenx.invalid"; port=$ingressPort; api_version="api/v1" };
             compatibility=[ordered]@{ frontend="nerdctl"; minimum_version="2.2.0"; evidence="fake-frontend-contract"; real_runtime_required=$false };
             commits=[ordered]@{ app=(& git -C $appPath rev-parse HEAD).Trim(); server=(& git -C $serverPath rev-parse HEAD).Trim(); website=(& git -C $websitePath rev-parse HEAD).Trim(); spec=(& git -C $specPath rev-parse HEAD).Trim() };
             images=$images; artifact_sha256=$artifactChecksums; contract_checks=$contractChecks;
