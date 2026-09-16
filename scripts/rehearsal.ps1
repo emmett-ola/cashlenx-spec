@@ -57,7 +57,7 @@ function New-CleanWorktree([string]$repositoryName) {
     $commit = (& git -C $source rev-parse HEAD).Trim()
     Assert-LastExit "Resolve $repositoryName HEAD"
     New-Item -ItemType Directory -Path (Split-Path $target) -Force | Out-Null
-    & git -C $source worktree add --detach $target $commit
+    & git -C $source worktree add --detach $target $commit | Out-Host
     Assert-LastExit "Create $repositoryName clean worktree"
     $createdWorktrees.Add([pscustomobject]@{ Source = $source; Target = $target; Commit = $commit; Name = $repositoryName })
     return $target
