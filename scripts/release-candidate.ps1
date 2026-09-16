@@ -296,7 +296,7 @@ try {
         performed_delivery_actions = @()
         deployment_state = "Not deployed"
         secrets_recorded = $false
-        known_limits = @("Local replay uses the same controlled Docker cache; CLX-30 will compose this artifact gate with the full release-candidate acceptance gate.")
+        known_limits = @("Local replay uses the same controlled Docker cache; the aggregate release gate adds repository validation, production-like rehearsal, and browser acceptance.")
     }
     foreach ($key in $repositories.Keys) {
         $manifest.repositories[$key] = [ordered]@{

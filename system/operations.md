@@ -344,6 +344,18 @@ use:
 pwsh -File scripts/release-candidate.ps1
 ```
 
+After recording the Jira blocker scan, compose candidate packaging with the
+repository, production-like, and browser gates by running:
+
+```powershell
+pwsh -File scripts/release-gate.ps1 -Database all
+```
+
+The aggregate command is the local and future CI/CD release-readiness entry
+point. It uses Docker for execution, treats nerdctl as contract compatibility
+only, produces no delivery action, and retains a checksummed evidence manifest
+under `.artifacts/release-gates/`.
+
 The candidate builder verifies App, Server, Website, OpenAPI, Spec, changelogs,
 and release notes against `release/VERSION`; rejects an existing target tag;
 packages exact clean commits twice; compares image identities plus image/source

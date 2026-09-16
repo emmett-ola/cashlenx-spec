@@ -1,6 +1,7 @@
 param(
     [ValidateSet("all", "mongodb", "mysql")]
     [string]$Database = "all",
+    [string]$OutputRoot,
     [switch]$KeepWorktrees
 )
 
@@ -11,7 +12,8 @@ $bashPath = "C:\Program Files\Git\bin\bash.exe"
 $opensslPath = "C:\Program Files\Git\mingw64\bin\openssl.exe"
 $runId = (Get-Date).ToUniversalTime().ToString("yyyyMMddTHHmmssZ") + "-" + ([Guid]::NewGuid().ToString("N").Substring(0, 8))
 $worktreeRoot = Join-Path $specPath ".rehearsal-worktrees\$runId"
-$evidenceRoot = Join-Path $specPath ".artifacts\rehearsal\$runId"
+if (-not $OutputRoot) { $OutputRoot = Join-Path $specPath ".artifacts\rehearsal" }
+$evidenceRoot = Join-Path $OutputRoot $runId
 $createdWorktrees = [System.Collections.Generic.List[object]]::new()
 $profileEvidence = [System.Collections.Generic.List[object]]::new()
 $active = @{}

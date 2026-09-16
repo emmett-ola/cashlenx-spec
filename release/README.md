@@ -20,6 +20,18 @@ repositories remain independently buildable and do not read this directory.
 4. Review the exact candidate evidence. Candidate acceptance does not create a
    tag, publish an artifact, promote a branch, deploy a runtime, or mutate data.
 
+For the complete local release-readiness gate, first complete and record the
+Jira blocker scan, then run:
+
+```powershell
+pwsh -File scripts/release-gate.ps1 -Database all
+```
+
+This single entry point runs exact-toolchain repository validation, reproducible
+candidate packaging, both production-like database profiles, and whole-product
+browser acceptance. It writes a checksummed aggregate manifest under
+`.artifacts/release-gates/` and performs no delivery action.
+
 ## Authorized release flow
 
 After the complete release gate passes for the same commits and artifact

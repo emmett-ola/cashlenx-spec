@@ -181,6 +181,19 @@ real Docker execution from fake nerdctl compatibility evidence, contain exact
 commits, image IDs, and acceptance-artifact checksums, and contain no secret
 values.
 
+After the Jira preflight has been recorded, run the complete release gate with:
+
+```powershell
+pwsh -File scripts/release-gate.ps1 -Database all
+```
+
+The gate uses real Docker for all local execution, retains nerdctl only as a
+fake-frontend compatibility contract, and aggregates exact-toolchain static and
+unit checks, reproducible candidate evidence, the dual-database rehearsal, and
+the built-client browser journey into one checksummed manifest under ignored
+`.artifacts/release-gates/` storage. It does not tag, publish, promote, deploy,
+or mutate persistent product data.
+
 ### Website
 
 From `../cashlenx-website`:

@@ -7,7 +7,8 @@ app_dir="$workspace_dir/cashlenx-app"
 server_dir="$workspace_dir/cashlenx-server"
 acceptance_env="$app_dir/.env.acceptance.local"
 run_id="$(date -u +%Y%m%dT%H%M%SZ)-$(git -C "$app_dir" rev-parse --short=8 HEAD)"
-evidence_dir="$spec_dir/.artifacts/browser/$run_id"
+evidence_root="${EVIDENCE_ROOT:-$spec_dir/.artifacts/browser}"
+evidence_dir="$evidence_root/$run_id"
 
 read_key() {
   local file="$1"
