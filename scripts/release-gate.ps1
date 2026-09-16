@@ -1,6 +1,8 @@
 param(
     [ValidateSet("all", "mongodb", "mysql")]
-    [string]$Database = "all"
+    [string]$Database = "all",
+    [string]$JiraPreflightReference,
+    [switch]$TechnicalOnly
 )
 
 $ErrorActionPreference = "Stop"
@@ -73,6 +75,12 @@ function Invoke-ContainerValidation(
 }
 
 if (-not (Test-Path -LiteralPath $bashPath -PathType Leaf)) { throw "Git Bash is required at $bashPath." }
+if (-not $TechnicalOnly -and [string]::IsNullOrWhiteSpace($JiraPreflightReference)) {
+    throw "JiraPreflightReference is required unless TechnicalOnly is selected."
+}
+if ($TechnicalOnly -and -not [string]::IsNullOrWhiteSpace($JiraPreflightReference)) {
+    throw "Do not supply JiraPreflightReference with TechnicalOnly."
+}
 & docker version *> $null
 Assert-LastExit "Docker availability check"
 
@@ -147,7 +155,8 @@ foreach ($key in $repositories.Keys) {
 $manifest = [ordered]@{
     schema_version = 1
     run_id = $runId
-    result = "passed"
+    result = if ($TechnicalOnly) { "technical-passed" } else { "passed" }
+    release_ready = -not $TechnicalOnly
     version = $version
     completed_at = (Get-Date).ToUniversalTime().ToString("o")
     execution = [ordered]@{
@@ -157,7 +166,7 @@ $manifest = [ordered]@{
     }
     repositories = [ordered]@{}
     validations = [ordered]@{
-        jira_preflight = "required before invocation and recorded in Jira"
+        jira_preflight = if ($TechnicalOnly) { "not recorded; release readiness not asserted" } else { "passed: $JiraPreflightReference" }
         repository_static_and_unit = "passed"
         reproducible_candidate = "passed"
         production_like_rehearsal = "passed"

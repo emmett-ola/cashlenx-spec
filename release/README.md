@@ -24,13 +24,17 @@ For the complete local release-readiness gate, first complete and record the
 Jira blocker scan, then run:
 
 ```powershell
-pwsh -File scripts/release-gate.ps1 -Database all
+pwsh -File scripts/release-gate.ps1 -Database all -JiraPreflightReference "CLX-30 comment 12345"
 ```
 
 This single entry point runs exact-toolchain repository validation, reproducible
 candidate packaging, both production-like database profiles, and whole-product
 browser acceptance. It writes a checksummed aggregate manifest under
 `.artifacts/release-gates/` and performs no delivery action.
+
+When Jira is temporarily unavailable, `-TechnicalOnly` may collect the same
+technical evidence, but its manifest is explicitly not release-ready and cannot
+substitute for a later blocker scan.
 
 ## Authorized release flow
 

@@ -184,7 +184,7 @@ values.
 After the Jira preflight has been recorded, run the complete release gate with:
 
 ```powershell
-pwsh -File scripts/release-gate.ps1 -Database all
+pwsh -File scripts/release-gate.ps1 -Database all -JiraPreflightReference "CLX-30 comment 12345"
 ```
 
 The gate uses real Docker for all local execution, retains nerdctl only as a
@@ -193,6 +193,10 @@ unit checks, reproducible candidate evidence, the dual-database rehearsal, and
 the built-client browser journey into one checksummed manifest under ignored
 `.artifacts/release-gates/` storage. It does not tag, publish, promote, deploy,
 or mutate persistent product data.
+
+`-TechnicalOnly` is available during a Jira outage. It runs the complete local
+technical matrix but records `release_ready: false`; the missing blocker scan
+must be completed later and the normal gate rerun for a release-ready result.
 
 ### Website
 

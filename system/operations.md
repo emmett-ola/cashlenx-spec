@@ -348,13 +348,16 @@ After recording the Jira blocker scan, compose candidate packaging with the
 repository, production-like, and browser gates by running:
 
 ```powershell
-pwsh -File scripts/release-gate.ps1 -Database all
+pwsh -File scripts/release-gate.ps1 -Database all -JiraPreflightReference "CLX-30 comment 12345"
 ```
 
 The aggregate command is the local and future CI/CD release-readiness entry
 point. It uses Docker for execution, treats nerdctl as contract compatibility
 only, produces no delivery action, and retains a checksummed evidence manifest
 under `.artifacts/release-gates/`.
+
+During a Jira outage, `-TechnicalOnly` retains the full technical evidence but
+sets `release_ready` to false. It does not waive or replace the blocker scan.
 
 The candidate builder verifies App, Server, Website, OpenAPI, Spec, changelogs,
 and release notes against `release/VERSION`; rejects an existing target tag;
