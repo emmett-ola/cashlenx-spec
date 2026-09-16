@@ -2,9 +2,13 @@
 
 ## Current Version
 
-- Public API path: `/api/v0`.
-- Server default local base URL: `http://127.0.0.1:10063/api/v0`.
+- Canonical public API path: `/api/v1`.
+- Server default local base URL: `http://127.0.0.1:10063/api/v1`.
 - The API path version is configurable through `API_VERSION`.
+- `/api/v0` is a frozen compatibility alias for previously shipped clients.
+  It receives compatible behavior and security fixes but no new API surface.
+  Removal requires a separately recorded decision and announced migration
+  window; no removal date is currently set.
 
 The detailed contract lives in `../cashlenx-server/docs/openapi.yaml`. This document is a human-readable summary.
 
@@ -26,6 +30,11 @@ Most JSON endpoints respond through the shared response wrapper:
 File download endpoints may return binary content instead of the JSON wrapper.
 
 ## Authentication
+
+The historical login request field named `username` accepts either a username
+or a normalized email address. The field name remains unchanged for wire
+compatibility. Unknown identifiers and invalid passwords return the same
+authentication failure so the endpoint does not disclose account existence.
 
 Most non-open routes require:
 
@@ -163,7 +172,21 @@ The Flutter app builds its API base URL from `.env`:
 - `API_PORT`
 - `API_VERSION`
 
-The app development target is `http://127.0.0.1:10063/api/v0`.
+The app development target is `http://127.0.0.1:10063/api/v1`.
+
+## Compatibility Rules
+
+- Additive v1 changes are allowed when older v1 clients can safely ignore them.
+- Existing v1 routes, field names and meanings, requiredness, response-wrapper
+  shape, authentication semantics, and successful status codes are stable
+  through `v1.x`.
+- Breaking changes require a new API major version or a separately approved
+  migration boundary.
+- Binary download endpoints may return file content instead of the shared JSON
+  wrapper.
+- Previous clients can switch only their base path from `/api/v0` to `/api/v1`;
+  existing route suffixes, username login payloads, refresh behavior, and
+  logout forms remain valid.
 
 All app HTTP calls should go through:
 

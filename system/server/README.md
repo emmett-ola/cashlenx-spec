@@ -6,7 +6,7 @@
 
 Current stack:
 
-- Runtime contract version `0.11.0` on the `/api/v0` path.
+- Runtime contract version `0.11.0` on canonical `/api/v1`, with frozen `/api/v0` compatibility routing.
 - Go `1.23.0`.
 - Cobra CLI.
 - Gorilla Mux HTTP routing.
@@ -37,7 +37,7 @@ go run main.go open start -p 10063
 Local API base URL:
 
 ```text
-http://127.0.0.1:10063/api/v0
+http://127.0.0.1:10063/api/v1
 ```
 
 ## Repository Layout

@@ -170,34 +170,37 @@ location / { proxy_pass http://${appContainer}:8080; } } }
 
         Wait-Http "https://127.0.0.1:$ingressPort/" -SkipCertificateCheck
         Wait-Http "https://127.0.0.1:$ingressPort/website/" -SkipCertificateCheck
+        Wait-Http "https://127.0.0.1:$ingressPort/api/v1/open/health" -SkipCertificateCheck
         Wait-Http "https://127.0.0.1:$ingressPort/api/v0/open/health" -SkipCertificateCheck
 
         $smokeUser = "rehearsal_$($engine)_$($runId -replace '[^A-Za-z0-9]','')"
         Invoke-GitBash $serverPath "test/scripts/api-smoke.sh" @{
-            BASE_URL="http://127.0.0.1:$serverPort/api/v0"; ADMIN_USERNAME="rehearsal-admin"; ADMIN_PASSWORD=$adminPassword;
+            BASE_URL="http://127.0.0.1:$serverPort/api/v1"; ADMIN_USERNAME="rehearsal-admin"; ADMIN_PASSWORD=$adminPassword;
             SMOKE_USERNAME=$smokeUser; SMOKE_PASSWORD="RehearsalUserPass123!"; SMOKE_NEW_PASSWORD="RehearsalUserPass456!"
         }
 
         $persistenceUser = "persistence_$($engine)_$($runId -replace '[^A-Za-z0-9]','')"
         $persistencePassword = "RehearsalPersistencePass123!"
         $adminLoginBody = @{ username="rehearsal-admin"; password=$adminPassword; device_id="rehearsal-persistence-setup"; device_name="Rehearsal" } | ConvertTo-Json -Compress
-        $adminLogin = Invoke-RestMethod -Uri "http://127.0.0.1:$serverPort/api/v0/open/auth/login" -Method Post -ContentType "application/json" -Body $adminLoginBody
+        $adminLogin = Invoke-RestMethod -Uri "http://127.0.0.1:$serverPort/api/v1/open/auth/login" -Method Post -ContentType "application/json" -Body $adminLoginBody
         if ($adminLogin.code -ne "OK" -or -not $adminLogin.data.access_token) { throw "$engine persistence setup could not authenticate the administrator." }
         $persistenceUserBody = @{ username=$persistenceUser; password=$persistencePassword; email_address="$persistenceUser@example.test"; is_email_verified=$true } | ConvertTo-Json -Compress
-        $persistenceUserResponse = Invoke-RestMethod -Uri "http://127.0.0.1:$serverPort/api/v0/admin/user" -Method Post -ContentType "application/json" `
+        $persistenceUserResponse = Invoke-RestMethod -Uri "http://127.0.0.1:$serverPort/api/v1/admin/user" -Method Post -ContentType "application/json" `
             -Headers @{ Authorization="Bearer $($adminLogin.data.access_token)" } -Body $persistenceUserBody
         if ($persistenceUserResponse.code -ne "OK") { throw "$engine persistence probe user was not created." }
         $loginBody = @{ username=$persistenceUser; password=$persistencePassword; device_id="rehearsal-persistence-before-restart"; device_name="Rehearsal" } | ConvertTo-Json -Compress
-        $login = Invoke-RestMethod -Uri "http://127.0.0.1:$serverPort/api/v0/open/auth/login" -Method Post -ContentType "application/json" -Body $loginBody
+        $login = Invoke-RestMethod -Uri "http://127.0.0.1:$serverPort/api/v1/open/auth/login" -Method Post -ContentType "application/json" -Body $loginBody
         if ($login.code -ne "OK" -or -not $login.data.access_token) { throw "$engine persistence login failed before database restart." }
 
         & docker restart $databaseContainer *> $null
         Assert-LastExit "Restart $engine"
         Invoke-GitBash $serverPath "scripts/dependencies/$engine/start.sh" $databaseStartEnvironment
-        Wait-Http "https://127.0.0.1:$ingressPort/api/v0/open/health" -SkipCertificateCheck
-        $loginBody = @{ username=$persistenceUser; password=$persistencePassword; device_id="rehearsal-persistence"; device_name="Rehearsal" } | ConvertTo-Json -Compress
-        $login = Invoke-RestMethod -Uri "https://127.0.0.1:$ingressPort/api/v0/open/auth/login" -Method Post -ContentType "application/json" -Body $loginBody -SkipCertificateCheck
+        Wait-Http "https://127.0.0.1:$ingressPort/api/v1/open/health" -SkipCertificateCheck
+        $loginBody = @{ username="$persistenceUser@example.test"; password=$persistencePassword; device_id="rehearsal-persistence"; device_name="Rehearsal" } | ConvertTo-Json -Compress
+        $login = Invoke-RestMethod -Uri "https://127.0.0.1:$ingressPort/api/v1/open/auth/login" -Method Post -ContentType "application/json" -Body $loginBody -SkipCertificateCheck
         if ($login.code -ne "OK" -or -not $login.data.access_token) { throw "$engine persistence login failed after database restart." }
+        $compatibilityLogin = Invoke-RestMethod -Uri "https://127.0.0.1:$ingressPort/api/v0/open/auth/login" -Method Post -ContentType "application/json" -Body $loginBody -SkipCertificateCheck
+        if ($compatibilityLogin.code -ne "OK" -or -not $compatibilityLogin.data.access_token) { throw "$engine v0 compatibility login failed." }
 
         Invoke-GitBash $serverPath "scripts/data-protection/backup.sh daily" @{ ENV_FILE=".env.rehearsal" }
         $backup = Get-ChildItem (Join-Path $serverPath "backups/rehearsal-$suffix/daily") -Filter "*.tar.gz.enc" | Select-Object -First 1
@@ -211,7 +214,7 @@ location / { proxy_pass http://${appContainer}:8080; } } }
         $manifest = [ordered]@{
             schema_version=1; run_id=$runId; database=$engine; result="passed"; completed_at=(Get-Date).ToUniversalTime().ToString("o");
             commits=[ordered]@{ app=(& git -C $appPath rev-parse HEAD).Trim(); server=(& git -C $serverPath rev-parse HEAD).Trim(); website=(& git -C $websitePath rev-parse HEAD).Trim(); spec=(& git -C $specPath rev-parse HEAD).Trim() };
-            images=$images; checks=[ordered]@{ ingress=$true; health=$true; api_smoke=$true; database_restart=$true; persistence=$true; encrypted_backup=$true; disposable_restore=$true };
+            images=$images; checks=[ordered]@{ ingress=$true; health=$true; api_smoke=$true; v0_compatibility=$true; email_login=$true; database_restart=$true; persistence=$true; encrypted_backup=$true; disposable_restore=$true };
             delivery_actions=@(); secrets_recorded=$false
         }
         $manifestPath = Join-Path $evidenceRoot "manifest-$engine.json"

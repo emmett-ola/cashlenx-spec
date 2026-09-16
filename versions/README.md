@@ -28,7 +28,7 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
   shared by application and dependency containers and a project-local Docker
   definition layout.
 - Readiness for the first beta baseline is tracked in `../backlog/beta-baseline.md` until its boundary and implementation refs are selected.
-- Active implementation remains on the `v0.x` line and the current API path remains `/api/v0`.
+- Product implementation remains pre-release while the accepted stable contract is now canonical at `/api/v1`; `/api/v0` remains a frozen previous-client alias.
 - Stable-release decisions are recorded in `../decisions/0001-stable-release-api-auth-and-capability-policy.md` and `../decisions/0002-jira-controlled-delivery-with-project-local-advancement.md`.
 
 Do not create a version directory for active planning, routine Jira work, or an audit. Create a repository-local snapshot only when durable closeout evidence explicitly needs to live with the specification.
@@ -81,7 +81,7 @@ A repository-local closeout snapshot is optional and must not duplicate active J
 
 Name Jira version epics with the selected product version and outcome. When an explicit repository snapshot is required, use `vX.Y.Z-short-name/`.
 
-- `v0.x`: beta and pre-stable development. Keep `/api/v0` unless a specific version opens a compatibility boundary.
+- `v0.x`: beta and pre-stable product versions. The accepted stable compatibility boundary has opened at `/api/v1`; `/api/v0` remains a frozen alias while release readiness completes.
 - `v1.0.0`: first stable release gate.
 - `v1.0.x`: small low-risk improvements after stable release.
 - `v1.x.0`: larger features, architecture changes, deployment-model changes, or platform capabilities.

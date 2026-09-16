@@ -68,9 +68,9 @@ code defaults to the local development API when they are omitted.
 
 | Environment | App | API |
 | --- | --- | --- |
-| Development | `http://127.0.0.1:10064` | `http://127.0.0.1:10063/api/v0` |
-| Testing | `https://app.test.cashlenx.com` | `https://api.test.cashlenx.com/api/v0` |
-| Production | `https://app.cashlenx.com` | `https://api.cashlenx.com/api/v0` |
+| Development | `http://127.0.0.1:10064` | `http://127.0.0.1:10063/api/v1` |
+| Testing | `https://app.test.cashlenx.com` | `https://api.test.cashlenx.com/api/v1` |
+| Production | `https://app.cashlenx.com` | `https://api.cashlenx.com/api/v1` |
 
 Testing and production public endpoints are terminated and routed by their host
 reverse proxy. Their project-local container ports remain independently
