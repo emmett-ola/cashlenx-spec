@@ -8,6 +8,7 @@ $ErrorActionPreference = "Stop"
 $specPath = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $workspacePath = (Resolve-Path (Join-Path $specPath "..")).Path
 $bashPath = "C:\Program Files\Git\bin\bash.exe"
+$opensslPath = "C:\Program Files\Git\mingw64\bin\openssl.exe"
 $runId = (Get-Date).ToUniversalTime().ToString("yyyyMMddTHHmmssZ") + "-" + ([Guid]::NewGuid().ToString("N").Substring(0, 8))
 $worktreeRoot = Join-Path $specPath ".rehearsal-worktrees\$runId"
 $evidenceRoot = Join-Path $specPath ".artifacts\rehearsal\$runId"
@@ -149,7 +150,7 @@ function Invoke-Profile([string]$engine, [string]$appPath, [string]$serverPath, 
 
         $ingressDir = Join-Path $worktreeRoot "ingress-$engine"
         New-Item -ItemType Directory -Path $ingressDir -Force | Out-Null
-        & openssl req -x509 -newkey rsa:2048 -sha256 -nodes -days 2 -subj "/CN=localhost" -keyout (Join-Path $ingressDir "tls.key") -out (Join-Path $ingressDir "tls.crt") *> $null
+        & $opensslPath req -x509 -newkey rsa:2048 -sha256 -nodes -days 2 -subj "/CN=localhost" -keyout (Join-Path $ingressDir "tls.key") -out (Join-Path $ingressDir "tls.crt") *> $null
         Assert-LastExit "Generate rehearsal TLS certificate"
         $nginx = @"
 events {}
@@ -207,8 +208,9 @@ location / { proxy_pass http://${appContainer}:8080; } } }
 }
 
 try {
-    foreach ($required in @("git", "docker", "openssl")) { if (-not (Get-Command $required -ErrorAction SilentlyContinue)) { throw "$required is required." } }
+    foreach ($required in @("git", "docker")) { if (-not (Get-Command $required -ErrorAction SilentlyContinue)) { throw "$required is required." } }
     if (-not (Test-Path -LiteralPath $bashPath)) { throw "Git Bash is required at $bashPath" }
+    if (-not (Test-Path -LiteralPath $opensslPath)) { throw "Git OpenSSL is required at $opensslPath" }
     New-Item -ItemType Directory -Path $worktreeRoot, $evidenceRoot -Force | Out-Null
     $appPath = New-CleanWorktree "cashlenx-app"
     $serverPath = New-CleanWorktree "cashlenx-server"
