@@ -187,10 +187,13 @@ location / { proxy_pass http://${appContainer}:8080; } } }
         $persistenceUserResponse = Invoke-RestMethod -Uri "http://127.0.0.1:$serverPort/api/v0/admin/user" -Method Post -ContentType "application/json" `
             -Headers @{ Authorization="Bearer $($adminLogin.data.access_token)" } -Body $persistenceUserBody
         if ($persistenceUserResponse.code -ne "OK") { throw "$engine persistence probe user was not created." }
+        $loginBody = @{ username=$persistenceUser; password=$persistencePassword; device_id="rehearsal-persistence-before-restart"; device_name="Rehearsal" } | ConvertTo-Json -Compress
+        $login = Invoke-RestMethod -Uri "http://127.0.0.1:$serverPort/api/v0/open/auth/login" -Method Post -ContentType "application/json" -Body $loginBody
+        if ($login.code -ne "OK" -or -not $login.data.access_token) { throw "$engine persistence login failed before database restart." }
 
         & docker restart $databaseContainer *> $null
         Assert-LastExit "Restart $engine"
-        Start-Sleep -Seconds 5
+        Invoke-GitBash $serverPath "scripts/dependencies/$engine/start.sh" $databaseStartEnvironment
         Wait-Http "https://127.0.0.1:$ingressPort/api/v0/open/health" -SkipCertificateCheck
         $loginBody = @{ username=$persistenceUser; password=$persistencePassword; device_id="rehearsal-persistence"; device_name="Rehearsal" } | ConvertTo-Json -Compress
         $login = Invoke-RestMethod -Uri "https://127.0.0.1:$ingressPort/api/v0/open/auth/login" -Method Post -ContentType "application/json" -Body $loginBody -SkipCertificateCheck
