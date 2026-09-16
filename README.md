@@ -43,12 +43,16 @@ The code repositories (`cashlenx-app`, `cashlenx-server`, and `cashlenx-website`
 
 1. `AGENTS.md`: agent operating rules and repository boundaries.
 2. `WORKFLOW.md`: work levels, evidence triggers, Human gates, version states, and closeout rules.
-3. `GUIDELINE.md`: reusable product and engineering principles.
-4. `system/README.md`: stable current system facts.
-5. `system/collaboration.md`: Jira, Confluence, and repository ownership rules.
-6. `versions/README.md`: retained delivery evidence and optional snapshot policy.
-7. `backlog/README.md`: deferred work and open questions.
-8. `decisions/README.md`: durable decisions.
+3. `GOVERNANCE.md`: maintainer authority, repository ownership, Codex-assisted maintenance, and community participation.
+4. `GUIDELINE.md`: reusable product and engineering principles.
+5. `system/README.md`: stable current system facts.
+6. `system/collaboration.md`: Jira, Confluence, and repository ownership rules.
+7. `versions/README.md`: retained delivery evidence and optional snapshot policy.
+8. `backlog/README.md`: deferred work and open questions.
+9. `decisions/README.md`: durable decisions.
+
+Community contributions follow [CONTRIBUTING.md](CONTRIBUTING.md). Report
+vulnerabilities according to [SECURITY.md](SECURITY.md).
 
 ## Source Of Truth Rules
 
