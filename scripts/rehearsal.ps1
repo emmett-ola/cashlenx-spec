@@ -129,6 +129,7 @@ function Invoke-Profile([string]$engine, [string]$appPath, [string]$serverPath, 
     $ingressContainer = "cashlenx-rehearsal-ingress-$suffix"
     $volume = "cashlenx-rehearsal-$engine-data-$suffix"
     $serverPort, $appPort, $websitePort, $ingressPort = $basePort, ($basePort + 1), ($basePort + 2), ($basePort + 3)
+    $databasePort = $basePort + 4
     $dbName = "cashlenx_rehearsal_$($runId -replace '[^A-Za-z0-9]','_')"
     $jwt = -join ((1..64) | ForEach-Object { '{0:x}' -f (Get-Random -Maximum 16) })
     $adminPassword = "Rehearsal-$([Guid]::NewGuid().ToString('N'))!"
@@ -146,7 +147,8 @@ function Invoke-Profile([string]$engine, [string]$appPath, [string]$serverPath, 
         SERVER_LOG_PATH="./logs/rehearsal-$suffix"; MONGO_CONTAINER_NAME=$databaseContainer; MYSQL_CONTAINER_NAME=$databaseContainer;
         MONGO_PROJECT_NAME="cashlenx-rehearsal-mongodb-$suffix"; MYSQL_PROJECT_NAME="cashlenx-rehearsal-mysql-$suffix";
         MONGO_ROOT_USERNAME="rehearsal"; MONGO_ROOT_PASSWORD=$dbPassword; MYSQL_ROOT_PASSWORD=$dbPassword;
-        MYSQL_USER="rehearsal"; MYSQL_PASSWORD=$dbPassword; MONGO_DATA_VOLUME_NAME=$volume; MYSQL_DATA_VOLUME_NAME=$volume;
+        MYSQL_USER="rehearsal"; MYSQL_PASSWORD=$dbPassword; MONGO_PORT="$databasePort"; MYSQL_PORT="$databasePort";
+        MONGO_DATA_VOLUME_NAME=$volume; MYSQL_DATA_VOLUME_NAME=$volume;
         BACKUP_ROOT="./backups/rehearsal-$suffix"; BACKUP_ENCRYPTION_KEY_FILE="./.env.rehearsal-backup-key"; BACKUP_MIN_FREE_MIB="1"
     }
     foreach ($entry in $serverSettings.GetEnumerator()) { Set-EnvValue $serverEnv $entry.Key $entry.Value }
