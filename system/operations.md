@@ -242,6 +242,25 @@ and credentials are configured. Target, implementation refs, results,
 migration state, and current deployment state still require separate evidence
 outside `system/`.
 
+For an isolated local production-like run from exact committed implementation
+revisions, use the specification-owned delivery orchestrator:
+
+```powershell
+pwsh -File scripts/rehearsal.ps1 -Database all
+```
+
+The orchestrator creates detached clean worktrees so unrelated local changes do
+not enter candidate images. It generates disposable production-mode
+configuration and secrets, uses isolated project/container/network/port/volume
+identities, builds through each repository's own entry point, starts local TLS
+ingress, runs API and static-surface checks, restarts the database and verifies
+persistence, performs encrypted backup and disposable restore, and writes a
+checksummed secret-free manifest under `.artifacts/rehearsal/`. It never reads
+Testing or Production environment files. Normal teardown removes only the
+generated containers, network, volume, plaintext, and clean worktrees while
+retaining the evidence manifest and candidate images for inspection or a warm
+rerun.
+
 ## Database-Level Data Protection
 
 The Server owns `scripts/data-protection/backup.sh` and

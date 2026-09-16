@@ -107,6 +107,17 @@ The smoke test generates its own database data, passphrase, container names,
 and ignored backup path. It never reads Testing or Production environment files
 and removes its source and restore containers plus temporary artifacts on exit.
 
+Run the complete production-like topology against the MongoDB primary and
+MySQL compatibility profiles with:
+
+```powershell
+pwsh -File scripts/rehearsal.ps1 -Database all
+```
+
+This is release-rehearsal evidence rather than a replacement for repository
+unit, static-analysis, or focused integration suites. The generated manifest is
+checksummed, contains exact commits and image IDs, and contains no secret values.
+
 ### Website
 
 From `../cashlenx-website`:
