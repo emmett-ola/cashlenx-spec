@@ -113,12 +113,14 @@ acceptance evidence remain tracked in Jira until delivered.
   or Compose-managed health status.
 - App, Server, and Website each own a repository-local
   `scripts/lib/container_lifecycle.sh`; no runtime repository depends on another
-  repository's helper. The helper supports Docker Compose v2 and nerdctl 2.2+
-  and identifies the actual implementation from version output, including when
-  a command named `docker` wraps nerdctl. `CONTAINER_FRONTEND` selects `auto`,
-  `docker`, or `nerdctl`; a shell-only `CONTAINER_CLI` may select a nonstandard
-  executable path. Runtime availability and Compose configuration are checked
-  before build, pull, network creation, start, or stop.
+  repository's helper. Docker Compose v2 is the required local and
+  production-like execution frontend. nerdctl 2.2+ is a compatibility target,
+  not a required local runtime. The helper preserves that portable command
+  contract and identifies the actual implementation from version output,
+  including when a command named `docker` wraps nerdctl. `CONTAINER_FRONTEND`
+  selects `auto`, `docker`, or `nerdctl`; a shell-only `CONTAINER_CLI` may select
+  a nonstandard executable path. Runtime availability and Compose configuration
+  are checked before build, pull, network creation, start, or stop.
 - Start mutations suppress Compose command traces. This prevents nerdctl's
   informational output from printing environment values, including configured
   credentials; failures return a value-free lifecycle error before readiness

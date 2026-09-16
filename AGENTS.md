@@ -85,6 +85,9 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 
 ## Validation Habits
 
+- Use Docker Compose for all local and production-like container execution and
+  acceptance. Treat nerdctl 2.2+ as a compatibility target verified by fake
+  frontend contract tests; do not require a real local nerdctl runtime.
 - For spec-only work, inspect the resulting file tree and run text checks for non-English/CJK content where practical.
 - If the spec repository is under Git, run `git diff --check` when write access and Git metadata are available.
 - Do not run app/server/design/website builds for spec-only edits unless the documentation change depends on fresh implementation validation.
