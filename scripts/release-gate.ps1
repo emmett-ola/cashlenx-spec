@@ -108,7 +108,11 @@ $serverValidation = @{
     Image = Get-EnvironmentValue $serverImages "GO_TEST_IMAGE"
     Shell = "sh"
     ShellArguments = @("-c")
-    Command = 'go mod download && go mod verify && test "$(go env GOVERSION)" = "go1.23.12" && go build -mod=readonly ./... && go test -mod=readonly -race -covermode=atomic -coverprofile=/tmp/coverage.out ./...'
+    Command = 'for attempt in 1 2 3; do go mod download && break; test "$attempt" = "3" && exit 1; sleep 2; done && go mod verify && test "$(go env GOVERSION)" = "go1.23.12" && go build -mod=readonly ./... && go test -mod=readonly -race -covermode=atomic -coverprofile=/tmp/coverage.out ./...'
+    AdditionalArguments = @(
+        "--mount", "type=volume,source=cashlenx-release-go-mod-cache,destination=/go/pkg/mod",
+        "--mount", "type=volume,source=cashlenx-release-go-build-cache,destination=/root/.cache/go-build"
+    )
 }
 Invoke-ContainerValidation @serverValidation
 
