@@ -68,9 +68,10 @@ function Invoke-ContainerValidation(
     [string]$Image,
     [string]$Shell,
     [string]$Command,
+    [string[]]$ShellArguments = @("-lc"),
     [string[]]$AdditionalArguments = @()
 ) {
-    & docker run --rm --volume "${RepositoryPath}:/workspace" --workdir /workspace @AdditionalArguments $Image $Shell -lc $Command
+    & docker run --rm --volume "${RepositoryPath}:/workspace" --workdir /workspace @AdditionalArguments $Image $Shell @ShellArguments $Command
     Assert-LastExit $Label
 }
 
@@ -106,6 +107,7 @@ $serverValidation = @{
     RepositoryPath = $states.server.path
     Image = Get-EnvironmentValue $serverImages "GO_BUILD_IMAGE"
     Shell = "sh"
+    ShellArguments = @("-c")
     Command = 'go mod download && go mod verify && test "$(go env GOVERSION)" = "go1.23.12" && go build -mod=readonly ./... && go test -mod=readonly -race -covermode=atomic -coverprofile=/tmp/coverage.out ./...'
 }
 Invoke-ContainerValidation @serverValidation
@@ -115,6 +117,7 @@ $websiteValidation = @{
     RepositoryPath = $states.website.path
     Image = Get-EnvironmentValue $websiteImages "BUN_BUILD_IMAGE"
     Shell = "sh"
+    ShellArguments = @("-c")
     Command = 'test "$(bun --version)" = "1.4.0" && bun --no-env-file install --frozen-lockfile && scripts/audit-dependencies.sh && bun --no-env-file run build'
     AdditionalArguments = @("--mount", "type=volume,destination=/workspace/node_modules", "--tmpfs", "/workspace/dist")
 }
