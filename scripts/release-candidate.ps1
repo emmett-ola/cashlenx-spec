@@ -135,10 +135,10 @@ Assert-Equal (Get-Match (Join-Path $states.server.Path "model\version.go") '^con
 Assert-Equal (Get-Match (Join-Path $states.server.Path "docs\openapi.yaml") '^\s*version:\s*([^\s]+)$') $Version "Server OpenAPI version"
 Assert-Equal (Get-Match (Join-Path $states.app.Path "server\docs\openapi.yaml") '^\s*version:\s*([^\s]+)$') $Version "App OpenAPI copy version"
 
-$websitePackage = Get-Content -Raw -LiteralPath (Join-Path $states.website.Path "package.json") | ConvertFrom-Json
-$websiteLock = Get-Content -Raw -LiteralPath (Join-Path $states.website.Path "package-lock.json") | ConvertFrom-Json
-Assert-Equal $websitePackage.version $Version "Website package version"
-Assert-Equal $websiteLock.version $Version "Website lockfile version"
+$websitePackage = Get-Content -Raw -LiteralPath (Join-Path $states.website.Path "package.json") | ConvertFrom-Json -AsHashtable
+$websiteLock = Get-Content -Raw -LiteralPath (Join-Path $states.website.Path "package-lock.json") | ConvertFrom-Json -AsHashtable
+Assert-Equal $websitePackage["version"] $Version "Website package version"
+Assert-Equal $websiteLock["version"] $Version "Website lockfile version"
 Assert-Equal ((Get-Content -Raw -LiteralPath $versionPath).Trim()) $Version "Spec release version"
 
 $serverOpenApi = Get-Sha256 (Join-Path $states.server.Path "docs\openapi.yaml")
