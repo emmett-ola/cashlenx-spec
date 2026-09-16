@@ -104,13 +104,17 @@ function Wait-Http([string]$url, [switch]$SkipCertificateCheck) {
 
 function Stop-Profile {
     if ($active.Ingress) { & docker rm -f $active.Ingress *> $null; $active.Ingress = $null }
-    foreach ($item in @(@{Path=$active.Website; Script="scripts/stop.sh"}, @{Path=$active.App; Script="scripts/stop.sh"}, @{Path=$active.Server; Script="scripts/stop.sh"})) {
+    foreach ($item in @(
+        @{Path=$active.Website; Script="scripts/stop.sh"; Environment=$active.WebsiteEnvironment},
+        @{Path=$active.App; Script="scripts/stop.sh"; Environment=$active.AppEnvironment},
+        @{Path=$active.Server; Script="scripts/stop.sh"; Environment=$active.ServerEnvironment}
+    )) {
         if ($item.Path) {
-            try { Invoke-GitBash $item.Path $item.Script @{ ENV_FILE = ".env.rehearsal" } } catch { Write-Warning $_ }
+            try { Invoke-GitBash $item.Path $item.Script $item.Environment } catch { Write-Warning $_ }
         }
     }
     if ($active.Server -and $active.Engine) {
-        try { Invoke-GitBash $active.Server "scripts/dependencies/$($active.Engine)/stop.sh" @{ ENV_FILE = ".env.rehearsal" } } catch { Write-Warning $_ }
+        try { Invoke-GitBash $active.Server "scripts/dependencies/$($active.Engine)/stop.sh" $active.ServerEnvironment } catch { Write-Warning $_ }
     }
     foreach ($volume in @($active.Volume)) {
         if ($volume -and $volume -match '^cashlenx-rehearsal-[a-z0-9-]+$') { & docker volume rm $volume *> $null }
@@ -166,19 +170,26 @@ function Invoke-Profile([string]$engine, [string]$appPath, [string]$serverPath, 
     $websiteSettings = @{ DOCKER_NETWORK_NAME=$network; WEBSITE_PROJECT_NAME="cashlenx-rehearsal-website-$suffix";
         WEBSITE_CONTAINER_NAME=$websiteContainer; WEBSITE_IMAGE_NAME="cashlenx-rehearsal-website"; WEBSITE_IMAGE_TAG=$runId; WEBSITE_PORT="$websitePort" }
     foreach ($entry in $websiteSettings.GetEnumerator()) { Set-EnvValue $websiteEnv $entry.Key $entry.Value }
+    $serverRuntimeEnvironment = $serverSettings.Clone()
+    $serverRuntimeEnvironment["ENV_FILE"] = ".env.rehearsal"
+    $websiteRuntimeEnvironment = $websiteSettings.Clone()
+    $websiteRuntimeEnvironment["ENV_FILE"] = ".env.rehearsal"
 
-    $script:active = @{ Engine=$engine; Server=$serverPath; App=$appPath; Website=$websitePath; Network=$network; Volume=$volume; Ingress=$null }
+    $script:active = @{
+        Engine=$engine; Server=$serverPath; App=$appPath; Website=$websitePath; Network=$network; Volume=$volume; Ingress=$null;
+        ServerEnvironment=$serverRuntimeEnvironment; AppEnvironment=$appRuntimeEnvironment; WebsiteEnvironment=$websiteRuntimeEnvironment
+    }
     try {
-        Invoke-GitBash $serverPath "scripts/build.sh" @{ ENV_FILE=".env.rehearsal" }
+        Invoke-GitBash $serverPath "scripts/build.sh" $serverRuntimeEnvironment
         Invoke-GitBash $appPath "scripts/build.sh" $appRuntimeEnvironment
-        Invoke-GitBash $websitePath "scripts/build.sh" @{ ENV_FILE=".env.rehearsal" }
-        Invoke-GitBash $serverPath "scripts/dependencies/$engine/build.sh" @{ ENV_FILE=".env.rehearsal" }
-        $databaseStartEnvironment = @{ ENV_FILE=".env.rehearsal" }
+        Invoke-GitBash $websitePath "scripts/build.sh" $websiteRuntimeEnvironment
+        Invoke-GitBash $serverPath "scripts/dependencies/$engine/build.sh" $serverRuntimeEnvironment
+        $databaseStartEnvironment = $serverRuntimeEnvironment.Clone()
         if ($engine -eq "mysql") { $databaseStartEnvironment.CONTAINER_READINESS_TIMEOUT_SECONDS = "360" }
         Invoke-GitBash $serverPath "scripts/dependencies/$engine/start.sh" $databaseStartEnvironment
-        Invoke-GitBash $serverPath "scripts/start.sh" @{ ENV_FILE=".env.rehearsal" }
+        Invoke-GitBash $serverPath "scripts/start.sh" $serverRuntimeEnvironment
         Invoke-GitBash $appPath "scripts/start.sh" $appRuntimeEnvironment
-        Invoke-GitBash $websitePath "scripts/start.sh" @{ ENV_FILE=".env.rehearsal" }
+        Invoke-GitBash $websitePath "scripts/start.sh" $websiteRuntimeEnvironment
 
         $ingressDir = Join-Path $worktreeRoot "ingress-$engine"
         New-Item -ItemType Directory -Path $ingressDir -Force | Out-Null
@@ -193,10 +204,16 @@ location / { proxy_pass http://${appContainer}:8080; } } }
 "@
         Set-Content -LiteralPath (Join-Path $ingressDir "nginx.conf") -Value $nginx -Encoding utf8NoBOM
         $nginxImage = ((Get-Content (Join-Path $appPath "docker/images.env") | Where-Object { $_ -like "NGINX_IMAGE=*" }) -replace '^NGINX_IMAGE=','')
-        & docker run --detach --rm --name $ingressContainer --network $network -p "127.0.0.1:${ingressPort}:443" `
+        & docker run --detach --name $ingressContainer --network $network -p "127.0.0.1:${ingressPort}:443" `
             -v "${ingressDir}:/etc/rehearsal:ro" -v "$(Join-Path $ingressDir 'nginx.conf'):/etc/nginx/nginx.conf:ro" $nginxImage *> $null
         Assert-LastExit "Start local TLS ingress"
         $script:active.Ingress = $ingressContainer
+        $ingressState = (& docker inspect --format '{{.State.Status}}' $ingressContainer).Trim()
+        Assert-LastExit "Inspect local TLS ingress"
+        if ($ingressState -ne "running") {
+            & docker logs --tail 50 $ingressContainer | Out-Host
+            throw "Local TLS ingress stopped before readiness (state: $ingressState)."
+        }
 
         Wait-Http "https://127.0.0.1:$ingressPort/" -SkipCertificateCheck
         Wait-Http "https://127.0.0.1:$ingressPort/website/" -SkipCertificateCheck
@@ -232,10 +249,10 @@ location / { proxy_pass http://${appContainer}:8080; } } }
         $compatibilityLogin = Invoke-RestMethod -Uri "https://127.0.0.1:$ingressPort/api/v0/open/auth/login" -Method Post -ContentType "application/json" -Body $loginBody -SkipCertificateCheck
         if ($compatibilityLogin.code -ne "OK" -or -not $compatibilityLogin.data.access_token) { throw "$engine v0 compatibility login failed." }
 
-        Invoke-GitBash $serverPath "scripts/data-protection/backup.sh daily" @{ ENV_FILE=".env.rehearsal" }
+        Invoke-GitBash $serverPath "scripts/data-protection/backup.sh daily" $serverRuntimeEnvironment
         $backup = Get-ChildItem (Join-Path $serverPath "backups/rehearsal-$suffix/daily") -Filter "*.tar.gz.enc" | Select-Object -First 1
         $backupRelative = $backup.FullName.Substring($serverPath.Length + 1).Replace('\','/')
-        Invoke-GitBash $serverPath "scripts/data-protection/restore-drill.sh '$backupRelative'" @{ ENV_FILE=".env.rehearsal" }
+        Invoke-GitBash $serverPath "scripts/data-protection/restore-drill.sh '$backupRelative'" $serverRuntimeEnvironment
 
         $images = @{}
         foreach ($container in @($serverContainer, $appContainer, $websiteContainer, $databaseContainer)) {
