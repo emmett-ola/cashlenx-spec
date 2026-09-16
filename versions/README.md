@@ -30,6 +30,14 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
 - Readiness for the first beta baseline is tracked in `../backlog/beta-baseline.md` until its boundary and implementation refs are selected.
 - Product implementation remains pre-release while the accepted stable contract is now canonical at `/api/v1`; `/api/v0` remains a frozen previous-client alias.
 - Stable-release decisions are recorded in `../decisions/0001-stable-release-api-auth-and-capability-policy.md` and `../decisions/0002-jira-controlled-delivery-with-project-local-advancement.md`.
+- Active `v1.0.0` delivery is owned by Jira epic
+  [CLX-12](https://macacloud.atlassian.net/browse/CLX-12). The deployment
+  lifecycle review is scheduled as
+  [CLX-32](https://macacloud.atlassian.net/browse/CLX-32) through
+  [CLX-37](https://macacloud.atlassian.net/browse/CLX-37); Jira owns their
+  live status and dependency links. The sequence converges on CLX-37 lifecycle
+  acceptance, then CLX-30 release-gate automation, before the stable epic can
+  close.
 
 Do not create a version directory for active planning, routine Jira work, or an audit. Create a repository-local snapshot only when durable closeout evidence explicitly needs to live with the specification.
 
