@@ -217,7 +217,7 @@ try {
     $websitePath = New-CleanWorktree "cashlenx-website"
 
     $targets = if ($Database -eq "all") { @("mongodb", "mysql") } else { @($Database) }
-    $port = 24000 + (Get-Random -Maximum 10000)
+    $port = 28400
     foreach ($target in $targets) { Invoke-Profile $target $appPath $serverPath $websitePath $port }
     Write-Host "Production-like rehearsal passed. Evidence: $evidenceRoot"
 }
