@@ -145,6 +145,11 @@ The server start command is `go run main.go open start -p 10063`, not `server st
   select host bind mounts. Dependency stop preserves either form. Changing the
   source does not migrate existing data. Root Server scripts manage only the API
   and never select a dependency from `DB_TYPE`.
+- Database tags, patch versions, and immutable digests are tracked together.
+  MongoDB start rejects container-visible shared/remote or unknown filesystems
+  before initialization and accepts approved native storage such as ext4 and
+  XFS. Its ready state requires the final `mongod` process, not the temporary
+  initialization server.
 - A MongoDB installation without a migration ledger runs the known idempotent
   sequence once against its existing data and records the result. An
   incompatible migration remains dirty; recovery requires a verified database

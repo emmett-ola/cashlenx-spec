@@ -21,6 +21,9 @@ state and the evidence manifest owns exact candidate identities.
 - Aligned CI and deployable container builds on exact Flutter/Dart, Go, and Bun
   identities, canonical image entry points, and one fail-closed dependency lock
   contract per repository.
+- Defined immutable MongoDB/MySQL image identities and a non-destructive,
+  container-view MongoDB filesystem gate with final-daemon readiness and
+  restart-persistence evidence.
 
 ## [1.0.0-rc.1] - 2026-09-16
 

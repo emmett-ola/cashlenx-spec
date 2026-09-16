@@ -122,6 +122,13 @@ selected for a bind mount. Changing a volume name or bind path selects different
 storage; it does not migrate, copy, or delete existing data. Project stop scripts
 never remove either storage form.
 
+Database lifecycle uses repository-owned readable tags pinned to immutable
+digests and exact patch versions. MongoDB bind mounts are supported only when a
+read-only container-view preflight identifies an approved native filesystem
+such as ext4 or XFS. Shared or remote filesystem types and unknown types are
+rejected before initialization; the remediation is a named volume or an
+explicitly reviewed migration to native Linux storage.
+
 The production recovery policy is encrypted daily backup with 7 daily, 4
 weekly, and 12 monthly restore points, failure notification, and a quarterly
 disposable restore drill. The target recovery point is 24 hours and the target

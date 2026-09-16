@@ -250,6 +250,16 @@ acceptance evidence remain tracked in Jira until delivered.
   bind mount. Relative paths, filesystem roots, and parent traversal are
   rejected by dependency start. Changing the selected source does not copy,
   migrate, or delete data, and dependency stop preserves both storage forms.
+- `cashlenx-server/docker/dependencies/images.env` owns the readable database
+  tags, exact patch versions, and immutable digests. Lifecycle scripts give
+  these tracked pins precedence over owner environment files and verify the
+  image-reported version before use.
+- MongoDB start mounts the selected data source read-only in the pinned image
+  and inspects the container-visible filesystem before initialization. Approved
+  native filesystems include ext4 and XFS; 9p/v9fs, DrvFS, CIFS/SMB, NFS,
+  FUSE, virtiofs, and unknown types fail closed with non-destructive
+  remediation. Readiness requires the final PID 1 `mongod` plus an
+  authenticated ping.
 - `TIMEZONE` is the only operator-facing Server timezone setting. Compose maps
   it to the API, MongoDB, and MySQL containers' standard `TZ` environment value.
   The supported contract is `UTC` or a region-based IANA name such as

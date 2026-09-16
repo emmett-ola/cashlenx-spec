@@ -80,7 +80,15 @@ go build -o cashlenx main.go
 go test ./...
 go test -v -race -covermode=atomic -coverprofile=coverage.out ./...
 test/scripts/dependency-lifecycle-smoke.sh
+test/scripts/database-storage-smoke.sh
 ```
+
+The database storage smoke uses disposable identities to prove the pinned
+MongoDB/MySQL images, named-volume initialization, graceful restart persistence,
+non-destructive stop, effective image identity, and the host's bind-mount
+classification. The fake lifecycle suite supplies deterministic ext4/XFS and
+9p/v9fs cases so supported and rejected filesystem classes remain covered on
+every host.
 
 Build and inspect the candidate Server image with:
 
