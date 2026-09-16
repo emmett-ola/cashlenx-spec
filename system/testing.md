@@ -155,9 +155,15 @@ MySQL compatibility profiles with:
 pwsh -File scripts/rehearsal.ps1 -Database all
 ```
 
-This is release-rehearsal evidence rather than a replacement for repository
-unit, static-analysis, or focused integration suites. The generated manifest is
-checksummed, contains exact commits and image IDs, and contains no secret values.
+The orchestrator first validates the coordinated candidate contract, candidate
+deploy/rollback behavior, and the App, Server dependency, and Website fake
+Docker/nerdctl frontend suites. It then uses real Docker exclusively for the
+production-like topology. This is release-rehearsal evidence rather than a
+replacement for repository unit, static-analysis, or focused integration
+suites. The generated matrix and profile manifests are checksummed, distinguish
+real Docker execution from fake nerdctl compatibility evidence, contain exact
+commits, image IDs, and acceptance-artifact checksums, and contain no secret
+values.
 
 ### Website
 

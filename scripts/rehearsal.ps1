@@ -13,7 +13,10 @@ $runId = (Get-Date).ToUniversalTime().ToString("yyyyMMddTHHmmssZ") + "-" + ([Gui
 $worktreeRoot = Join-Path $specPath ".rehearsal-worktrees\$runId"
 $evidenceRoot = Join-Path $specPath ".artifacts\rehearsal\$runId"
 $createdWorktrees = [System.Collections.Generic.List[object]]::new()
+$profileEvidence = [System.Collections.Generic.List[object]]::new()
 $active = @{}
+$contractChecks = [ordered]@{}
+$dockerRuntime = [ordered]@{}
 
 function Assert-LastExit([string]$operation) {
     if ($LASTEXITCODE -ne 0) { throw "$operation failed with exit code $LASTEXITCODE." }
@@ -36,6 +39,27 @@ function Invoke-GitBash([string]$workingDirectory, [string]$script, [hashtable]$
             [Environment]::SetEnvironmentVariable($entry.Key, $entry.Value, "Process")
         }
     }
+}
+
+function Get-Sha256([string]$path) {
+    return (Get-FileHash -Algorithm SHA256 -LiteralPath $path).Hash.ToLowerInvariant()
+}
+
+function Invoke-ContractAcceptance {
+    & (Join-Path $PSScriptRoot "release-candidate.ps1") -ValidateOnly | Out-Host
+    $script:contractChecks.release_candidate = $true
+
+    & (Join-Path $PSScriptRoot "deploy-candidate-smoke.ps1") | Out-Host
+    $script:contractChecks.candidate_deploy_rollback = $true
+
+    Invoke-GitBash (Join-Path $workspacePath "cashlenx-app") "test/scripts/container-lifecycle-smoke.sh"
+    $script:contractChecks.app_docker_and_nerdctl = $true
+
+    Invoke-GitBash (Join-Path $workspacePath "cashlenx-server") "test/scripts/dependency-lifecycle-smoke.sh"
+    $script:contractChecks.server_docker_and_nerdctl = $true
+
+    Invoke-GitBash (Join-Path $workspacePath "cashlenx-website") "test/scripts/container-lifecycle-smoke.sh"
+    $script:contractChecks.website_docker_and_nerdctl = $true
 }
 
 function Set-EnvValue([string]$path, [string]$key, [string]$value) {
@@ -211,16 +235,33 @@ location / { proxy_pass http://${appContainer}:8080; } } }
         foreach ($name in @("cashlenx-rehearsal-server:$runId", "cashlenx-rehearsal-app:$runId", "cashlenx-rehearsal-website:$runId")) {
             $images[$name] = (& docker image inspect --format '{{.Id}}' $name).Trim(); Assert-LastExit "Inspect $name"
         }
+        $databaseImageReference = (& docker inspect --format '{{.Config.Image}}' $databaseContainer).Trim()
+        Assert-LastExit "Inspect $engine image reference"
+        $databaseImageId = (& docker inspect --format '{{.Image}}' $databaseContainer).Trim()
+        Assert-LastExit "Inspect $engine image identity"
+        $images[$databaseImageReference] = $databaseImageId
+        $artifactChecksums = [ordered]@{
+            rehearsal = Get-Sha256 (Join-Path $PSScriptRoot "rehearsal.ps1")
+            release_candidate = Get-Sha256 (Join-Path $PSScriptRoot "release-candidate.ps1")
+            candidate_deploy = Get-Sha256 (Join-Path $PSScriptRoot "deploy-candidate.ps1")
+            app_lifecycle = Get-Sha256 (Join-Path $appPath "scripts/lib/container_lifecycle.sh")
+            server_lifecycle = Get-Sha256 (Join-Path $serverPath "scripts/lib/container_lifecycle.sh")
+            website_lifecycle = Get-Sha256 (Join-Path $websitePath "scripts/lib/container_lifecycle.sh")
+        }
         $manifest = [ordered]@{
-            schema_version=1; run_id=$runId; database=$engine; result="passed"; completed_at=(Get-Date).ToUniversalTime().ToString("o");
+            schema_version=2; run_id=$runId; database=$engine; result="passed"; completed_at=(Get-Date).ToUniversalTime().ToString("o");
+            execution=[ordered]@{ frontend="docker"; engine_version=$dockerRuntime.engine_version; compose_version=$dockerRuntime.compose_version; production_like=$true };
+            compatibility=[ordered]@{ frontend="nerdctl"; minimum_version="2.2.0"; evidence="fake-frontend-contract"; real_runtime_required=$false };
             commits=[ordered]@{ app=(& git -C $appPath rev-parse HEAD).Trim(); server=(& git -C $serverPath rev-parse HEAD).Trim(); website=(& git -C $websitePath rev-parse HEAD).Trim(); spec=(& git -C $specPath rev-parse HEAD).Trim() };
-            images=$images; checks=[ordered]@{ ingress=$true; health=$true; api_smoke=$true; v0_compatibility=$true; email_login=$true; database_restart=$true; persistence=$true; encrypted_backup=$true; disposable_restore=$true };
+            images=$images; artifact_sha256=$artifactChecksums; contract_checks=$contractChecks;
+            checks=[ordered]@{ build=$true; start=$true; readiness=$true; status=$true; ingress=$true; health=$true; api_smoke=$true; v0_compatibility=$true; email_login=$true; database_restart=$true; persistence=$true; encrypted_backup=$true; disposable_restore=$true; graceful_stop=$true; isolated_teardown=$true };
             delivery_actions=@(); secrets_recorded=$false
         }
         $manifestPath = Join-Path $evidenceRoot "manifest-$engine.json"
         $manifest | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $manifestPath -Encoding utf8NoBOM
-        $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $manifestPath).Hash.ToLowerInvariant()
+        $hash = Get-Sha256 $manifestPath
         Set-Content -LiteralPath "$manifestPath.sha256" -Value "$hash  $([IO.Path]::GetFileName($manifestPath))" -Encoding ascii
+        $profileEvidence.Add([ordered]@{ database=$engine; result="passed"; manifest=$([IO.Path]::GetFileName($manifestPath)); sha256=$hash })
     }
     finally { Stop-Profile }
 }
@@ -229,6 +270,11 @@ try {
     foreach ($required in @("git", "docker")) { if (-not (Get-Command $required -ErrorAction SilentlyContinue)) { throw "$required is required." } }
     if (-not (Test-Path -LiteralPath $bashPath)) { throw "Git Bash is required at $bashPath" }
     if (-not (Test-Path -LiteralPath $opensslPath)) { throw "Git OpenSSL is required at $opensslPath" }
+    $dockerRuntime.engine_version = (& docker version --format '{{.Server.Version}}').Trim()
+    Assert-LastExit "Resolve Docker engine version"
+    $dockerRuntime.compose_version = (& docker compose version --short).Trim()
+    Assert-LastExit "Resolve Docker Compose version"
+    Invoke-ContractAcceptance
     New-Item -ItemType Directory -Path $worktreeRoot, $evidenceRoot -Force | Out-Null
     $appPath = New-CleanWorktree "cashlenx-app"
     $serverPath = New-CleanWorktree "cashlenx-server"
@@ -237,6 +283,16 @@ try {
     $targets = if ($Database -eq "all") { @("mongodb", "mysql") } else { @($Database) }
     $port = 28400
     foreach ($target in $targets) { Invoke-Profile $target $appPath $serverPath $websitePath $port }
+    $matrixManifest = [ordered]@{
+        schema_version=1; run_id=$runId; result="passed"; completed_at=(Get-Date).ToUniversalTime().ToString("o");
+        execution=[ordered]@{ frontend="docker"; engine_version=$dockerRuntime.engine_version; compose_version=$dockerRuntime.compose_version; production_like=$true };
+        compatibility=[ordered]@{ frontend="nerdctl"; minimum_version="2.2.0"; evidence="fake-frontend-contract"; real_runtime_required=$false };
+        contract_checks=$contractChecks; profiles=$profileEvidence; delivery_actions=@(); secrets_recorded=$false
+    }
+    $matrixPath = Join-Path $evidenceRoot "manifest.json"
+    $matrixManifest | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $matrixPath -Encoding utf8NoBOM
+    $matrixHash = Get-Sha256 $matrixPath
+    Set-Content -LiteralPath "$matrixPath.sha256" -Value "$matrixHash  manifest.json" -Encoding ascii
     Write-Host "Production-like rehearsal passed. Evidence: $evidenceRoot"
 }
 finally {

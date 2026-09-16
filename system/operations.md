@@ -321,12 +321,16 @@ not enter candidate images. It generates disposable production-mode
 configuration and secrets, uses isolated project/container/network/port/volume
 identities, builds through each repository's own entry point, starts local TLS
 ingress, runs API and static-surface checks, restarts the database and verifies
-persistence, performs encrypted backup and disposable restore, and writes a
-checksummed secret-free manifest under `.artifacts/rehearsal/`. It never reads
-Testing or Production environment files. Normal teardown removes only the
-generated containers, network, volume, plaintext, and clean worktrees while
-retaining the evidence manifest and candidate images for inspection or a warm
-rerun.
+persistence, and performs encrypted backup and disposable restore. Before the
+real Docker topology, it runs coordinated candidate validation, candidate
+deploy/rollback tests, and every repository's fake Docker/nerdctl lifecycle
+contract suite. It writes checksummed secret-free matrix and profile manifests
+under `.artifacts/rehearsal/`, recording Docker versions, the fake nerdctl 2.2+
+compatibility contract, exact commits, image identities, and acceptance-script
+checksums. It never requires a real nerdctl runtime and never reads Testing or
+Production environment files. Normal teardown removes only the generated
+containers, network, volume, plaintext, and clean worktrees while retaining the
+evidence manifests and candidate images for inspection or a warm rerun.
 
 For a coordinated, untagged release candidate from clean synchronized commits,
 use:
