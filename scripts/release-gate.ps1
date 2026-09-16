@@ -12,6 +12,8 @@ $bashPath = "C:\Program Files\Git\bin\bash.exe"
 $version = (Get-Content -Raw -LiteralPath (Join-Path $specPath "release\VERSION")).Trim()
 $runId = (Get-Date).ToUniversalTime().ToString("yyyyMMddTHHmmssZ") + "-" + ([Guid]::NewGuid().ToString("N").Substring(0, 8))
 $gateRoot = Join-Path $specPath ".artifacts\release-gates\$runId"
+$validationWorktreeRoot = Join-Path $specPath ".release-validation-worktrees\$runId"
+$createdValidationWorktrees = [System.Collections.Generic.List[object]]::new()
 $repositories = [ordered]@{
     app = [pscustomobject]@{ Name = "cashlenx-app"; Branch = "develop" }
     server = [pscustomobject]@{ Name = "cashlenx-server"; Branch = "develop" }
@@ -62,6 +64,15 @@ function Get-EnvironmentValue([string]$Path, [string]$Key) {
     throw "Missing $Key in $Path."
 }
 
+function New-ValidationWorktree([object]$State) {
+    $target = Join-Path $validationWorktreeRoot $State.name
+    New-Item -ItemType Directory -Path (Split-Path $target) -Force | Out-Null
+    & git -C $State.path worktree add --detach $target $State.commit | Out-Host
+    Assert-LastExit "Create $($State.name) validation worktree"
+    $createdValidationWorktrees.Add([pscustomobject]@{ Source = $State.path; Target = $target })
+    return $target
+}
+
 function Invoke-ContainerValidation(
     [string]$Label,
     [string]$RepositoryPath,
@@ -88,14 +99,19 @@ Assert-LastExit "Docker availability check"
 $states = [ordered]@{}
 foreach ($key in $repositories.Keys) { $states[$key] = Get-RepositoryState $key }
 New-Item -ItemType Directory -Path $gateRoot -Force | Out-Null
+try {
+$validationPaths = [ordered]@{}
+foreach ($key in @("app", "server", "website")) {
+    $validationPaths[$key] = New-ValidationWorktree $states[$key]
+}
 
-$appImages = Join-Path $states.app.path "docker\images.env"
-$serverImages = Join-Path $states.server.path "docker\images.env"
-$websiteImages = Join-Path $states.website.path "docker\images.env"
+$appImages = Join-Path $validationPaths.app "docker\images.env"
+$serverImages = Join-Path $validationPaths.server "docker\images.env"
+$websiteImages = Join-Path $validationPaths.website "docker\images.env"
 
 $appValidation = @{
     Label = "App analysis and tests"
-    RepositoryPath = $states.app.path
+    RepositoryPath = $validationPaths.app
     Image = Get-EnvironmentValue $appImages "FLUTTER_BUILD_IMAGE"
     Shell = "bash"
     Command = 'flutter pub get --enforce-lockfile && flutter --version --machine | grep -F ''"frameworkVersion": "3.44.0"'' >/dev/null && dart --version 2>&1 | grep -F "Dart SDK version: 3.12.0" >/dev/null && flutter analyze && flutter test'
@@ -104,7 +120,7 @@ Invoke-ContainerValidation @appValidation
 
 $serverValidation = @{
     Label = "Server build and tests"
-    RepositoryPath = $states.server.path
+    RepositoryPath = $validationPaths.server
     Image = Get-EnvironmentValue $serverImages "GO_TEST_IMAGE"
     Shell = "sh"
     ShellArguments = @("-c")
@@ -118,7 +134,7 @@ Invoke-ContainerValidation @serverValidation
 
 $websiteValidation = @{
     Label = "Website audit and build"
-    RepositoryPath = $states.website.path
+    RepositoryPath = $validationPaths.website
     Image = Get-EnvironmentValue $websiteImages "BUN_BUILD_IMAGE"
     Shell = "sh"
     ShellArguments = @("-c")
@@ -205,3 +221,14 @@ $manifestHash = Get-Sha256 $manifestPath
 Set-Content -LiteralPath "$manifestPath.sha256" -Value "$manifestHash  manifest.json" -Encoding ascii
 Write-Output "Release gate passed: $manifestPath"
 Write-Output "manifest_sha256=$manifestHash"
+}
+finally {
+    for ($index = $createdValidationWorktrees.Count - 1; $index -ge 0; $index--) {
+        $worktree = $createdValidationWorktrees[$index]
+        & git -C $worktree.Source worktree remove --force $worktree.Target *> $null
+        if ($LASTEXITCODE -ne 0) { Write-Warning "Could not remove validation worktree $($worktree.Target)." }
+    }
+    if (Test-Path -LiteralPath $validationWorktreeRoot) {
+        Remove-Item -LiteralPath $validationWorktreeRoot -Force -ErrorAction SilentlyContinue
+    }
+}

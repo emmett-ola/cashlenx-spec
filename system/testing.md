@@ -191,8 +191,10 @@ The gate uses real Docker for all local execution, retains nerdctl only as a
 fake-frontend compatibility contract, and aggregates exact-toolchain static and
 unit checks, reproducible candidate evidence, the dual-database rehearsal, and
 the built-client browser journey into one checksummed manifest under ignored
-`.artifacts/release-gates/` storage. It does not tag, publish, promote, deploy,
-or mutate persistent product data.
+`.artifacts/release-gates/` storage. Repository checks run from detached clean
+worktrees, so owner-managed local environment files are absent rather than
+merely hidden by a command-line option. The gate does not tag, publish, promote,
+deploy, or mutate persistent product data.
 
 `-TechnicalOnly` is available during a Jira outage. It runs the complete local
 technical matrix but records `release_ready: false`; the missing blocker scan
