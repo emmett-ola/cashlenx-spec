@@ -166,22 +166,22 @@ location / { proxy_pass http://${appContainer}:8080; } } }
         Assert-LastExit "Start local TLS ingress"
         $script:active.Ingress = $ingressContainer
 
-        Wait-Http "https://localhost:$ingressPort/" -SkipCertificateCheck
-        Wait-Http "https://localhost:$ingressPort/website/" -SkipCertificateCheck
-        Wait-Http "https://localhost:$ingressPort/api/v0/open/health" -SkipCertificateCheck
+        Wait-Http "https://127.0.0.1:$ingressPort/" -SkipCertificateCheck
+        Wait-Http "https://127.0.0.1:$ingressPort/website/" -SkipCertificateCheck
+        Wait-Http "https://127.0.0.1:$ingressPort/api/v0/open/health" -SkipCertificateCheck
 
         $smokeUser = "rehearsal_$($engine)_$($runId -replace '[^A-Za-z0-9]','')"
         Invoke-GitBash $serverPath "test/scripts/api-smoke.sh" @{
-            BASE_URL="http://localhost:$serverPort/api/v0"; ADMIN_USERNAME="rehearsal-admin"; ADMIN_PASSWORD=$adminPassword;
+            BASE_URL="http://127.0.0.1:$serverPort/api/v0"; ADMIN_USERNAME="rehearsal-admin"; ADMIN_PASSWORD=$adminPassword;
             SMOKE_USERNAME=$smokeUser; SMOKE_PASSWORD="RehearsalUserPass123!"; SMOKE_NEW_PASSWORD="RehearsalUserPass456!"
         }
 
         & docker restart $databaseContainer *> $null
         Assert-LastExit "Restart $engine"
         Start-Sleep -Seconds 5
-        Wait-Http "https://localhost:$ingressPort/api/v0/open/health" -SkipCertificateCheck
+        Wait-Http "https://127.0.0.1:$ingressPort/api/v0/open/health" -SkipCertificateCheck
         $loginBody = @{ username=$smokeUser; password="RehearsalUserPass456!"; device_id="rehearsal-persistence"; device_name="Rehearsal" } | ConvertTo-Json -Compress
-        $login = Invoke-RestMethod -Uri "https://localhost:$ingressPort/api/v0/open/auth/login" -Method Post -ContentType "application/json" -Body $loginBody -SkipCertificateCheck
+        $login = Invoke-RestMethod -Uri "https://127.0.0.1:$ingressPort/api/v0/open/auth/login" -Method Post -ContentType "application/json" -Body $loginBody -SkipCertificateCheck
         if ($login.code -ne 200 -or -not $login.data.access_token) { throw "$engine persistence login failed after database restart." }
 
         Invoke-GitBash $serverPath "scripts/data-protection/backup.sh daily" @{ ENV_FILE=".env.rehearsal" }
