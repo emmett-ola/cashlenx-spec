@@ -232,14 +232,13 @@ location / { proxy_pass http://${appContainer}:8080; } } }
         Invoke-GitBash $serverPath "scripts/data-protection/restore-drill.sh '$backupRelative'" @{ ENV_FILE=".env.rehearsal" }
 
         $images = @{}
-        foreach ($name in @("cashlenx-rehearsal-server:$runId", "cashlenx-rehearsal-app:$runId", "cashlenx-rehearsal-website:$runId")) {
-            $images[$name] = (& docker image inspect --format '{{.Id}}' $name).Trim(); Assert-LastExit "Inspect $name"
+        foreach ($container in @($serverContainer, $appContainer, $websiteContainer, $databaseContainer)) {
+            $imageReference = (& docker inspect --format '{{.Config.Image}}' $container).Trim()
+            Assert-LastExit "Inspect $container image reference"
+            $imageIdentity = (& docker inspect --format '{{.Image}}' $container).Trim()
+            Assert-LastExit "Inspect $container image identity"
+            $images[$imageReference] = $imageIdentity
         }
-        $databaseImageReference = (& docker inspect --format '{{.Config.Image}}' $databaseContainer).Trim()
-        Assert-LastExit "Inspect $engine image reference"
-        $databaseImageId = (& docker inspect --format '{{.Image}}' $databaseContainer).Trim()
-        Assert-LastExit "Inspect $engine image identity"
-        $images[$databaseImageReference] = $databaseImageId
         $artifactChecksums = [ordered]@{
             rehearsal = Get-Sha256 (Join-Path $PSScriptRoot "rehearsal.ps1")
             release_candidate = Get-Sha256 (Join-Path $PSScriptRoot "release-candidate.ps1")
