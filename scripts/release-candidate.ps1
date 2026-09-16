@@ -1,6 +1,11 @@
 param(
     [string]$Version,
     [string]$OutputRoot,
+    [string]$AppEnvironment,
+    [string]$AppApiScheme,
+    [string]$AppApiDomain,
+    [string]$AppApiPort,
+    [string]$AppApiVersion,
     [switch]$ValidateOnly,
     [switch]$KeepWorktrees
 )
@@ -76,6 +81,20 @@ function Get-Sha256([string]$Path) {
     return (Get-FileHash -Algorithm SHA256 -LiteralPath $Path).Hash.ToLowerInvariant()
 }
 
+function Get-EnvValue([string]$Path, [string]$Key, [string]$Fallback) {
+    $value = $null
+    foreach ($line in Get-Content -LiteralPath $Path) {
+        if ($line -match ('^\s*' + [regex]::Escape($Key) + '\s*=(.*)$')) {
+            $value = $Matches[1].Trim()
+            if ($value.Length -ge 2 -and (($value.StartsWith('"') -and $value.EndsWith('"')) -or ($value.StartsWith("'") -and $value.EndsWith("'")))) {
+                $value = $value.Substring(1, $value.Length - 2)
+            }
+        }
+    }
+    if (-not $value) { return $Fallback }
+    return $value
+}
+
 function Get-RepositoryState([string]$Key) {
     $repo = $repositories[$Key]
     $path = Join-Path $workspacePath $repo.Name
@@ -114,12 +133,20 @@ function New-CleanWorktree([object]$State, [string]$Root) {
 function Invoke-PackagePass([hashtable]$Worktrees, [string]$PassRoot, [hashtable]$States) {
     foreach ($key in @("app", "server", "website")) {
         $output = Join-Path $PassRoot $key
-        Invoke-GitBash $Worktrees[$key] 'scripts/package-image.sh "$RELEASE_OUTPUT_DIR"' @{
+        $environment = @{
             RELEASE_OUTPUT_DIR = $output
             PRODUCT_VERSION = $Version
             GIT_COMMIT = $States[$key].Commit
             ENV_FILE = ".env.example"
         }
+        if ($key -eq "app") {
+            $environment.APP_ENV = $AppEnvironment
+            $environment.API_SCHEME = $AppApiScheme
+            $environment.API_DOMAIN = $AppApiDomain
+            $environment.API_PORT = $AppApiPort
+            $environment.API_VERSION = $AppApiVersion
+        }
+        Invoke-GitBash $Worktrees[$key] 'scripts/package-image.sh "$RELEASE_OUTPUT_DIR"' $environment
     }
 }
 
@@ -127,6 +154,18 @@ if (-not (Test-Path -LiteralPath $bashPath)) { throw "Git Bash is required at $b
 
 $states = @{}
 foreach ($key in $repositories.Keys) { $states[$key] = Get-RepositoryState $key }
+
+$appEnvironmentPath = Join-Path $states.app.Path ".env.example"
+if (-not $PSBoundParameters.ContainsKey("AppEnvironment")) { $AppEnvironment = Get-EnvValue $appEnvironmentPath "APP_ENV" "dev" }
+if (-not $PSBoundParameters.ContainsKey("AppApiScheme")) { $AppApiScheme = Get-EnvValue $appEnvironmentPath "API_SCHEME" "http" }
+if (-not $PSBoundParameters.ContainsKey("AppApiDomain")) { $AppApiDomain = Get-EnvValue $appEnvironmentPath "API_DOMAIN" "127.0.0.1" }
+if (-not $PSBoundParameters.ContainsKey("AppApiPort")) { $AppApiPort = Get-EnvValue $appEnvironmentPath "API_PORT" "10063" }
+if (-not $PSBoundParameters.ContainsKey("AppApiVersion")) { $AppApiVersion = Get-EnvValue $appEnvironmentPath "API_VERSION" "api/v1" }
+if ($AppEnvironment -notmatch '^(dev|staging|prod)$') { throw "AppEnvironment must be dev, staging, or prod." }
+if ($AppApiScheme -notmatch '^https?$') { throw "AppApiScheme must be http or https." }
+if ($AppApiDomain -notmatch '^[A-Za-z0-9.-]+$') { throw "AppApiDomain must be a hostname or IP address without a path." }
+if ($AppApiPort -notmatch '^\d+$' -or [int]$AppApiPort -lt 1 -or [int]$AppApiPort -gt 65535) { throw "AppApiPort must be an integer from 1 to 65535." }
+if ($AppApiVersion -notmatch '^[A-Za-z0-9._/-]+$' -or $AppApiVersion.StartsWith('/')) { throw "AppApiVersion must be a relative URL path." }
 
 $appVersion = Get-Match (Join-Path $states.app.Path "pubspec.yaml") '^version:\s*([^\s]+)$'
 $appProductVersion = ($appVersion -split '\+', 2)[0]
@@ -165,6 +204,7 @@ New-Item -ItemType Directory -Path $passOne, $passTwo, $artifactRoot, $worktreeR
 
 try {
     $worktrees = @{}
+    $imageMetadata = [ordered]@{}
     foreach ($key in $repositories.Keys) { $worktrees[$key] = New-CleanWorktree $states[$key] $worktreeRoot }
 
     Invoke-PackagePass $worktrees $passOne $states
@@ -176,8 +216,34 @@ try {
         if (-not $firstMetadataPath -or -not $secondMetadataPath) { throw "Missing $key package metadata." }
         $first = Get-Content -Raw -LiteralPath $firstMetadataPath | ConvertFrom-Json
         $second = Get-Content -Raw -LiteralPath $secondMetadataPath | ConvertFrom-Json
+        Assert-Equal ([string]$first.schema_version) "2" "$key package metadata schema"
+        Assert-Equal $first.component $key "$key package metadata component"
+        Assert-Equal $first.version $Version "$key package metadata version"
+        Assert-Equal $first.revision $states[$key].Commit "$key package metadata revision"
+        if ($first.image_ref -match '(^|:)latest$') { throw "$key package metadata uses a mutable latest tag." }
         Assert-Equal $second.image_id $first.image_id "$key replayed image identity"
+        Assert-Equal $second.image_ref $first.image_ref "$key replayed image reference"
         Assert-Equal $second.artifact_sha256 $first.artifact_sha256 "$key replayed artifact SHA-256"
+        if ($key -eq "app") {
+            if ($first.configuration_profile -notmatch '^(dev|staging|prod)$') { throw "App package metadata has an invalid configuration profile." }
+            if ($first.public_configuration_sha256 -notmatch '^[0-9a-f]{64}$') { throw "App package metadata has an invalid public configuration fingerprint." }
+            Assert-Equal $second.configuration_profile $first.configuration_profile "app replayed configuration profile"
+            Assert-Equal $second.public_configuration_sha256 $first.public_configuration_sha256 "app replayed public configuration fingerprint"
+        }
+        $imageMetadata[$key] = [ordered]@{
+            component = $first.component
+            artifact = $first.artifact
+            artifact_sha256 = $first.artifact_sha256
+            image_id = $first.image_id
+            image_ref = $first.image_ref
+            input_set_sha256 = $first.input_set_sha256
+            revision = $first.revision
+            version = $first.version
+        }
+        if ($key -eq "app") {
+            $imageMetadata[$key]["configuration_profile"] = $first.configuration_profile
+            $imageMetadata[$key]["public_configuration_sha256"] = $first.public_configuration_sha256
+        }
         Copy-Item -LiteralPath (Join-Path (Split-Path $firstMetadataPath) $first.artifact) -Destination $artifactRoot
         Copy-Item -LiteralPath $firstMetadataPath -Destination $artifactRoot
         Copy-Item -LiteralPath "$((Join-Path (Split-Path $firstMetadataPath) $first.artifact)).sha256" -Destination $artifactRoot
@@ -204,7 +270,7 @@ try {
         [ordered]@{ name = $file.Name; sha256 = Get-Sha256 $file.FullName; bytes = $file.Length }
     }
     $manifest = [ordered]@{
-        schema_version = 1
+        schema_version = 2
         state = "passed"
         candidate = "untagged-non-production"
         version = $Version
@@ -220,6 +286,7 @@ try {
             repeated_source_archive_sha256 = "passed"
         }
         artifacts = $artifacts
+        images = $imageMetadata
         migration_classification = "No database change is introduced by CLX-19 release tooling."
         requested_delivery_actions = @()
         performed_delivery_actions = @()

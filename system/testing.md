@@ -20,6 +20,15 @@ git diff --check
 
 Spec-only work also validates local Markdown links, moved paths, accidental non-English content, duplicated policy owners, and unchanged sibling repositories.
 
+Validate candidate deployment, idempotency, rollback, automatic partial-start
+recovery, no-database behavior, and fail-before-lifecycle rejection of tampered
+artifacts, mutable tags, revision drift, public-configuration mismatch, and
+missing rollback images with:
+
+```powershell
+pwsh -File scripts/deploy-candidate-smoke.ps1
+```
+
 ### App
 
 From `../cashlenx-app`:

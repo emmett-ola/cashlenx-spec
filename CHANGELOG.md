@@ -8,6 +8,10 @@ state and the evidence manifest owns exact candidate identities.
 
 ### Changed
 
+- Added fail-closed candidate deployment and non-destructive application
+  rollback using verified manifests, immutable image identities, public App
+  configuration fingerprints, no-pull startup, checksummed target state, and
+  secret-free operation evidence.
 - Defined Docker Compose and nerdctl 2.2 as the portable repository-local
   lifecycle contract, including pre-mutation validation, configured image
   identity, value-safe start output, and cross-frontend regression coverage.

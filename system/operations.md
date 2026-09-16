@@ -164,6 +164,12 @@ acceptance evidence remain tracked in Jira until delivered.
   the verified image build, and emits an image archive, deterministic metadata,
   and a SHA-256 sidecar. Manual CI candidate jobs use these same secret-free
   entry points; they do not publish or deploy.
+- Candidate metadata schema 2 records the component and exact immutable image
+  reference in addition to its image ID. The App tag and metadata include its
+  public configuration profile plus the normalized SHA-256 fingerprint of the
+  five compile-time public settings. App, Server, and Website start entry
+  points use `--pull never` so deployment cannot silently substitute a missing
+  image from a registry.
 - Candidate packaging disables BuildKit's automatically generated default
   attestation because its run-specific metadata changes the manifest-list
   identity. Version, revision, input-set digest, image identity, and artifact
@@ -307,6 +313,25 @@ only tracked release inputs and `.env.example`, creates no tag, publishes
 nothing, promotes no branch, deploys nothing, and records no secret. The tag,
 publication, rollback, and future CI/CD handoff contract is in
 `release/README.md`.
+
+To consume one of those candidates without rebuilding it, use the controlled
+deployment entry point with repository-local environment files for the target:
+
+```powershell
+pwsh -File scripts/deploy-candidate.ps1 -Action Deploy -ManifestPath <manifest.json> -TargetName local
+pwsh -File scripts/deploy-candidate.ps1 -Action Rollback -TargetName local
+```
+
+Before container replacement, it verifies the manifest sidecar, all listed
+artifact lengths and checksums, package sidecars and metadata, exact version and
+revision binding, App public configuration identity, immutable tag form, and
+loaded image IDs. It refuses a conflicting local tag, loads only an absent
+verified archive, starts Server then App then Website without pulling, and
+automatically restores the previously recorded identities after a partial
+start. Target state has its own checksum. Each success or failure produces
+secret-free evidence with requested/effective identities, configuration
+profile and fingerprint, target, result, timestamps, and an explicit `none`
+database action. Rollback never invokes database lifecycle or volume actions.
 
 ## Database-Level Data Protection
 
