@@ -68,8 +68,15 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   loading/error fallbacks. Splash and shared auth branding are localized.
 - First-login setup uses the official teal logo and exposes the complete
   21-currency catalog confirmed in the live design.
-- Token-backed auth persistence with remember-me state.
-- One silent token refresh attempt on eligible 401 responses.
+- Token-backed auth persistence with remember-me state. Session pairs are saved
+  refresh-first and partial writes fail signed out; remembered startup restores
+  only a complete refresh-backed session.
+- Eligible concurrent 401 responses share one rotating refresh attempt. Stale
+  requests reuse the newly stored access token, rejected refresh credentials
+  expire the session, and transient network failure retains it for later retry.
+- Explicit logout clears local authority before contacting the API so an
+  in-flight refresh cannot restore the session. Demo entry also clears real
+  session credentials before creating isolated in-memory demo state.
 - Authenticated home shell with Home, Category, Add, Budget, and Settings tabs.
 - Real API-backed dashboard and finance flows for normal users.
 - Session-local editable data for demo users. Choosing demo mode resets the demo store before entering the session, and demo mode does not call authenticated APIs.

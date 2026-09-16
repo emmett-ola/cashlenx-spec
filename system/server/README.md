@@ -66,7 +66,9 @@ cashlenx-server/
 ## Current Implemented Behavior
 
 - User registration and login.
-- JWT access tokens and persisted refresh tokens.
+- Stateless JWT access tokens plus one-time rotating refresh tokens persisted as
+  SHA-256 digests. Legacy plaintext rows are accepted only for compatible
+  lookup/revocation and rotate into digest storage on successful use.
 - Password reset using verification codes.
 - Purpose-scoped email verification for sign-up, password reset, and email change.
 - User profile query/update, configuration query/create/update, password change, email change request/confirm, and account deletion.
@@ -149,7 +151,14 @@ Persistence-shape changes must account for mapper code, migrations, Docker initi
 - Administrator users are created only by `user_service.InitAdminUser()` when no administrator exists.
 - Registration and user-management creation always create the `user` role even if input requests `admin`.
 - Generic user updates cannot promote or demote roles, and user deletion rejects administrator accounts.
-- Password changes and account deletion revoke persisted refresh tokens.
+- Password change, password reset, and account deletion revoke persisted refresh
+  sessions before the account mutation and fail closed if revocation fails.
+- Expired, revoked, deleted, device-mismatched, and replayed refresh credentials
+  are rejected. Session inventory redacts both the reusable token and its digest,
+  and token values are excluded from logs.
+- Access JWTs remain valid until their configured short expiry unless account
+  lookup rejects the user; refresh-session revocation is the durable session
+  control.
 
 ## Middleware And Operational Surface
 

@@ -12,7 +12,14 @@ This catalog helps select validation scenarios. It is not a universal checklist;
 
 - Authenticated routes require bearer access tokens unless explicitly documented as public.
 - Logout remains idempotent and preserves supported single-session and all-session revocation semantics.
-- Remember-me behavior is controlled by refresh-token lifetime unless a later durable decision changes it.
+- Remember-me restoration is controlled by the server refresh-token lifetime;
+  non-remembered persisted tokens are cleared at app startup.
+- Concurrent client 401 responses share one refresh rotation. Transient transport
+  failure does not sign the user out, while rejected, expired, revoked, or
+  replayed refresh credentials fail signed out.
+- Refresh credentials are stored server-side as digests, are redacted from
+  session inventory and logs, and are revoked before password/account security
+  mutations are persisted.
 - Admin and management capabilities, including database backup/restore and normal-user export/import exposure, remain explicitly bounded.
 
 ## API Compatibility
