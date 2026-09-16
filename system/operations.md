@@ -147,6 +147,12 @@ acceptance evidence remain tracked in Jira until delivered.
   the verified image build, and emits an image archive, deterministic metadata,
   and a SHA-256 sidecar. Manual CI candidate jobs use these same secret-free
   entry points; they do not publish or deploy.
+- Candidate packaging disables BuildKit's automatically generated default
+  attestation because its run-specific metadata changes the manifest-list
+  identity. Version, revision, input-set digest, image identity, and artifact
+  checksum remain in deterministic metadata and the release manifest. Future
+  CI may attach a signed external attestation to the accepted artifact digest
+  without rebuilding or changing the artifact.
 - The Server runtime image includes `docs/openapi.yaml` and
   `config/default_categories.json` alongside the executable. The App and
   Website runtime images contain only their nginx configuration and compiled
