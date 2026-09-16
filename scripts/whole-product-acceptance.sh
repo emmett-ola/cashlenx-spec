@@ -10,6 +10,20 @@ run_id="$(date -u +%Y%m%dT%H%M%SZ)-$(git -C "$app_dir" rev-parse --short=8 HEAD)
 evidence_root="${EVIDENCE_ROOT:-$spec_dir/.artifacts/browser}"
 evidence_dir="$evidence_root/$run_id"
 
+# Repository environment files are the sole configuration source for this
+# acceptance run. Release packaging and rehearsal processes intentionally use
+# the same variable names, so clear inherited overrides before selecting the
+# local and acceptance-specific files below.
+unset COMPOSE_PROJECT_NAME ENV_FILE
+while IFS= read -r key; do
+  [[ -n "$key" ]] && unset "$key"
+done < <(
+  awk -F= '/^[A-Za-z_][A-Za-z0-9_]*=/ { print $1 }' \
+    "$app_dir/.env.example" \
+    "$server_dir/.env.example" \
+    "$workspace_dir/cashlenx-website/.env.example" | sort -u
+)
+
 read_key() {
   local file="$1"
   local key="$2"
@@ -70,7 +84,7 @@ export BROWSER_EVIDENCE_DIR="$evidence_dir"
 
 (cd "$app_dir" && bash scripts/browser-acceptance.sh)
 
-result_sha="$(sha256sum "$evidence_dir/result.json" | awk '{print $1}')"
+result_sha="$(sha256sum "$evidence_dir/result.json" | awk '{ sub(/^\\/, "", $1); print $1 }')"
 printf '%s\n' \
   "run_id=$run_id" \
   "app_revision=$(git -C "$app_dir" rev-parse HEAD)" \
