@@ -15,6 +15,9 @@ state and the evidence manifest owns exact candidate identities.
 - Defined Docker Compose and nerdctl 2.2 as the portable repository-local
   lifecycle contract, including pre-mutation validation, configured image
   identity, value-safe start output, and cross-frontend regression coverage.
+- Added portable status, doctor, and bounded-log operations plus selected
+  dependency visibility and bounded, observable graceful/forced/idempotent stop
+  semantics across all five runtime lifecycle groups.
 
 ## [1.0.0-rc.1] - 2026-09-16
 

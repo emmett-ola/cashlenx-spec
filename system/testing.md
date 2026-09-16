@@ -96,6 +96,14 @@ without pulling images or changing containers. It also rejects the unsupported
 version output under strict pipe handling, and verifies that frontend output
 cannot echo configured values during start.
 
+The same lifecycle suites validate status, doctor, bounded logs, healthy and
+deliberately degraded probes, missing image/network/dependency classification,
+graceful and forced stop reporting, and repeated stop behavior for both Docker
+and nerdctl command contracts. Disposable real-Docker acceptance additionally
+starts App, API, Website, MongoDB, and MySQL, verifies effective image identity,
+observes a paused service and a stopped selected dependency without restarts,
+and confirms graceful and timeout-forced termination behavior.
+
 Validate numbered MySQL migrations against a disposable MySQL 8 instance on Windows with:
 
 ```powershell

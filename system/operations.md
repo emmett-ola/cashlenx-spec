@@ -100,11 +100,11 @@ acceptance evidence remain tracked in Jira until delivered.
 - The app GitHub Actions workflow analyzes, tests, and builds the canonical web
   client. Its manual candidate job packages a verified image artifact without
   external publication or deployment.
-- The server provides the same build/start/stop script contract and owns only the API container. MongoDB and MySQL are independent optional Compose projects under `docker/dependencies/`.
-- MongoDB and MySQL each provide their own explicit build/start/stop scripts
+- The server provides the same lifecycle script contract and owns only the API container. MongoDB and MySQL are independent optional Compose projects under `docker/dependencies/`.
+- MongoDB and MySQL each provide their own explicit lifecycle scripts
   under `scripts/dependencies/`. They accept the same repository-local
   `ENV_FILE` selection and do not invoke the API lifecycle.
-- The product-introduction website has a multi-stage Bun/nginx Docker image, Compose service, and the same build/start/stop script contract.
+- The product-introduction website has a multi-stage Bun/nginx Docker image, Compose service, and the same lifecycle script contract.
 - In every runtime project, `build.sh` compiles the program inside its image
   build, `start.sh` starts or updates containers from an existing image with
   `--no-build` and then runs the service's readiness command inside the target
@@ -129,6 +129,17 @@ acceptance evidence remain tracked in Jira until delivered.
   Readiness uses portable inspect/exec/logs calls and a configurable
   `CONTAINER_READY_TIMEOUT_SECONDS` that defaults to 600 seconds so a cold,
   resource-constrained database initialization can complete.
+- Every App, API, Website, MongoDB, and MySQL lifecycle provides `status.sh`,
+  `doctor.sh`, and `logs.sh`. Status and doctor emit machine-readable,
+  non-secret capability, requested/effective image identity, network,
+  container-state, and live exec-probe health facts; API diagnostics also emit
+  the selected database container state. Either command exits nonzero when any
+  required fact is degraded. Logs are explicitly bounded from 1 to 99999 lines.
+- Stop converts the service's Compose grace duration into an engine stop timeout
+  and observes the final state and exit code before project removal. It reports
+  `graceful`, `already-stopped`, `forced`, `failed`, or `failed-running`; forced
+  and failed outcomes return nonzero while cleanup still proceeds. Repeated stop
+  is an accepted idempotent operation.
 - Compose project, container, and shared-network identities are explicit
   environment values with defaults. App, Server, Website, MongoDB, and MySQL
   each have an owning `*_PROJECT_NAME` and container-name key; all repositories
