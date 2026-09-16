@@ -143,7 +143,9 @@ function Invoke-Profile([string]$engine, [string]$appPath, [string]$serverPath, 
         Invoke-GitBash $appPath "scripts/build.sh" @{ ENV_FILE=".env.rehearsal" }
         Invoke-GitBash $websitePath "scripts/build.sh" @{ ENV_FILE=".env.rehearsal" }
         Invoke-GitBash $serverPath "scripts/dependencies/$engine/build.sh" @{ ENV_FILE=".env.rehearsal" }
-        Invoke-GitBash $serverPath "scripts/dependencies/$engine/start.sh" @{ ENV_FILE=".env.rehearsal" }
+        $databaseStartEnvironment = @{ ENV_FILE=".env.rehearsal" }
+        if ($engine -eq "mysql") { $databaseStartEnvironment.CONTAINER_READINESS_TIMEOUT_SECONDS = "360" }
+        Invoke-GitBash $serverPath "scripts/dependencies/$engine/start.sh" $databaseStartEnvironment
         Invoke-GitBash $serverPath "scripts/start.sh" @{ ENV_FILE=".env.rehearsal" }
         Invoke-GitBash $appPath "scripts/start.sh" @{ ENV_FILE=".env.rehearsal" }
         Invoke-GitBash $websitePath "scripts/start.sh" @{ ENV_FILE=".env.rehearsal" }
