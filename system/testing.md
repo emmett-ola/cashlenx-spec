@@ -27,6 +27,7 @@ From `../cashlenx-app`:
 ```bash
 flutter analyze
 flutter test
+test/scripts/container-lifecycle-smoke.sh
 ```
 
 The repository-local image gate uses the tracked environment example without
@@ -77,9 +78,14 @@ absence.
 CI runs the package suite with the race detector and an atomic coverage profile.
 It also builds the server and container image, generates the Swagger UI
 artifact, and runs the MongoDB API smoke flow in a separate workflow.
-The dependency lifecycle smoke uses a fake Docker command to validate script
-selection, enable-aware credential checks, file boundaries, and persistence-safe
-stop calls without pulling images or changing containers.
+The dependency lifecycle smoke uses fake Docker and nerdctl 2.2 frontends to
+validate implementation detection, the `docker`-as-nerdctl wrapper case,
+enable-aware credential checks, file boundaries, deterministic configured image
+selection, persistence-safe stop calls, and fail-before-mutation behavior
+without pulling images or changing containers. It also rejects the unsupported
+`config --images` and `up --wait` patterns, covers verbose multi-line nerdctl
+version output under strict pipe handling, and verifies that frontend output
+cannot echo configured values during start.
 
 Validate numbered MySQL migrations against a disposable MySQL 8 instance on Windows with:
 
@@ -125,6 +131,7 @@ From `../cashlenx-website`:
 ```bash
 bun run build
 ENV_FILE=.env.example scripts/build.sh
+test/scripts/container-lifecycle-smoke.sh
 ```
 
 The image build is lockfile-driven and automatically verifies compiled static

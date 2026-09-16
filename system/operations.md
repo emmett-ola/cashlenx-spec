@@ -110,17 +110,34 @@ acceptance evidence remain tracked in Jira until delivered.
   `--no-build` and then runs the service's readiness command inside the target
   container, and `stop.sh` uses Compose `down --remove-orphans` without
   `--volumes` or image removal. Start scripts do not require Compose `up --wait`
-  or Compose-managed health status, so the lifecycle also works with compatible
-  frontends such as nerdctl whose Compose surface omits those features.
+  or Compose-managed health status.
+- App, Server, and Website each own a repository-local
+  `scripts/lib/container_lifecycle.sh`; no runtime repository depends on another
+  repository's helper. The helper supports Docker Compose v2 and nerdctl 2.2+
+  and identifies the actual implementation from version output, including when
+  a command named `docker` wraps nerdctl. `CONTAINER_FRONTEND` selects `auto`,
+  `docker`, or `nerdctl`; a shell-only `CONTAINER_CLI` may select a nonstandard
+  executable path. Runtime availability and Compose configuration are checked
+  before build, pull, network creation, start, or stop.
+- Start mutations suppress Compose command traces. This prevents nerdctl's
+  informational output from printing environment values, including configured
+  credentials; failures return a value-free lifecycle error before readiness
+  diagnostics continue.
+- Image references are derived from the validated repository and tag settings
+  (`IMAGE_*`, `SERVER_IMAGE_*`, or `WEBSITE_IMAGE_*`). Lifecycle and packaging
+  scripts do not use the unsupported nerdctl `compose config --images` flag.
+  Readiness uses portable inspect/exec/logs calls and a configurable
+  `CONTAINER_READY_TIMEOUT_SECONDS` that defaults to 600 seconds so a cold,
+  resource-constrained database initialization can complete.
 - Compose project, container, and shared-network identities are explicit
   environment values with defaults. App, Server, Website, MongoDB, and MySQL
   each have an owning `*_PROJECT_NAME` and container-name key; all repositories
   use the same absolute `DOCKER_NETWORK_NAME`. Separate project identities
   preserve independent lifecycle and prevent `--remove-orphans` from treating
   sibling services as part of the same Compose project. Every start script
-  creates the network idempotently. Every stop script attempts removal only
-  after its own Compose project is down and only when Docker reports zero
-  connected containers.
+  creates the network idempotently. Every stop script asks the selected engine
+  to remove the network only after its own Compose project is down; both
+  supported engines refuse removal while another container remains attached.
 - Default development host ports are `10063` for the server API and `10064` for
   the Flutter app web build. The product-introduction website defaults to
   `11065`. Environment files may override them.

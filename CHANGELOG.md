@@ -4,6 +4,14 @@ This changelog records coordinated CashLenX product versions. Component
 changelogs provide repository-specific detail, while Jira owns active delivery
 state and the evidence manifest owns exact candidate identities.
 
+## [Unreleased]
+
+### Changed
+
+- Defined Docker Compose and nerdctl 2.2 as the portable repository-local
+  lifecycle contract, including pre-mutation validation, configured image
+  identity, value-safe start output, and cross-frontend regression coverage.
+
 ## [1.0.0-rc.1] - 2026-09-16
 
 ### Added
