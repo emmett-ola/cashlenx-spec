@@ -125,8 +125,11 @@ never remove either storage form.
 The production recovery policy is encrypted daily backup with 7 daily, 4
 weekly, and 12 monthly restore points, failure notification, and a quarterly
 disposable restore drill. The target recovery point is 24 hours and the target
-recovery time is 4 hours. Scheduling, retention automation, and drill evidence
-are delivered separately from this topology contract.
+recovery time is 4 hours. Server-owned operator tooling creates encrypted
+database-level artifacts, prunes completed artifacts by tier, rejects corrupt
+input, and emits disposable restore-drill evidence for MongoDB and MySQL.
+Scheduler installation, off-node storage, encryption-key custody, notification
+delivery, capacity monitoring, and quarterly execution remain deployment-owned.
 
 Application rollback means returning the App, API, or Website to a previously
 verified immutable image while preserving the selected database storage. It is

@@ -242,6 +242,41 @@ and credentials are configured. Target, implementation refs, results,
 migration state, and current deployment state still require separate evidence
 outside `system/`.
 
+## Database-Level Data Protection
+
+The Server owns `scripts/data-protection/backup.sh` and
+`scripts/data-protection/restore-drill.sh`. These protect the complete selected
+MongoDB or MySQL database, including migration state. They complement rather
+than replace application JSON export/import.
+
+The backup entry point accepts `daily`, `weekly`, or `monthly`, requires a
+separate one-line passphrase file, checks destination safety and free capacity,
+creates a consistent logical dump, writes metadata and internal checksums,
+encrypts the package, and publishes an external SHA-256 sidecar atomically. It
+prunes only matching completed artifacts inside the selected tier after a new
+artifact succeeds. Defaults retain 7 daily, 4 weekly, and 12 monthly artifacts.
+
+The deployment scheduler runs the daily tier every day, weekly and monthly tiers
+in their selected windows, serializes runs, and alerts on a non-zero exit or a
+stale secret-free `status/latest.json`. Backup storage, passphrase custody, and
+notification delivery use failure domains separate from the application node.
+The intended recovery point is 24 hours and the intended recovery time is 4
+hours.
+
+The restore-drill entry point verifies both checksum layers, decrypts into a
+restricted temporary directory, rejects unsafe archive paths, restores into an
+unnetworked disposable database container, verifies database objects and
+migration state, emits secret-free JSON evidence, and removes the container and
+plaintext on exit. Run it quarterly and after database, migration, encryption,
+or backup-tool changes.
+
+Capacity failure occurs before dumping. Dump, encryption, checksum, or publish
+failure cannot prune prior completed backups. Missing or mismatched checksums,
+wrong keys, corrupt input, missing migration state, and empty restores fail the
+drill. A real production restore is intentionally not automated: it requires a
+compatible recovery plan, verified artifact, rollback readiness, and explicit
+authorization before production data is touched.
+
 ## MongoDB Migration State
 
 MongoDB records ordered migration filename, SHA-256 checksum, dirty state, and

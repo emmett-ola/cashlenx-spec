@@ -95,6 +95,18 @@ disposable MongoDB 7 instance with:
 powershell -ExecutionPolicy Bypass -File test/scripts/mongodb-migrations-smoke.ps1
 ```
 
+Validate encrypted database backup, checksum and corrupt-input rejection,
+tier retention, disposable restore, and migration-state recovery against both
+database profiles with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File test/scripts/data-protection-smoke.ps1 -Database all
+```
+
+The smoke test generates its own database data, passphrase, container names,
+and ignored backup path. It never reads Testing or Production environment files
+and removes its source and restore containers plus temporary artifacts on exit.
+
 ### Website
 
 From `../cashlenx-website`:
