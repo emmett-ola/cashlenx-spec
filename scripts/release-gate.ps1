@@ -105,7 +105,7 @@ Invoke-ContainerValidation @appValidation
 $serverValidation = @{
     Label = "Server build and tests"
     RepositoryPath = $states.server.path
-    Image = Get-EnvironmentValue $serverImages "GO_BUILD_IMAGE"
+    Image = Get-EnvironmentValue $serverImages "GO_TEST_IMAGE"
     Shell = "sh"
     ShellArguments = @("-c")
     Command = 'go mod download && go mod verify && test "$(go env GOVERSION)" = "go1.23.12" && go build -mod=readonly ./... && go test -mod=readonly -race -covermode=atomic -coverprofile=/tmp/coverage.out ./...'
