@@ -4,19 +4,24 @@ This directory is the specification and delivery-control workspace for CashLenX.
 
 CashLenX is a personal-finance product for recording income and expenses, organizing cash flows by category, viewing summaries and reports, and managing account preferences.
 
-## Workspace
+## CashLenX Project
 
-The local workspace contains these project areas:
+CashLenX is developed as a set of independently buildable repositories with
+explicit ownership boundaries:
 
-| Path | Purpose |
+| Repository | Responsibility |
 | --- | --- |
-| `../cashlenx-app` | Cross-platform Flutter client. |
-| `../cashlenx-server` | Go REST API server and Cobra CLI. |
-| `../cashlenx-design` | Figma-exported React/Vite visual reference. |
-| `../cashlenx-website` | Vite/React public documentation scaffold. |
-| `../cashlenx-spec` | Product, system, and delivery specifications. |
+| [cashlenx-app](https://github.com/emmett-ola/cashlenx-app) | Cross-platform Flutter client and user experience. |
+| [cashlenx-server](https://github.com/emmett-ola/cashlenx-server) | Go REST API, Cobra CLI, authentication, finance services, and MongoDB/MySQL persistence. |
+| [cashlenx-design](https://github.com/emmett-ola/cashlenx-design) | Figma-exported React/Vite visual and interaction reference. |
+| [cashlenx-website](https://github.com/emmett-ola/cashlenx-website) | Public product and developer-information website. |
+| [cashlenx-spec](https://github.com/emmett-ola/cashlenx-spec) | Product and system facts, delivery workflow, decisions, and retained evidence. |
 
-The outer workspace is not assumed to be a Git repository.
+This repository owns the canonical specification and delivery-control layer.
+Cross-repository contracts are coordinated through OpenAPI and the workflow in
+this repository. Runtime repositories remain independently buildable and do
+not depend on the spec or design reference at build time or runtime. The outer
+local workspace is not assumed to be a Git repository.
 
 The code repositories (`cashlenx-app`, `cashlenx-server`, and `cashlenx-website`) use `develop` as the default working branch, `testing` as the shared test-environment branch, and `main` as the production release branch. Changes are promoted in the direction `develop` -> `testing` -> `main`; the legacy branch name `test` is not retained. `cashlenx-spec` uses `main` as its only branch. Repository-local commits and branch pushes do not by themselves authorize promotion, publication, or deployment.
 
@@ -64,3 +69,9 @@ Current implementation maturity belongs in `system/`; unopened delivery candidat
 ## Working Rule
 
 Keep all files in this spec workspace in English. English is also the default for code, Jira, Confluence, commits, and engineering artifacts unless selected i18n work requires localized content. Agent-specific rules belong in `AGENTS.md`; workflow rules belong in `WORKFLOW.md`; reusable principles belong in `GUIDELINE.md`; current facts belong in `system/`; active delivery belongs in Jira; retained closeout evidence belongs in `versions/`; deferred work belongs in `backlog/`; durable choices belong in `decisions/`.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE). Commercial use,
+modification, and redistribution are permitted when the copyright and license
+notices are retained.
