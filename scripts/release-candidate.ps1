@@ -175,9 +175,13 @@ Assert-Equal (Get-Match (Join-Path $states.server.Path "docs\openapi.yaml") '^\s
 Assert-Equal (Get-Match (Join-Path $states.app.Path "server\docs\openapi.yaml") '^\s*version:\s*([^\s]+)$') $Version "App OpenAPI copy version"
 
 $websitePackage = Get-Content -Raw -LiteralPath (Join-Path $states.website.Path "package.json") | ConvertFrom-Json -AsHashtable
-$websiteLock = Get-Content -Raw -LiteralPath (Join-Path $states.website.Path "package-lock.json") | ConvertFrom-Json -AsHashtable
 Assert-Equal $websitePackage["version"] $Version "Website package version"
-Assert-Equal $websiteLock["version"] $Version "Website lockfile version"
+if (-not (Test-Path -LiteralPath (Join-Path $states.website.Path "bun.lock") -PathType Leaf)) {
+    throw "Website bun.lock is missing."
+}
+if (Test-Path -LiteralPath (Join-Path $states.website.Path "package-lock.json")) {
+    throw "Website package-lock.json must not coexist with the authoritative bun.lock."
+}
 Assert-Equal ((Get-Content -Raw -LiteralPath $versionPath).Trim()) $Version "Spec release version"
 
 $serverOpenApi = Get-Sha256 (Join-Path $states.server.Path "docs\openapi.yaml")

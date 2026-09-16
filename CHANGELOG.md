@@ -24,6 +24,8 @@ state and the evidence manifest owns exact candidate identities.
 - Defined immutable MongoDB/MySQL image identities and a non-destructive,
   container-view MongoDB filesystem gate with final-daemon readiness and
   restart-persistence evidence.
+- Updated candidate validation to require the Website's authoritative Bun lock
+  and reject a competing npm lockfile.
 
 ## [1.0.0-rc.1] - 2026-09-16
 
