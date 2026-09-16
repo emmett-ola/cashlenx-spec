@@ -236,3 +236,17 @@ cover a deployment after every applicable gate passes and the external target
 and credentials are configured. Target, implementation refs, results,
 migration state, and current deployment state still require separate evidence
 outside `system/`.
+
+## MongoDB Migration State
+
+MongoDB records ordered migration filename, SHA-256 checksum, dirty state, and
+timestamps in the application database's `schema_migrations` collection. The
+first tracked startup safely runs the idempotent sequence against either a fresh
+or compatible existing installation. Dirty, unknown, reordered, renamed, or
+modified history blocks API startup.
+
+Deployment-level database or volume backups must include this collection.
+Application JSON backup/restore intentionally preserves rather than replaces
+schema history. Recover a dirty or incompatible installation from a verified
+database backup, or use an explicitly reviewed data/index repair plan; do not
+treat manual ledger edits as routine recovery.

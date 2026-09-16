@@ -87,6 +87,14 @@ Validate numbered MySQL migrations against a disposable MySQL 8 instance on Wind
 powershell -ExecutionPolicy Bypass -File test/scripts/mysql-migrations-smoke.ps1
 ```
 
+Validate MongoDB fresh, existing-data baseline, repeat, changed-checksum,
+reordered, native-handler, and failed/dirty migration behavior against a
+disposable MongoDB 7 instance with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File test/scripts/mongodb-migrations-smoke.ps1
+```
+
 ### Website
 
 From `../cashlenx-website`:

@@ -84,6 +84,10 @@ cashlenx-server/
 - Backup/restore preflight validation and progress reporting.
 - Compensating rollback for destructive admin restore and versioned MySQL migrations; failed migration compensation retains dirty state and blocks startup.
 - MySQL migration tracking and startup migration application.
+- MongoDB startup migration tracking through immutable ordered JavaScript
+  identities, SHA-256 checksums, native Go handlers, and durable
+  `schema_migrations` records. Unknown, reordered, renamed, modified, or dirty
+  history blocks startup.
 - SMTP email utility for verification-related delivery.
 - Snowflake ID generator initialization for distributed IDs.
 
@@ -140,7 +144,12 @@ The server start command is `go run main.go open start -p 10063`, not `server st
   select host bind mounts. Dependency stop preserves either form. Changing the
   source does not migrate existing data. Root Server scripts manage only the API
   and never select a dependency from `DB_TYPE`.
-- MongoDB applied-version tracking is not implemented and remains architecture debt.
+- A MongoDB installation without a migration ledger runs the known idempotent
+  sequence once against its existing data and records the result. An
+  incompatible migration remains dirty; recovery requires a verified database
+  restore or an explicitly reviewed data/index repair plan.
+- `cashlenx migration verify` is the read-only operator check for complete,
+  immutable MongoDB migration history; it never repairs ledger state.
 
 Persistence-shape changes must account for mapper code, migrations, Docker initialization assets when applicable, and backup/restore or import/export formats.
 
