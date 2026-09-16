@@ -200,8 +200,16 @@ acceptance evidence remain tracked in Jira until delivered.
 
 ## Operational Endpoints
 
-- The server exposes `/metrics` for Prometheus and development-only pprof endpoints when `ENV=dev`.
-- Production deployments should restrict `/metrics` at the reverse proxy or firewall.
+- `METRICS_ENABLED` controls the unversioned Prometheus `/metrics` endpoint. It defaults to enabled outside production and disabled in production when omitted.
+- Production may enable metrics only with a non-placeholder `METRICS_BEARER_TOKEN` of at least 32 characters. Monitoring callers send it as a Bearer token; network or reverse-proxy restrictions remain defense in depth.
+- Pprof endpoints are registered only when `ENV=dev`.
+
+## Production Request Security
+
+- API startup validates configuration before database initialization. Production rejects weak or placeholder JWT/bootstrap credentials, non-HTTPS or wildcard CORS origins, invalid rate-limit values, and an enabled metrics endpoint without a strong token. Validation messages name keys without printing values.
+- Production CORS is an exact HTTPS allowlist. Requests carrying a disallowed origin fail with `403 Forbidden`; development and test retain dynamic loopback-port support.
+- `API_RATE_LIMIT_REQUESTS_PER_MINUTE` and `API_RATE_LIMIT_BURST` configure the in-process token bucket. Buckets use the direct TCP peer, so a host reverse proxy is treated as one aggregate peer. The ingress may enforce stricter public per-client limits but must not weaken the server guard.
+- Request access logs omit query strings and record the escaped path only.
 
 ## UAT Deployment Mechanics
 

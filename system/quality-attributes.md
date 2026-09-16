@@ -30,7 +30,7 @@ This catalog helps select validation scenarios. It is not a universal checklist;
 ## Security And Configuration
 
 - Secrets stay out of tracked files, logs, and examples.
-- CORS, `/metrics`, pprof, token storage, refresh behavior, and file access require production-safe defaults or explicit documented deferrals before stable release.
+- Production startup fails closed for weak authentication/bootstrap secrets, unsafe CORS origins, invalid rate limits, and unprotected metrics exposure. Pprof remains development-only, request logs exclude query strings, and token storage, refresh behavior, and file access retain explicit security review boundaries.
 - `.env.example` and ignored local `.env` structure should remain aligned without overwriting local secret values.
 
 ## Operations

@@ -53,7 +53,7 @@ cashlenx-server/
   docs/         # API, CLI, OpenAPI, roadmap docs.
   errors/       # Custom error types.
   mapper/       # MongoDB/MySQL persistence mappers.
-  middleware/   # Auth, admin, CORS, logging, schema validation.
+  middleware/   # Auth, admin, CORS, logging, metrics, rate limiting, schema validation.
   migrations/   # MongoDB/MySQL migration scripts.
   model/        # Entities, DTOs, response types, constants.
   scripts/      # Start and docs helper scripts.
@@ -102,7 +102,7 @@ HTTP -> Controller -> Service -> Mapper -> Database
 
 Supporting ownership:
 
-- `middleware/` owns request authentication, administrator checks, CORS, request logging, metrics, and OpenAPI validation.
+- `middleware/` owns request authentication, administrator checks, CORS, request logging, metrics, rate limiting, operational-endpoint authentication, and OpenAPI validation.
 - `auth/` owns token creation and authentication middleware delegation.
 - `validation/validators.go` owns shared request validators.
 - `config/default_categories.json` owns the built-in category seed data.
@@ -156,18 +156,20 @@ Persistence-shape changes must account for mapper code, migrations, Docker initi
 API traffic is wrapped in this order:
 
 ```text
-CORS -> Logging -> Metrics -> Auth -> OpenAPI schema validation -> Router
+CORS -> Logging -> Metrics -> Rate limit -> Auth -> OpenAPI schema validation -> Router
 ```
 
-- CORS stays outermost so browser preflight requests are answered before authentication or schema validation.
-- Logging preserves or creates `X-Request-ID`, echoes it in responses, stores it in request context, and includes it in structured logs.
+- CORS stays outermost so browser preflight requests are answered before authentication or schema validation. Production accepts exact HTTPS origins only and returns `403 Forbidden` for requests carrying a disallowed origin.
+- Logging preserves or creates `X-Request-ID`, echoes it in responses, stores it in request context, and includes it in structured logs. Access logs record the escaped path without the query string.
+- The in-process token bucket uses positive requests-per-minute and burst values and keys buckets by direct TCP peer. Behind a reverse proxy it is an aggregate safety circuit; ingress owns any stricter public per-client policy and must not weaken the server guard.
 - `/api/{version}/open/*` bypasses required authentication. `POST /open/auth/logout` performs optional token handling in its controller and remains public and idempotent.
-- `GET /metrics` is unversioned and outside JWT/OpenAPI middleware. `/debug/pprof/*` is registered only when `ENV=dev`.
+- `GET /metrics` is unversioned and outside JWT/OpenAPI middleware. It defaults to disabled in production and requires a strong bearer token when production enables it. `/debug/pprof/*` is registered only when `ENV=dev`.
 - In development and test, loopback browser origins may use dynamic ports. Production uses explicit `CORS_ORIGINS` values.
 
 ## Configuration Boundaries
 
 - Runtime configuration is loaded from `.env` and process environment through `util/config_util.go`.
+- Startup validates runtime configuration before database initialization. Production rejects weak or placeholder JWT/bootstrap credentials, non-HTTPS or wildcard CORS origins, invalid rate limits, and enabled metrics without a strong bearer token. Errors identify keys without echoing configured values.
 - Database URI values may reference atomic values defined earlier with `${NAME}`;
   both Docker Compose and the current dotenv loader expand that form.
 - Local and Docker-specific database URIs derive their credentials, ports, and
@@ -192,7 +194,7 @@ CORS -> Logging -> Metrics -> Auth -> OpenAPI schema validation -> Router
   healthcheck uses the runtime image's BusyBox `wget`, keeping image builds
   independent from Alpine package-index availability.
 - Database connection values map to internal keys `db.mongodb.url` and `db.mysql.url`; legacy `mongodb.uri` and `mysql.uri` keys are not registered.
-- API version, schema validation, authentication lifetime, registration, bootstrap administrator, CORS, host/port, timezone, Snowflake worker, verification-code, SMTP, logging, and database selection are configuration-owned behaviors.
+- API version, schema validation, authentication lifetime, registration, bootstrap administrator, CORS, rate limiting, metrics exposure, host/port, timezone, Snowflake worker, verification-code, SMTP, logging, and database selection are configuration-owned behaviors.
 - Automated registration and password-reset tests must replace email delivery and must not contact a real provider.
 
 ## Standard Validation
