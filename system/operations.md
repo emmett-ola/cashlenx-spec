@@ -161,6 +161,14 @@ acceptance evidence remain tracked in Jira until delivered.
   references in `docker/images.env`. Updating a pin is an isolated change that
   must pass the repository build and image verification before delivery; a
   revert restores the previous inputs.
+- The same files own exact compiler/package-manager identities: Flutter 3.44.0
+  with Dart 3.12.0, Go 1.23.12, and Bun 1.4.0. Dockerfiles fail before
+  dependency resolution when the pinned image reports a different identity.
+  Normal CI uses those same versions and invokes each repository's canonical
+  `scripts/build.sh` deployable-image validation.
+- App dependency resolution enforces `pubspec.lock`; Server uses a read-only,
+  verified Go module graph; Website uses Bun and the sole `bun.lock` file.
+  npm and `package-lock.json` are not part of the Website build contract.
 - Runtime images record the full source commit and normalized product version
   through the OCI `org.opencontainers.image.revision` and
   `org.opencontainers.image.version` labels. App and Website also expose a

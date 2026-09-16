@@ -63,6 +63,14 @@ powershell -ExecutionPolicy Bypass -File test/scripts/budget-smoke.ps1 -Database
 It verifies authenticated profile/configuration persistence and budget/ledger
 behavior against both databases without retaining test data.
 
+### Build toolchain convergence
+
+CI and container builds must report Flutter 3.44.0 / Dart 3.12.0, Go 1.23.12,
+and Bun 1.4.0 respectively. Every normal CI workflow validates its deployable
+image through `scripts/build.sh`. Acceptance includes successful clean and
+cache-assisted builds plus deliberate wrong-version and lock/module drift
+failures. No validation reads Testing or Production environment files.
+
 ### Server
 
 From `../cashlenx-server`:

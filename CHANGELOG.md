@@ -18,6 +18,9 @@ state and the evidence manifest owns exact candidate identities.
 - Added portable status, doctor, and bounded-log operations plus selected
   dependency visibility and bounded, observable graceful/forced/idempotent stop
   semantics across all five runtime lifecycle groups.
+- Aligned CI and deployable container builds on exact Flutter/Dart, Go, and Bun
+  identities, canonical image entry points, and one fail-closed dependency lock
+  contract per repository.
 
 ## [1.0.0-rc.1] - 2026-09-16
 
