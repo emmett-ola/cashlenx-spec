@@ -78,6 +78,11 @@ configurable and are not implied by the public HTTPS URLs.
 
 ## Runtime Project Boundaries
 
+The selected topology, database-profile trade-offs, isolation boundary,
+persistence behavior, rollback rules, and explicit exclusions are defined in
+`deployment-profiles.md`. This document owns the concrete runtime mechanics and
+configuration facts used by those profiles.
+
 The approved `v1.0.0` production profile is a single node with one application
 instance serving isolated users, MongoDB as the primary production database,
 and MySQL as a required compatibility profile. Flutter Web is the certified

@@ -10,6 +10,7 @@ This directory contains the current CashLenX system facts. These documents descr
 | `domain-model.md` | Canonical domain concepts and relationships. |
 | `api-contract.md` | API versioning, response wrapper, auth model, and route surface summary. |
 | `operations.md` | Local runtime, databases, container boundaries, deployment mechanics, configuration synchronization, and operational endpoints. |
+| `deployment-profiles.md` | Supported single-node MongoDB and MySQL profiles, isolation, persistence, rollback, capacity, and unsupported topology. |
 | `testing.md` | Validation commands, evidence boundaries, and app/server/integration testing strategy. |
 | `collaboration.md` | Jira, Confluence, repository ownership, language, issue, version, and synchronization rules. |
 | `app/README.md` | Flutter client architecture, behavior, generated-code boundary, and testing entry point. |
