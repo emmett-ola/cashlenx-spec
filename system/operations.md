@@ -57,8 +57,12 @@ flutter pub get
 flutter run
 ```
 
-`.env` is listed as a Flutter asset and is required for app startup. Use
-`.env.example` as the local template and do not commit real secrets.
+`AppConfig` consumes `APP_ENV`, `API_SCHEME`, `API_DOMAIN`, `API_PORT`, and
+`API_VERSION` through compile-time definitions. The container build script
+reads only those public settings from the selected repository-local environment
+file. It does not send or copy that file into the build context or runtime
+image. Direct Flutter runs may supply the same values with `--dart-define`; the
+code defaults to the local development API when they are omitted.
 
 ## Environment Endpoints
 
@@ -115,7 +119,26 @@ acceptance evidence remain tracked in Jira until delivered.
   `11065`. Environment files may override them.
 - Default container names are `cashlenx-server`, `cashlenx-app`, and `cashlenx-website`.
 - Project Compose files bind published ports to `127.0.0.1` by default for a host reverse proxy and expose configurable CPU, memory, PID, graceful-stop, and health settings.
-- Runtime images record the source commit through the OCI `org.opencontainers.image.revision` label when built with the project scripts.
+- App, Server, and Website image build contexts use explicit allowlists. Local
+  environment files, credentials, Git state, logs, local data, caches, build
+  outputs, and unrelated workspace content do not enter their contexts.
+- Each runtime repository owns digest-pinned build and runtime base-image
+  references in `docker/images.env`. Updating a pin is an isolated change that
+  must pass the repository build and image verification before delivery; a
+  revert restores the previous inputs.
+- Runtime images record the full source commit and normalized product version
+  through the OCI `org.opencontainers.image.revision` and
+  `org.opencontainers.image.version` labels. App and Website also expose a
+  public `build-metadata.json`; Server embeds version, commit, and deterministic
+  commit time in its executable.
+- Each repository `scripts/build.sh` validates version and image inputs, builds
+  from its lockfile, and then verifies required runtime assets, provenance
+  metadata, and the absence of environment, credential, and Git files from the
+  application payload. Invalid or missing inputs fail closed.
+- The Server runtime image includes `docs/openapi.yaml` and
+  `config/default_categories.json` alongside the executable. The App and
+  Website runtime images contain only their nginx configuration and compiled
+  static output.
 - The Server image build performs no Alpine package installation. Go embeds the
   IANA timezone database, and the API healthcheck uses BusyBox `wget` already
   present in the selected Alpine runtime image, so Alpine package-index

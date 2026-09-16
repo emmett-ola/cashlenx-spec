@@ -29,6 +29,17 @@ flutter analyze
 flutter test
 ```
 
+The repository-local image gate uses the tracked environment example without
+reading owner-managed deployment configuration:
+
+```bash
+ENV_FILE=.env.example scripts/build.sh
+```
+
+The build enforces the Flutter lockfile and automatically checks the resulting
+static runtime payload, public build metadata, OCI version/revision labels, and
+prohibited file absence.
+
 The app repository currently has no maintained live Flutter-to-server harness.
 Restore or replace that coverage before relying on a whole-product database
 smoke claim. The current focused live database evidence is the server-owned
@@ -53,6 +64,16 @@ go test -v -race -covermode=atomic -coverprofile=coverage.out ./...
 test/scripts/dependency-lifecycle-smoke.sh
 ```
 
+Build and inspect the candidate Server image with:
+
+```bash
+ENV_FILE=.env.example scripts/build.sh
+```
+
+The build automatically checks the executable version/revision output,
+OpenAPI and default-category runtime assets, OCI labels, and prohibited file
+absence.
+
 CI runs the package suite with the race detector and an atomic coverage profile.
 It also builds the server and container image, generates the Swagger UI
 artifact, and runs the MongoDB API smoke flow in a separate workflow.
@@ -65,6 +86,19 @@ Validate numbered MySQL migrations against a disposable MySQL 8 instance on Wind
 ```powershell
 powershell -ExecutionPolicy Bypass -File test/scripts/mysql-migrations-smoke.ps1
 ```
+
+### Website
+
+From `../cashlenx-website`:
+
+```bash
+bun run build
+ENV_FILE=.env.example scripts/build.sh
+```
+
+The image build is lockfile-driven and automatically verifies compiled static
+content, nginx configuration, public build metadata, OCI version/revision
+labels, and prohibited file absence.
 
 ## Testing Strategy
 

@@ -72,9 +72,10 @@
   behavior. The synchronization script appended only the missing `ENV` key to
   the ignored Server `.env`; all existing values were preserved, and owner-managed
   `.env.testing` and `.env.production` files were not read or modified.
-- Known limits: Docker build contexts are unchanged and are tracked in
-  `../../backlog/docker-build-context-env-hardening.md`. No shared-environment
-  lifecycle command will be executed by this delivery.
+- Known limits at close: Docker build contexts were unchanged. That deferred
+  work was later delivered through Jira item `CLX-27`; current behavior is
+  documented in `../../system/operations.md`. No shared-environment lifecycle
+  command was executed by this delivery.
 
 ## Close Gate
 
