@@ -97,7 +97,9 @@ acceptance evidence remain tracked in Jira until delivered.
   `docker/dependencies/<name>/`; root `.dockerignore` files remain beside their
   build contexts.
 - The app has Docker-based Flutter web deployment through `docker/Dockerfile`, `docker/compose.yml`, nginx route fallback, and `scripts/build.sh`, `scripts/start.sh`, and `scripts/stop.sh`.
-- The app GitHub Actions web-release workflow analyzes, tests, builds, and publishes static web output to the release repository.
+- The app GitHub Actions workflow analyzes, tests, and builds the canonical web
+  client. Its manual candidate job packages a verified image artifact without
+  external publication or deployment.
 - The server provides the same build/start/stop script contract and owns only the API container. MongoDB and MySQL are independent optional Compose projects under `docker/dependencies/`.
 - MongoDB and MySQL each provide their own explicit build/start/stop scripts
   under `scripts/dependencies/`. They accept the same repository-local
@@ -140,6 +142,11 @@ acceptance evidence remain tracked in Jira until delivered.
   from its lockfile, and then verifies required runtime assets, provenance
   metadata, and the absence of environment, credential, and Git files from the
   application payload. Invalid or missing inputs fail closed.
+- Each runtime repository also owns `scripts/package-image.sh`. It requires a
+  clean exact checkout whose source version matches `PRODUCT_VERSION`, invokes
+  the verified image build, and emits an image archive, deterministic metadata,
+  and a SHA-256 sidecar. Manual CI candidate jobs use these same secret-free
+  entry points; they do not publish or deploy.
 - The Server runtime image includes `docs/openapi.yaml` and
   `config/default_categories.json` alongside the executable. The App and
   Website runtime images contain only their nginx configuration and compiled
@@ -260,6 +267,23 @@ Testing or Production environment files. Normal teardown removes only the
 generated containers, network, volume, plaintext, and clean worktrees while
 retaining the evidence manifest and candidate images for inspection or a warm
 rerun.
+
+For a coordinated, untagged release candidate from clean synchronized commits,
+use:
+
+```powershell
+pwsh -File scripts/release-candidate.ps1
+```
+
+The candidate builder verifies App, Server, Website, OpenAPI, Spec, changelogs,
+and release notes against `release/VERSION`; rejects an existing target tag;
+packages exact clean commits twice; compares image identities plus image/source
+artifact hashes; and writes one retained artifact set, `SHA256SUMS`, and a
+checksummed secret-free manifest under `.artifacts/release-candidates/`. It reads
+only tracked release inputs and `.env.example`, creates no tag, publishes
+nothing, promotes no branch, deploys nothing, and records no secret. The tag,
+publication, rollback, and future CI/CD handoff contract is in
+`release/README.md`.
 
 ## Database-Level Data Protection
 

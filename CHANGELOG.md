@@ -1,0 +1,23 @@
+# Changelog
+
+This changelog records coordinated CashLenX product versions. Component
+changelogs provide repository-specific detail, while Jira owns active delivery
+state and the evidence manifest owns exact candidate identities.
+
+## [1.0.0-rc.1] - 2026-09-16
+
+### Added
+
+- Stable `/api/v1` routing with a frozen `/api/v0` previous-client alias.
+- Username-or-email login and normalized unique email identifiers.
+- Reproducible, checksummed App, Server, Website, and Spec candidate artifacts.
+- Exact semantic version, revision, image identity, build-input, and artifact
+  provenance in a secret-free evidence manifest.
+- Manual, secret-free candidate packaging jobs ready for future CI/CD wiring.
+
+### Changed
+
+- Aligned App, Server, OpenAPI, Website, Spec, and release notes on the
+  coordinated v1 release-candidate line.
+- Separated validation, tagging, artifact publication, branch promotion,
+  deployment, migration, and production acceptance as independent states.

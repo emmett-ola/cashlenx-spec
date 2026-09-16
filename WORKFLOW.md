@@ -113,9 +113,18 @@ Do not request a Human response before it is actionable. Prepare the options, ev
 ## Release Delivery Convention
 
 - Jira project `CLX` controls active product delivery versions and executable work; implementation version advancement follows `decisions/0002-jira-controlled-delivery-with-project-local-advancement.md`.
-- Release/tag delivery, publication, and deployment are separate actions and require explicit authorization.
+- Candidate validation, release tags, artifact publication, branch promotion,
+  deployment, migration, and production acceptance are separate evidenced
+  actions. The accepted v1 charter provides standing authority for routine
+  non-destructive delivery after every applicable gate passes; prohibited
+  actions still require a new explicit Human decision.
 - A completed Jira version epic records accepted scope and linked evidence; it does not imply deployment.
-- Do not move or recreate an existing release tag. A correction receives a new version and tag.
+- Release tags are annotated `vX.Y.Z` identities in affected implementation
+  repositories. Create them only for exact accepted commits, never tag the spec
+  repository, and never move or recreate an existing tag. A correction receives
+  a new semantic version and tag.
+- Publish only the prebuilt artifacts and digests recorded by the accepted
+  candidate manifest. Do not rebuild between acceptance and publication.
 
 ## Release Candidate Gate
 

@@ -10,6 +10,8 @@ Current stack:
 - React.
 - TypeScript.
 - `lucide-react` icons.
+- Runtime artifact version `1.0.0-rc.1` on the coordinated, untagged v1
+  release-candidate line.
 
 ## Current Content Model
 
@@ -33,3 +35,7 @@ Docker build and Compose definitions live under `docker/`. Website project and
 container names are explicit, and the service joins the absolute
 `DOCKER_NETWORK_NAME`; its start script creates that network when needed and its
 stop script removes it only when no containers remain attached.
+
+GitHub Actions runs dependency audit and build validation on delivery branches.
+A manual secret-free job packages the verified container image without tagging,
+publishing, promoting, or deploying it.

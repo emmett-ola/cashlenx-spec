@@ -35,6 +35,7 @@ The code repositories (`cashlenx-app`, `cashlenx-server`, and `cashlenx-website`
 | `versions/` | Completed repository-local delivery records, validation evidence, and templates for explicit snapshots. |
 | `backlog/` | Deferred candidates, known gaps, and open product questions. |
 | `decisions/` | ADR-style durable decisions. |
+| `release/` | Coordinated product-version input, release notes, immutable tag rules, and artifact-publication contract. |
 | `sources/` | Copied Markdown source material and import inventory from sibling projects, excluding their `README.md` files. |
 | Jira `CLX` | Active product versions, executable work, acceptance criteria, priorities, dependencies, and workflow state. |
 | Confluence | Maintained English instructions and collaboration context for users and developers. |

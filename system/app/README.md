@@ -7,7 +7,8 @@
 Current stack:
 
 - Flutter with Dart SDK `>=3.8.0 <4.0.0`.
-- Runtime/displayed version `0.7.0+7` after design-parity acceptance.
+- Runtime/displayed version `1.0.0-rc.1+8` on the coordinated, untagged v1
+  release-candidate line.
 - Feature-first Clean Architecture.
 - Riverpod for state.
 - GoRouter for routing.
@@ -111,7 +112,9 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 - Docker-based Flutter web deployment using `docker/Dockerfile`,
   `docker/compose.yml`, explicit project/container names, the shared absolute
   `DOCKER_NETWORK_NAME`, and nginx route fallback.
-- GitHub Actions web release workflow that builds, analyzes, tests, and publishes static web output to the release repository.
+- GitHub Actions validation for analyze, tests, and the canonical `/api/v1` web
+  build, plus a manual secret-free candidate-image artifact job. Deployment and
+  external publication are intentionally separate.
 
 ## Known App Gaps
 
