@@ -176,11 +176,21 @@ location / { proxy_pass http://${appContainer}:8080; } } }
             SMOKE_USERNAME=$smokeUser; SMOKE_PASSWORD="RehearsalUserPass123!"; SMOKE_NEW_PASSWORD="RehearsalUserPass456!"
         }
 
+        $persistenceUser = "persistence_$($engine)_$($runId -replace '[^A-Za-z0-9]','')"
+        $persistencePassword = "RehearsalPersistencePass123!"
+        $adminLoginBody = @{ username="rehearsal-admin"; password=$adminPassword; device_id="rehearsal-persistence-setup"; device_name="Rehearsal" } | ConvertTo-Json -Compress
+        $adminLogin = Invoke-RestMethod -Uri "http://127.0.0.1:$serverPort/api/v0/open/auth/login" -Method Post -ContentType "application/json" -Body $adminLoginBody
+        if ($adminLogin.code -ne 200 -or -not $adminLogin.data.access_token) { throw "$engine persistence setup could not authenticate the administrator." }
+        $persistenceUserBody = @{ username=$persistenceUser; password=$persistencePassword; email_address="$persistenceUser@example.test"; is_email_verified=$true } | ConvertTo-Json -Compress
+        $persistenceUserResponse = Invoke-RestMethod -Uri "http://127.0.0.1:$serverPort/api/v0/admin/user" -Method Post -ContentType "application/json" `
+            -Headers @{ Authorization="Bearer $($adminLogin.data.access_token)" } -Body $persistenceUserBody
+        if ($persistenceUserResponse.code -ne 201) { throw "$engine persistence probe user was not created." }
+
         & docker restart $databaseContainer *> $null
         Assert-LastExit "Restart $engine"
         Start-Sleep -Seconds 5
         Wait-Http "https://127.0.0.1:$ingressPort/api/v0/open/health" -SkipCertificateCheck
-        $loginBody = @{ username=$smokeUser; password="RehearsalUserPass456!"; device_id="rehearsal-persistence"; device_name="Rehearsal" } | ConvertTo-Json -Compress
+        $loginBody = @{ username=$persistenceUser; password=$persistencePassword; device_id="rehearsal-persistence"; device_name="Rehearsal" } | ConvertTo-Json -Compress
         $login = Invoke-RestMethod -Uri "https://127.0.0.1:$ingressPort/api/v0/open/auth/login" -Method Post -ContentType "application/json" -Body $loginBody -SkipCertificateCheck
         if ($login.code -ne 200 -or -not $login.data.access_token) { throw "$engine persistence login failed after database restart." }
 
