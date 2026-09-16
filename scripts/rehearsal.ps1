@@ -114,7 +114,7 @@ function Invoke-Profile([string]$engine, [string]$appPath, [string]$serverPath, 
     Copy-Item (Join-Path $serverPath ".env.example") $serverEnv
     $serverSettings = @{
         ENV="prod"; SERVER_PORT="$serverPort"; DB_TYPE=$engine; DB_NAME=$dbName; JWT_SECRET=$jwt;
-        ADMIN_USERNAME="rehearsal-admin"; ADMIN_PASSWORD=$adminPassword; CORS_ORIGINS="https://localhost:$ingressPort";
+        ADMIN_USERNAME="rehearsal-admin"; ADMIN_PASSWORD=$adminPassword; CORS_ORIGINS="https://rehearsal.cashlenx.invalid:$ingressPort";
         METRICS_ENABLED="false"; DOCKER_NETWORK_NAME=$network; SERVER_PROJECT_NAME="cashlenx-rehearsal-server-$suffix";
         BACKEND_CONTAINER_NAME=$serverContainer; SERVER_IMAGE_NAME="cashlenx-rehearsal-server"; SERVER_IMAGE_TAG=$runId;
         SERVER_LOG_PATH="./logs/rehearsal-$suffix"; MONGO_CONTAINER_NAME=$databaseContainer; MYSQL_CONTAINER_NAME=$databaseContainer;
@@ -127,7 +127,7 @@ function Invoke-Profile([string]$engine, [string]$appPath, [string]$serverPath, 
 
     $appEnv = Join-Path $appPath ".env.rehearsal"
     Copy-Item (Join-Path $appPath ".env.example") $appEnv
-    $appSettings = @{ APP_ENV="prod"; API_SCHEME="https"; API_DOMAIN="localhost"; API_PORT="$ingressPort"; DOCKER_NETWORK_NAME=$network;
+    $appSettings = @{ APP_ENV="prod"; API_SCHEME="https"; API_DOMAIN="rehearsal.cashlenx.invalid"; API_PORT="$ingressPort"; DOCKER_NETWORK_NAME=$network;
         APP_PROJECT_NAME="cashlenx-rehearsal-app-$suffix"; CONTAINER_NAME=$appContainer; IMAGE_NAME="cashlenx-rehearsal-app"; IMAGE_TAG=$runId; WEB_PORT="$appPort" }
     foreach ($entry in $appSettings.GetEnumerator()) { Set-EnvValue $appEnv $entry.Key $entry.Value }
 
