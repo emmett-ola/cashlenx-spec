@@ -10,7 +10,8 @@ All routine Jira and Confluence operations are performed through the authorized 
 
 | Surface | Primary responsibility |
 | --- | --- |
-| Jira project `CLX` | Raw requirement intake, active product versions, executable work, priority, dependencies, ownership, acceptance criteria, validation summaries, Human decision tasks, and delivery state. |
+| Jira project `CLX` | Raw requirement intake, executable work, priority, dependencies, ownership, acceptance criteria, validation summaries, Human decision tasks, and delivery state. |
+| Jira Product Discovery project `CLV` | Authoritative exact product-version catalog, roadmap position, version outcome, lifecycle state, release evidence, and native completed-version archive. |
 | Confluence | Maintained instructions and shared context for users and developers, including product orientation, architecture navigation, workflow guidance, and decision summaries. |
 | `cashlenx-spec/system/` | Verified current product, architecture, API, operations, testing, quality, and collaboration facts. |
 | `cashlenx-spec/decisions/` | Durable product and architecture decisions. |
@@ -24,16 +25,14 @@ English is the default working language for code, documentation, Jira, Confluenc
 
 ## Jira Version Model
 
-- `Fix Version/s` is the authoritative exact product delivery version for selected Jira work.
-- Create one outcome-based release epic for each selected product version. Add workstream epics only when they materially improve navigation; do not use epic membership as a substitute for the version field.
-- Name the release epic with the version and outcome, for example `Deliver v1.1.0 — shared household planning`.
-- Record the goal, verified context, scope, non-goals, affected project areas, exit criteria, dependencies, risks, and documentation impact in the release epic.
-- Assign every selected story and task to its exact Fix Version and connect it to the most useful release or workstream epic when applicable.
-- Keep one active release line by default. Apply `release-line-vX-Y` to all work in that line.
+- CLV is the authoritative exact product-version catalog. Create one outcome-based Idea per exact version, named `vX.Y.Z — outcome`.
+- Record the goal, verified context, scope, non-goals, affected project areas, exit criteria, dependencies, risks, documentation impact, and separate implementation, release, deployment, migration, and production-acceptance states in the CLV Idea.
+- CLX owns execution. Connect selected CLX work to its CLV Idea with Product Discovery delivery links and apply the matching `version-vX-Y-Z` and `release-line-vX-Y` labels.
+- Keep one active release line by default. Keep planned and active version Ideas visible through the CLV Roadmap.
 - Use patch versions for compatible fixes, refactors, maintenance, and operational improvements; minor versions for compatible capabilities; and major versions for breaking or reset boundaries. Effort changes task decomposition, not the semantic version.
 - Keep unselected ideas in `backlog/`; do not fill Jira with speculative work.
 - Use issue links for cross-version or cross-area dependencies.
-- When a major or minor release line is fully closed and the next line begins, add `archived` to its completed work and expose it through a saved-filter board named `CashLenX — vX.Y.x Archive`. The primary board excludes `archived` work.
+- When a version close gate passes and the next delivery boundary opens, record the final evidence and set the CLV Idea's native `Idea archived` field. Leave completed CLX items in place with their history and labels.
 - Treat release publication, tags, branch promotion, and deployment as separate
   evidenced actions. Apply the standing authority in the accepted delivery
   charter only after every applicable gate passes.
@@ -59,7 +58,7 @@ Every executable item also has one of `size-s`, `size-m`, or `size-l`. Size expr
 - Represent a Human gate as a separate Task named `Decision: ...` in `Awaiting Confirmation`. Apply `human-decision` and place a `Human intervention gate` section near the top of its description. The section records the trigger, options, evidence, recommendation, exact requested decision or authorization, blocked transition, and current state.
 - Apply `human-action-required` only when Human input is required now. It is mutually exclusive with `agent-ready` and prevents the stated transition until the response is recorded in Jira.
 - Apply `blocked` while an unresolved linked dependency or external condition prevents the next planned transition. It is mutually exclusive with `agent-ready`. Represent Jira-to-Jira dependencies with issue links, not labels alone.
-- Before moving work from `Ready` to `In Progress` and before moving it to `Done`, inspect linked blockers, the Fix Version and release-line state, Human-gate markers, comments, and acceptance conditions.
+- Before moving work from `Ready` to `In Progress` and before moving it to `Done`, inspect linked blockers, the CLV version Idea and release-line state, Human-gate markers, comments, and acceptance conditions.
 - When a blocker is found or changes, record a concise `Blocker scan` comment in Jira and alert the user in the active conversation. State the issue key, exact Human action when applicable, and what cannot proceed.
 - Prepare decision options, evidence, and a recommendation before requesting Human input unless the missing input prevents preparation itself.
 - The accepted `v1.0.0` charter provides standing authority for routine
@@ -73,7 +72,7 @@ Every executable item also has one of `size-s`, `size-m`, or `size-l`. Size expr
 The accepted primary-board target is `CashLenX — Active Delivery`. Its logical workflow states are `Intake`, `Ready`, `In Progress`, `Awaiting Confirmation`, and `Done`.
 
 - `Intake` contains Human-authored raw demand and answered decision tasks awaiting agent triage.
-- `Ready` contains executable task contracts with an exact Fix Version, priority, size, acceptance criteria, and known dependencies.
+- `Ready` contains executable task contracts connected to an authoritative CLV version Idea, with matching exact-version label, priority, size, acceptance criteria, and known dependencies.
 - `In Progress` contains scoped work being implemented, validated, or synchronized.
 - `Awaiting Confirmation` contains only separate decision tasks with a concrete Human question and prepared recommendation.
 - `Done` means acceptance criteria and required evidence are satisfied and canonical facts are synchronized.
@@ -82,7 +81,7 @@ When the product owner requests triage, the agent reads `Intake`, preserves orig
 
 After the Human answers a decision task, they move it from `Awaiting Confirmation` to `Intake`. The next triage records the decision, updates and unblocks affected work, and moves the decision task to `Done`.
 
-The authorized Rovo surface currently maintains issue and Confluence content but does not expose Jira project administration. Until it can configure the target physically, the project uses `To Do` without `agent-ready` for logical `Intake`, `To Do` with unblocked `agent-ready` for logical `Ready`, `In Progress` directly, `In Review` with active Human-decision labels for logical `Awaiting Confirmation`, and `Done` directly. Temporary `planned-version-vX-Y-Z` labels preserve migration intent but are not authoritative Fix Versions. Physical board and release configuration remains tracked in Jira and must not be reported as complete.
+The physical CLX workflow contains all five accepted states. Rovo operates the workflow and the CLV catalog directly. CLV Ideas are authoritative; CLX `version-vX-Y-Z` labels are query aids and must match their Product Discovery delivery link.
 
 Jira state does not prove branch promotion, tag creation, publication, or deployment. Record those states explicitly when they occur.
 

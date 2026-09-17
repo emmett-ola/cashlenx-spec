@@ -37,3 +37,4 @@ Recommended sections:
 - `0002-jira-controlled-delivery-with-project-local-advancement.md`
 - `0003-v1-product-deployment-and-autonomous-release-charter.md`
 - `0004-agent-led-jira-intake-and-version-archives.md`
+- `0005-clv-authoritative-version-catalog.md`

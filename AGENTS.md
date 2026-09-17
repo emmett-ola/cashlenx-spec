@@ -25,10 +25,10 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 
 - Use the authorized Atlassian Rovo integration for Jira and Confluence reads, searches, creation, updates, comments, links, and workflow transitions. Do not manage Atlassian content through a browser session unless the user explicitly requests browser-based administration.
 - Standing authorization covers routine in-scope Jira and Confluence reads, creation, edits, links, comments, workflow transitions, and targeted deletion through Atlassian Rovo. A bulk clear, complete project or space reset, or equivalent removal of an entire collaboration surface requires fresh explicit user authorization for that operation.
-- Jira project `CLX` is the primary system for active product versions, executable work, priorities, dependencies, ownership, acceptance criteria, and delivery state.
-- Use Jira `Fix Version/s` as the authoritative exact delivery version. Maintain one outcome-based release epic for the version boundary and add workstream epics only when they improve navigation; executable work may connect to the appropriate epic without duplicating the version field.
-- Treat `Intake` as Human-authored raw demand. When the user requests triage, preserve the original intent, inspect evidence, rewrite or split the request into executable task contracts, assign priority, size, dependencies, and `Fix Version/s`, then move complete unblocked work to `Ready`.
-- When the authorized Rovo surface cannot administer Jira project configuration, use the compatibility mapping in `WORKFLOW.md` and keep the physical migration tracked explicitly. Do not claim that statuses, Fix Versions, filters, boards, columns, or card fields were configured when only issue metadata changed.
+- Jira project `CLX` is the primary system for executable work, priorities, dependencies, ownership, acceptance criteria, and delivery state. Jira Product Discovery project `CLV` is the authoritative exact product-version catalog and roadmap.
+- Represent each exact product version with one CLV Idea. Connect its selected CLX work through Product Discovery delivery links, and apply the matching `version-vX-Y-Z` plus `release-line-vX-Y` labels to executable items.
+- Treat `Intake` as Human-authored raw demand. When the user requests triage, preserve the original intent, inspect evidence, rewrite or split the request into executable task contracts, assign priority, size, dependencies, and one authoritative CLV version Idea, then move complete unblocked work to `Ready`.
+- Use CLV's native Idea archive for completed and superseded versions. Do not move or copy executable CLX work into CLV, and do not treat a CLV archive action as proof of tag creation, publication, deployment, migration, or production acceptance.
 - Represent a required Human decision as a separate `Decision: ...` Jira task in `Awaiting Confirmation`. Link it as blocking the affected work, apply `human-decision` and `human-action-required`, remove `agent-ready` while either `human-action-required` or `blocked` is present, and state the exact request and blocked transition. After the Human records the answer and returns the decision task to `Intake`, triage records the decision, resolves the decision task, and unblocks the affected work.
 - Before moving a Jira item from `Ready` to `In Progress`, and again before moving it to `Done`, scan its issue links, version state, unresolved Human gates, and `blocked` or `human-action-required` labels. Do not cross a blocked transition. Record a Jira blocker-scan comment when a blocker is found or its state changes, and alert the user in the active conversation with the issue key, required action, and consequence.
 - Confluence is the maintained instruction and context layer for users and developers. Keep it concise, English-only, and linked to authoritative repository facts instead of copying large technical specifications.
@@ -59,11 +59,11 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 
 ## Version Workflow Rules
 
-- Open a concrete product version in Jira `Fix Version/s`, create one outcome-based release epic for the boundary, and place executable work under the most useful release or workstream epic.
-- Keep one active release line by default. Apply `release-line-vX-Y` to every item in that line and use `archived` only after the line is closed and its archive board is created.
+- Open a concrete product version as an outcome-based CLV Idea, connect selected CLX work through Product Discovery delivery links, and apply its exact-version and release-line labels to those items.
+- Keep one active release line by default. Apply `release-line-vX-Y` and exactly one `version-vX-Y-Z` label to every selected CLX item. Archive the CLV Idea only after the version close gate passes and the next delivery boundary opens.
 - Use semantic scope to select versions: patch for compatible fixes and internal or operational improvements, minor for compatible capabilities, and major for breaking or reset boundaries. Effort affects decomposition and `size-s`, `size-m`, or `size-l`; it does not determine the version number.
 - Use Jira for task contracts, acceptance criteria, delivery state, dependencies, and validation summaries.
-- Move durable implemented behavior into `system/` before closing a Fix Version and its release epic.
+- Move durable implemented behavior into `system/` before closing and archiving a CLV version Idea.
 - Move deferred or rejected ideas into `backlog/` and keep Jira limited to selected or actionable work.
 - Add ADRs under `decisions/` only for choices that should remain discoverable after a version closes.
 - Use `versions/_template/` only when an explicit repository-local closeout snapshot is required; Jira remains the active control surface.

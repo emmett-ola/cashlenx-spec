@@ -24,7 +24,7 @@ This workflow keeps CashLenX specification and delivery work proportionate to ri
 | Level | Typical work | Default authority | Delivery record |
 | --- | --- | --- | --- |
 | Lightweight | Documentation correction, focused test, internal refactor, narrow defect fix with no external contract change | AI proceeds autonomously | Jira is optional unless the work is already tracked or benefits from shared visibility |
-| Standard | Clear reversible product behavior, additive API response, bounded cross-repository feature, release-scope refinement | AI proceeds after recording a concise task contract | Jira story or task assigned to the selected Fix Version |
+| Standard | Clear reversible product behavior, additive API response, bounded cross-repository feature, release-scope refinement | AI proceeds after recording a concise task contract | CLX story or task connected to the selected CLV version Idea |
 | High-impact | Breaking API change, destructive data action, security/privacy boundary, production deployment, release/tag action, major product direction | Human confirms the material decision or operation; AI executes the work | Jira issue with triggered evidence and the recorded Human decision |
 
 When levels overlap, use the highest applicable level. Technical difficulty alone does not make work High-impact.
@@ -34,7 +34,7 @@ When levels overlap, use the highest applicable level. Technical difficulty alon
 1. State the goal and observable done condition.
 2. Inspect relevant evidence and Git status in every repository that may be touched.
 3. Identify the authoritative documents and repositories actually affected.
-4. For Standard and High-impact work, use a Jira issue assigned to the selected `Fix Version/s` and keep its task contract current. Before moving it from `Ready` to `In Progress`, run the Jira blocker scan defined below.
+4. For Standard and High-impact work, use a CLX issue connected to the selected CLV version Idea, apply its `version-vX-Y-Z` label, and keep the task contract current. Before moving it from `Ready` to `In Progress`, run the Jira blocker scan defined below.
 5. Preserve unrelated user work and implement the smallest complete change.
 6. Validate in proportion to the behavior and risk changed.
 7. Synchronize the canonical `system/` fact when implementation behavior changes.
@@ -65,26 +65,18 @@ The primary board is `CashLenX — Active Delivery`. It uses five states:
 | State | Meaning | Exit condition |
 | --- | --- | --- |
 | `Intake` | Human-authored raw demand or a returned decision answer awaiting agent triage. | Intent is preserved, evidence is inspected, and executable work or a recorded decision is produced. |
-| `Ready` | The task contract, exact Fix Version, priority, size, dependencies, and acceptance criteria are sufficient to start. | The start blocker scan is clear and execution begins. |
+| `Ready` | The task contract, authoritative CLV version Idea, exact-version label, priority, size, dependencies, and acceptance criteria are sufficient to start. | The start blocker scan is clear and execution begins. |
 | `In Progress` | An agent is implementing, validating, or synchronizing the scoped work. | Acceptance evidence is complete, or a genuinely unresolved Human decision is isolated. |
 | `Awaiting Confirmation` | A separate decision task contains a concrete Human question with prepared evidence and a recommendation. | The Human records an answer and returns the decision task to `Intake`. |
 | `Done` | Acceptance criteria and required evidence are satisfied and canonical facts are synchronized. | Terminal for the work item; archiving is controlled separately by release line. |
 
 `Intake` and `Ready` use Jira's To Do category. `In Progress` and `Awaiting Confirmation` use the In Progress category. `Done` uses the Done category.
 
-### Rovo-Only Compatibility Mapping
+### Rovo Operating Model
 
-The authorized Rovo integration can maintain issues, labels, links, comments, Confluence, searches, and transitions that already exist. It does not currently expose project administration for statuses, releases, Fix Versions, filters, boards, columns, or card fields. Until those administration capabilities are available through the authorized integration, use this logical mapping without claiming the physical board has been reconfigured:
+The authorized Rovo integration maintains CLX and CLV issues, labels, Product Discovery delivery links, comments, searches, existing transitions, native CLV Idea archival, and Confluence guidance. The physical CLX workflow contains `Intake`, `Ready`, `In Progress`, `Awaiting Confirmation`, and `Done`.
 
-| Logical area | Current Jira representation |
-| --- | --- |
-| `Intake` | `To Do` without `agent-ready` |
-| `Ready` | `To Do` with `agent-ready` and without `blocked` or `human-action-required` |
-| `In Progress` | `In Progress` |
-| `Awaiting Confirmation` | `In Review` with `human-decision` and `human-action-required` |
-| `Done` | `Done` |
-
-Use `planned-version-vX-Y-Z` only as temporary migration metadata while the corresponding Fix Version cannot be created through Rovo. It is not an authoritative delivery version. Replace it with `Fix Version/s` and remove the temporary label when project administration becomes available. The active-board and archive-board filters remain accepted target configuration, not a completed change, until they can be verified through the authorized integration.
+CLV replaces Jira `Fix Version/s` and per-version archive boards as the authoritative version layer. A CLV Idea owns the exact version identity, outcome, roadmap position, lifecycle state, and release evidence. CLX remains the execution layer. Its `version-vX-Y-Z` label is a query and migration aid whose meaning is derived from the linked CLV Idea; it is not a second version authority.
 
 ### Triage On Request
 
@@ -94,11 +86,11 @@ When the product owner asks for requirement triage:
 2. Inspect the affected specification, implementation, Jira relationships, and current release boundary.
 3. Rewrite or split the request into the smallest independently verifiable tasks. A `size-l` item is normally decomposed before it reaches `Ready`.
 4. Give each executable item an outcome, verified context, scope and non-goals, acceptance criteria, validation expectations, dependencies, risks, and documentation or compatibility impact.
-5. Assign exactly one planned `Fix Version/s`, a Jira priority, one size label (`size-s`, `size-m`, or `size-l`), the release-line label, and controlled area or concern labels.
+5. Connect the item to exactly one planned CLV version Idea and assign its exact-version label, Jira priority, one size label (`size-s`, `size-m`, or `size-l`), the release-line label, and controlled area or concern labels.
 6. Use `Highest` for urgent or severe product, security, data, or release risk; `High` for major user impact or work that unlocks the active line; `Medium` for normal planned delivery; and `Low` for non-urgent polish or optional maintenance. Effort changes decomposition, not priority or semantic versioning.
 7. Link dependencies. Keep an externally blocked task in `Ready` with `blocked` and without `agent-ready`; otherwise add `agent-ready` and move it to `Ready`.
 
-Keep one active release line by default. `Fix Version/s` is the exact version authority. A label such as `release-line-v1-0` groups compatible patch versions in the same release line and does not replace `Fix Version/s`.
+Keep one active release line by default. The CLV Idea is the exact version authority. `version-v1-0-1` and `release-line-v1-0` labels make CLX work queryable and must match the linked CLV Idea.
 
 ### Human Decision Loop
 
@@ -116,9 +108,9 @@ Do not place executable work in `Awaiting Confirmation`. When a material decisio
 - Patch versions contain compatible fixes, refactors, internal maintenance, and operational improvements.
 - Minor versions contain compatible user or platform capabilities.
 - Major versions contain breaking compatibility or an intentional product or platform reset.
-- A release epic describes the version outcome. Workstream epics are optional navigation aids; `Fix Version/s` remains authoritative.
-- The active board excludes `archived`. When a major or minor release line is fully closed and the next line begins, add `archived` to every completed item in the closed line and create a saved-filter board named `CashLenX — vX.Y.x Archive` using `project = CLX AND labels = archived AND labels = release-line-vX-Y ORDER BY key ASC`.
-- Do not archive an active patch line merely because one patch version has closed. Archived work remains in project `CLX` and retains its issue history, links, exact Fix Version, and release-line label.
+- A CLV Idea describes the exact version outcome and lifecycle. Workstream epics or tasks in CLX remain optional execution-navigation aids.
+- Keep planned and active versions visible on the CLV Roadmap. When a version close gate passes and the next delivery boundary opens, record the final outcome and all separate implementation, release, deployment, migration, and production-acceptance states, then set the CLV Idea's native `Idea archived` field.
+- Do not archive CLX executable items merely because their version closes. They remain in `Done` with full history, delivery links, exact-version label, and release-line label; CLV supplies the compact version archive.
 
 ## Human Decision Gates
 
@@ -145,7 +137,7 @@ Human approval covers only the stated decision or operation. Reversible implemen
 Run this scan before moving an item from `Ready` to `In Progress` and before moving it to `Done`:
 
 1. Inspect inward `Blocks` links and confirm every blocking issue has reached the state required by the task contract.
-2. Inspect the selected Fix Version, relevant release or workstream epic, and release line for unresolved prerequisites or a stopped delivery boundary.
+2. Inspect the selected CLV version Idea, relevant CLX release or workstream item, and release line for unresolved prerequisites or a stopped delivery boundary.
 3. Inspect `human-decision`, `human-action-required`, `blocked`, and `agent-ready` labels and the `Human intervention gate` section.
 4. Check comments and the task contract for an unanswered decision, authorization, acceptance condition, or newly discovered external dependency.
 5. If clear, continue and keep labels accurate. If blocked, do not cross the affected transition; add or update a concise `Blocker scan` Jira comment with the scan point, blocker, exact Human action when applicable, and consequence, then alert the user in the active conversation.
@@ -166,7 +158,7 @@ Do not request a Human response before it is actionable. Prepare the options, ev
 
 ## Delivery Flow
 
-1. **Understand:** load governance, inspect relevant facts, identify the selected Jira Fix Version and release line, and select the work level.
+1. **Understand:** load governance, inspect relevant facts, identify the selected CLV version Idea and release line, and select the work level.
 2. **Decide:** create or refine the Jira task contract, isolate any required Human decision, choose the smallest safe approach, and move complete unblocked work to `Ready`.
 3. **Implement:** run the start blocker scan, move the Jira item from `Ready` to `In Progress`, work repository by repository, and preserve independent build/runtime boundaries.
 4. **Validate:** run focused checks first, add only triggered enhanced scenarios, synchronize affected facts and guidance, and record evidence and implementation refs on the item.
@@ -174,13 +166,13 @@ Do not request a Human response before it is actionable. Prepare the options, ev
 
 ## Release Delivery Convention
 
-- Jira project `CLX` controls active product delivery versions and executable work; implementation version advancement follows `decisions/0002-jira-controlled-delivery-with-project-local-advancement.md`.
+- Jira Product Discovery project `CLV` controls exact product-version identity and lifecycle; Jira project `CLX` controls executable work. Implementation version advancement follows `decisions/0002-jira-controlled-delivery-with-project-local-advancement.md`.
 - Candidate validation, release tags, artifact publication, branch promotion,
   deployment, migration, and production acceptance are separate evidenced
   actions. The accepted v1 charter provides standing authority for routine
   non-destructive delivery after every applicable gate passes; prohibited
   actions still require a new explicit Human decision.
-- A completed Jira Fix Version and its release epic record accepted scope and linked evidence; they do not imply deployment.
+- A completed CLV version Idea records accepted scope and linked evidence; it does not imply deployment.
 - Release tags are annotated `vX.Y.Z` identities in affected implementation
   repositories. Create them only for exact accepted commits, never tag the spec
   repository, and never move or recreate an existing tag. A correction receives
@@ -192,7 +184,7 @@ Do not request a Human response before it is actionable. Prepare the options, ev
 
 Run this gate for every product release candidate. It is the reusable acceptance contract for local execution and future CI/CD; automation may implement it but must not weaken its semantics.
 
-1. **Jira preflight:** run the blocker scan for the selected Fix Version, its release epic, and every selected item. Stop on an unresolved dependency, `human-action-required`, incomplete acceptance criterion, or unrecorded required decision.
+1. **Jira preflight:** run the blocker scan for the selected CLV version Idea and every connected CLX item. Stop on an unresolved dependency, `human-action-required`, incomplete acceptance criterion, or unrecorded required decision.
 2. **Source preflight:** record exact repository branches and commits, confirm intended worktrees contain no unrelated change, confirm the candidate ancestry is suitable for any requested fast-forward, and identify every affected project area.
 3. **Version contract:** verify the selected product version against each affected runtime/display version, API path, OpenAPI document, image label, artifact name, changelog, and release note. Generated metadata must derive from an authoritative source and must not act as an independent fallback.
 4. **Database preflight:** compare the currently delivered database boundary with the candidate, enumerate ordered migrations and recovery requirements, verify migration identity and immutability, and state explicitly when no database change is required. Source delivery never proves that an environment ran a migration.
@@ -242,4 +234,4 @@ A product version is release-ready only when the release-candidate gate passes f
 
 ## Spec-Only Governance Exception
 
-Information architecture, workflow rules, templates, references, and factual documentation may change directly in `cashlenx-spec` without opening a product Fix Version when runtime behavior and controlled contracts do not change. Use Jira when shared visibility is useful. Validate Markdown structure and local links, moved paths, encoding, stale or duplicated policy owners, `git diff --check` when available, source-snapshot integrity when touched, and the unchanged state of implementation repositories.
+Information architecture, workflow rules, templates, references, and factual documentation may change directly in `cashlenx-spec` without opening a CLV product version when runtime behavior and controlled contracts do not change. Use Jira when shared visibility is useful. Validate Markdown structure and local links, moved paths, encoding, stale or duplicated policy owners, `git diff --check` when available, source-snapshot integrity when touched, and the unchanged state of implementation repositories.

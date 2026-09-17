@@ -4,6 +4,8 @@
 
 Accepted on 2026-09-17.
 
+Exact-version authority and archive implementation are superseded by `0005-clv-authoritative-version-catalog.md`. The five-state CLX workflow, agent-led triage, decision-task loop, semantic version selection, sizing, and priority rules remain in force.
+
 ## Context
 
 CashLenX needs a collaboration loop in which the product owner can capture rough requirements without first converting them into implementation-ready tickets. The previous four-state Jira workflow mixed selected work, review, and Human decisions, while historical version labels did not provide an authoritative exact delivery boundary. Keeping every completed item on the primary board would also make the active view progressively less useful.

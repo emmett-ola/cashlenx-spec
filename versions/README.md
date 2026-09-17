@@ -1,6 +1,6 @@
 # Versions
 
-This directory preserves completed repository-local delivery evidence and provides templates for explicit closeout snapshots. Jira project `CLX` owns active product versions, task contracts, validation summaries, implementation refs, and delivery state.
+This directory preserves completed repository-local delivery evidence and provides templates for explicit closeout snapshots. Jira Product Discovery project `CLV` owns the authoritative exact-version catalog; Jira project `CLX` owns task contracts, validation summaries, implementation refs, and delivery state.
 
 Current behavior belongs in `../system/`. Deferred candidates belong in `../backlog/`. A closed version is delivery evidence, not the current source of truth.
 
@@ -30,14 +30,15 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
 - The former beta and `v0.10.0` planning boundaries are consolidated into the first stable `v1.0.0` delivery record. `../backlog/beta-baseline.md` remains historical readiness evidence rather than an active version plan.
 - Product implementation remains pre-release while the accepted stable contract is now canonical at `/api/v1`; `/api/v0` remains a frozen previous-client alias.
 - Stable-release and delivery-workflow decisions are recorded in `../decisions/0001-stable-release-api-auth-and-capability-policy.md`, `../decisions/0002-jira-controlled-delivery-with-project-local-advancement.md`, and `../decisions/0004-agent-led-jira-intake-and-version-archives.md`.
-- Jira `Fix Version/s` is the exact active delivery boundary. The accepted
-  migration records all work completed before the workflow cutover under
-  `v1.0.0`; remaining compatible follow-up work begins at `v1.0.1`. Jira owns
-  live status, version membership, dependencies, and release-line state.
-- While the authorized Rovo surface lacks release administration, Jira items
-  use temporary `planned-version-v1-0-0` and `planned-version-v1-0-1` labels to
-  preserve migration intent. These labels are not Fix Versions and must be
-  removed after authoritative version assignment becomes available.
+- [CLV-7](https://macacloud.atlassian.net/browse/CLV-7) is the authoritative
+  `v1.0.0` version record. It remains visible on the Roadmap because the
+  accepted candidate is release-ready but has not been tagged, published,
+  promoted, deployed, migrated, or accepted in production.
+- [CLV-8](https://macacloud.atlassian.net/browse/CLV-8) is the authoritative
+  `v1.0.1` version record for compatible follow-up maintenance.
+- CLX items use matching `version-v1-0-0` or `version-v1-0-1` labels and
+  Product Discovery delivery links. CLV owns version identity; labels support
+  queries and do not form a second authority.
 
 Do not create a version directory for active planning, routine Jira work, or an audit. Create a repository-local snapshot only when durable closeout evidence explicitly needs to live with the specification.
 
@@ -71,7 +72,7 @@ the online source.
 | `v0.8.8-runtime-image-package-independence` | Closed | APK-independent Server image build using embedded timezone data and the base image health utility. |
 | `v0.8.9-shared-docker-network-and-layout` | Closed | Shared external network lifecycle, container-DNS dependency routes, and Docker definitions under each project's `docker/` tree. |
 
-Use Jira Fix Versions, release epics, and optional workstream epics to select and sequence active delivery. Each app-affecting
+Use CLV version Ideas, Product Discovery delivery links, and optional CLX workstream items to select and sequence active delivery. Each app-affecting
 version advances the app's `pubspec.yaml` version and records its repository
 commit independently from the spec commit.
 
@@ -80,14 +81,14 @@ commit independently from the spec commit.
 | Work level | Required active record |
 | --- | --- |
 | Lightweight | Jira is optional unless the work is already tracked or benefits from shared visibility. |
-| Standard | Jira story or task assigned to the selected Fix Version. |
+| Standard | CLX story or task connected to the selected CLV version Idea. |
 | High-impact | Jira issue with the task contract, triggered evidence, and recorded Human decision. |
 
 A repository-local closeout snapshot is optional and must not duplicate active Jira state. Promote Lightweight work to Standard when it changes external behavior or a controlled API, schema, auth, workflow, state, compatibility, migration, or deployment boundary. Promote Standard work to High-impact when a Human gate or substantial migration, security, recovery, or rollout plan is required.
 
 ## Version Naming And Buckets
 
-Name Jira Fix Versions `vX.Y.Z` and release epics with the selected version and outcome. When an explicit repository snapshot is required, use `vX.Y.Z-short-name/`.
+Name CLV version Ideas `vX.Y.Z — outcome`. When an explicit repository snapshot is required, use `vX.Y.Z-short-name/`.
 
 - `v0.x`: beta and pre-stable product versions. The accepted stable compatibility boundary has opened at `/api/v1`; `/api/v0` remains a frozen alias while release readiness completes.
 - `v1.0.0`: first stable release gate.
@@ -95,13 +96,13 @@ Name Jira Fix Versions `vX.Y.Z` and release epics with the selected version and 
 - Minor versions: compatible user, product, or platform capabilities.
 - Major versions: breaking compatibility or an intentional product or platform reset.
 
-Keep one active release line by default and label its work `release-line-vX-Y`. Closeout of one patch does not archive the line. When the line is fully closed and the next major or minor line begins, label its completed work `archived` and expose it through a saved-filter archive board. `Fix Version/s` remains the exact version authority; release-line and archive labels are navigation metadata.
+Keep one active release line by default and label its CLX work `release-line-vX-Y` plus exactly one `version-vX-Y-Z`. Closeout of one patch does not archive the whole line. When an exact version closes and the next delivery boundary opens, record final evidence and use CLV's native Idea archive. Completed CLX work remains in place with full history.
 
 Version numbers express product delivery scope. They do not imply deployment, publication, branch promotion, or release tags.
 
 ## Implementation Version Policy
 
-The durable policy is owned by `../decisions/0002-jira-controlled-delivery-with-project-local-advancement.md` and `../decisions/0004-agent-led-jira-intake-and-version-archives.md`. Apply it directly rather than restating it in each retained version record. Every release epic and explicit snapshot identifies affected project areas, their resulting runtime or displayed versions, and any separately authorized release, tag, publication, or deployment action under `../WORKFLOW.md`.
+The durable policy is owned by `../decisions/0002-jira-controlled-delivery-with-project-local-advancement.md`, `../decisions/0004-agent-led-jira-intake-and-version-archives.md`, and `../decisions/0005-clv-authoritative-version-catalog.md`. Apply it directly rather than restating it in each retained version record. Every CLV version Idea and explicit snapshot identifies affected project areas, their resulting runtime or displayed versions, and any separately authorized release, tag, publication, or deployment action under `../WORKFLOW.md`.
 
 ## Retained Record State Semantics
 
@@ -132,10 +133,10 @@ Do not add optional files with empty placeholders. Create only the evidence area
 ## Optional Snapshot Workflow
 
 1. Classify the work through `../WORKFLOW.md`.
-2. Use the selected Jira Fix Version, release epic, and linked work items for active delivery.
+2. Use the selected CLV version Idea and connected CLX work items for active delivery.
 3. Implement repository by repository while preserving independent build and runtime boundaries.
 4. Validate touched repositories in proportion to changed behavior and risk and record the summary and refs in Jira.
-5. Promote durable behavior into `../system/` before closing the Jira Fix Version and its release epic.
+5. Promote durable behavior into `../system/` before closing and archiving the CLV version Idea.
 6. Move deferred or rejected ideas into `../backlog/`.
 7. Add an ADR under `../decisions/` only when a choice should remain discoverable after the version closes.
 8. Create `versions/vX.Y.Z-short-name/` only when an explicit repository-local closeout snapshot is required; include only evidence that must remain with the spec.

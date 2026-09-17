@@ -4,7 +4,7 @@
 
 Accepted
 
-Operational board states, exact Fix Version authority, optional workstream epics, and release-line archiving are refined by `0004-agent-led-jira-intake-and-version-archives.md`. Repository ownership and project-local version advancement in this decision remain in force.
+Operational board states are refined by `0004-agent-led-jira-intake-and-version-archives.md`. Exact-version authority, version-to-work relationships, and archival are superseded by `0005-clv-authoritative-version-catalog.md`. Repository ownership and project-local runtime/display version advancement in this decision remain in force.
 
 ## Context
 
@@ -42,3 +42,4 @@ CashLenX has separate specification, app, backend, website, and design-reference
 - `../versions/README.md`
 - `0003-v1-product-deployment-and-autonomous-release-charter.md`
 - `0004-agent-led-jira-intake-and-version-archives.md`
+- `0005-clv-authoritative-version-catalog.md`
