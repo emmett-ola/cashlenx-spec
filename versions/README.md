@@ -27,17 +27,13 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
 - `v0.8.9-shared-docker-network-and-layout` is closed with one external network
   shared by application and dependency containers and a project-local Docker
   definition layout.
-- Readiness for the first beta baseline is tracked in `../backlog/beta-baseline.md` until its boundary and implementation refs are selected.
+- The former beta and `v0.10.0` planning boundaries are consolidated into the first stable `v1.0.0` delivery record. `../backlog/beta-baseline.md` remains historical readiness evidence rather than an active version plan.
 - Product implementation remains pre-release while the accepted stable contract is now canonical at `/api/v1`; `/api/v0` remains a frozen previous-client alias.
-- Stable-release decisions are recorded in `../decisions/0001-stable-release-api-auth-and-capability-policy.md` and `../decisions/0002-jira-controlled-delivery-with-project-local-advancement.md`.
-- Active `v1.0.0` delivery is owned by Jira epic
-  [CLX-12](https://macacloud.atlassian.net/browse/CLX-12). The deployment
-  lifecycle review is scheduled as
-  [CLX-32](https://macacloud.atlassian.net/browse/CLX-32) through
-  [CLX-37](https://macacloud.atlassian.net/browse/CLX-37); Jira owns their
-  live status and dependency links. The sequence converges on CLX-37 lifecycle
-  acceptance, then CLX-30 release-gate automation, before the stable epic can
-  close.
+- Stable-release and delivery-workflow decisions are recorded in `../decisions/0001-stable-release-api-auth-and-capability-policy.md`, `../decisions/0002-jira-controlled-delivery-with-project-local-advancement.md`, and `../decisions/0004-agent-led-jira-intake-and-version-archives.md`.
+- Jira `Fix Version/s` is the exact active delivery boundary. The accepted
+  migration records all work completed before the workflow cutover under
+  `v1.0.0`; remaining compatible follow-up work begins at `v1.0.1`. Jira owns
+  live status, version membership, dependencies, and release-line state.
 
 Do not create a version directory for active planning, routine Jira work, or an audit. Create a repository-local snapshot only when durable closeout evidence explicitly needs to live with the specification.
 
@@ -71,7 +67,7 @@ the online source.
 | `v0.8.8-runtime-image-package-independence` | Closed | APK-independent Server image build using embedded timezone data and the base image health utility. |
 | `v0.8.9-shared-docker-network-and-layout` | Closed | Shared external network lifecycle, container-DNS dependency routes, and Docker definitions under each project's `docker/` tree. |
 
-Use Jira version epics to select and sequence active delivery. Each app-affecting
+Use Jira Fix Versions, release epics, and optional workstream epics to select and sequence active delivery. Each app-affecting
 version advances the app's `pubspec.yaml` version and records its repository
 commit independently from the spec commit.
 
@@ -80,25 +76,28 @@ commit independently from the spec commit.
 | Work level | Required active record |
 | --- | --- |
 | Lightweight | Jira is optional unless the work is already tracked or benefits from shared visibility. |
-| Standard | Jira story or task under the selected product-version epic. |
+| Standard | Jira story or task assigned to the selected Fix Version. |
 | High-impact | Jira issue with the task contract, triggered evidence, and recorded Human decision. |
 
 A repository-local closeout snapshot is optional and must not duplicate active Jira state. Promote Lightweight work to Standard when it changes external behavior or a controlled API, schema, auth, workflow, state, compatibility, migration, or deployment boundary. Promote Standard work to High-impact when a Human gate or substantial migration, security, recovery, or rollout plan is required.
 
 ## Version Naming And Buckets
 
-Name Jira version epics with the selected product version and outcome. When an explicit repository snapshot is required, use `vX.Y.Z-short-name/`.
+Name Jira Fix Versions `vX.Y.Z` and release epics with the selected version and outcome. When an explicit repository snapshot is required, use `vX.Y.Z-short-name/`.
 
 - `v0.x`: beta and pre-stable product versions. The accepted stable compatibility boundary has opened at `/api/v1`; `/api/v0` remains a frozen alias while release readiness completes.
 - `v1.0.0`: first stable release gate.
-- `v1.0.x`: small low-risk improvements after stable release.
-- `v1.x.0`: larger features, architecture changes, deployment-model changes, or platform capabilities.
+- Patch versions: compatible fixes, refactors, internal maintenance, and operational improvements.
+- Minor versions: compatible user, product, or platform capabilities.
+- Major versions: breaking compatibility or an intentional product or platform reset.
+
+Keep one active release line by default and label its work `release-line-vX-Y`. Closeout of one patch does not archive the line. When the line is fully closed and the next major or minor line begins, label its completed work `archived` and expose it through a saved-filter archive board. `Fix Version/s` remains the exact version authority; release-line and archive labels are navigation metadata.
 
 Version numbers express product delivery scope. They do not imply deployment, publication, branch promotion, or release tags.
 
 ## Implementation Version Policy
 
-The durable policy is owned by `../decisions/0002-jira-controlled-delivery-with-project-local-advancement.md`. Apply it directly rather than restating it in each retained version record. Every version epic and explicit snapshot identifies affected project areas, their resulting runtime or displayed versions, and any separately authorized release, tag, publication, or deployment action under `../WORKFLOW.md`.
+The durable policy is owned by `../decisions/0002-jira-controlled-delivery-with-project-local-advancement.md` and `../decisions/0004-agent-led-jira-intake-and-version-archives.md`. Apply it directly rather than restating it in each retained version record. Every release epic and explicit snapshot identifies affected project areas, their resulting runtime or displayed versions, and any separately authorized release, tag, publication, or deployment action under `../WORKFLOW.md`.
 
 ## Retained Record State Semantics
 
@@ -129,10 +128,10 @@ Do not add optional files with empty placeholders. Create only the evidence area
 ## Optional Snapshot Workflow
 
 1. Classify the work through `../WORKFLOW.md`.
-2. Use the selected Jira version epic and linked work items for active delivery.
+2. Use the selected Jira Fix Version, release epic, and linked work items for active delivery.
 3. Implement repository by repository while preserving independent build and runtime boundaries.
 4. Validate touched repositories in proportion to changed behavior and risk and record the summary and refs in Jira.
-5. Promote durable behavior into `../system/` before closing the Jira epic.
+5. Promote durable behavior into `../system/` before closing the Jira Fix Version and its release epic.
 6. Move deferred or rejected ideas into `../backlog/`.
 7. Add an ADR under `../decisions/` only when a choice should remain discoverable after the version closes.
 8. Create `versions/vX.Y.Z-short-name/` only when an explicit repository-local closeout snapshot is required; include only evidence that must remain with the spec.

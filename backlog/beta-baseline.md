@@ -1,21 +1,21 @@
 # Beta Baseline Readiness
 
-This record owns readiness work for the first coherent CashLenX beta baseline while no delivery version has been opened. It is a backlog candidate, not accepted version evidence.
+This record preserves the 2026-07-30 readiness audit that preceded the consolidated stable delivery boundary. It is historical backlog evidence, not an active version plan or accepted release evidence.
 
 ## Current Boundary
 
-- The spec remains pre-baseline during active `v0.x` development.
+- The audit was performed during pre-baseline `v0.x` development. Its former delivery boundary is now consolidated into Jira `v1.0.0` planning.
 - Unfinished app and web surfaces may remain visible when their actions use the existing coming-soon toast and do not claim that the feature is implemented.
 - Explicit transaction date-range filtering is not required before the beta baseline.
 - Complete statistics and reporting UI is not required before the beta baseline.
 
-## Open Gates
+## Unresolved Historical Evidence
 
 - [ ] Confirm the develop branches and implementation refs that define the baseline.
-- [ ] Confirm server `v0.10.0` hardening is explicitly outside the beta baseline.
+- [x] Consolidate the former server `v0.10.0` hardening boundary into the Jira `v1.0.0` delivery record.
 - [ ] Record fresh app analyze/tests, server tests, MongoDB smoke, MySQL smoke, and website build evidence when those project areas are included.
 - [ ] Promote verified durable facts into `../system/` and retain deferred scope in this backlog.
-- [ ] Open a concrete directory under `../versions/` only after the baseline boundary and affected project areas are selected.
+- [x] Retire the former beta boundary without opening a standalone snapshot; current delivery is controlled in Jira.
 
 ## Latest Readiness Audit
 
@@ -36,4 +36,4 @@ This audit does not approve a baseline and does not establish current deployment
 
 ## Promotion Rule
 
-When the beta boundary becomes concrete, create `../versions/vX.Y.Z-short-name/`, move the accepted task contract and fresh delivery evidence there, and leave only still-deferred work in `backlog/`. Do not use this readiness record as a substitute for a version close gate.
+Do not reopen this audit as an active delivery boundary. Any remaining relevant work must enter Jira through `Intake`, receive an exact Fix Version during triage, and satisfy the current version close gate. Create a repository-local closeout snapshot only when durable evidence explicitly needs to live with the specification.
