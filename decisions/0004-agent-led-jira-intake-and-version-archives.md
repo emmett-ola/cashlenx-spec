@@ -29,6 +29,7 @@ The product owner wants the agent to own requirement refinement, decomposition, 
 - Human questions are visible without turning ordinary implementation review into a blocking queue.
 - Jira retains full issue history while the active board remains focused on the current release line.
 - Release-line and archive labels are controlled navigation metadata; they must not be used as substitutes for `Fix Version/s` or workflow status.
+- While the authorized Rovo surface lacks project-administration operations, the five logical areas use the documented four-status compatibility mapping and temporary `planned-version-vX-Y-Z` migration labels. This is an operational bridge, not evidence that the physical board or Fix Versions were configured.
 - A closed Jira item or Fix Version does not prove branch promotion, tag creation, publication, deployment, migration, or production acceptance.
 
 ## References

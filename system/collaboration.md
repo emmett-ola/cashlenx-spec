@@ -70,7 +70,7 @@ Every executable item also has one of `size-s`, `size-m`, or `size-l`. Size expr
 
 ## Workflow And Evidence
 
-The primary board is `CashLenX — Active Delivery`. Jira workflow states are `Intake`, `Ready`, `In Progress`, `Awaiting Confirmation`, and `Done`.
+The accepted primary-board target is `CashLenX — Active Delivery`. Its logical workflow states are `Intake`, `Ready`, `In Progress`, `Awaiting Confirmation`, and `Done`.
 
 - `Intake` contains Human-authored raw demand and answered decision tasks awaiting agent triage.
 - `Ready` contains executable task contracts with an exact Fix Version, priority, size, acceptance criteria, and known dependencies.
@@ -81,6 +81,8 @@ The primary board is `CashLenX — Active Delivery`. Jira workflow states are `I
 When the product owner requests triage, the agent reads `Intake`, preserves original intent, inspects evidence, rewrites or splits the demand, assigns priority and version, links dependencies, and moves complete unblocked work to `Ready`. A `size-l` request is normally decomposed before it is ready.
 
 After the Human answers a decision task, they move it from `Awaiting Confirmation` to `Intake`. The next triage records the decision, updates and unblocks affected work, and moves the decision task to `Done`.
+
+The authorized Rovo surface currently maintains issue and Confluence content but does not expose Jira project administration. Until it can configure the target physically, the project uses `To Do` without `agent-ready` for logical `Intake`, `To Do` with unblocked `agent-ready` for logical `Ready`, `In Progress` directly, `In Review` with active Human-decision labels for logical `Awaiting Confirmation`, and `Done` directly. Temporary `planned-version-vX-Y-Z` labels preserve migration intent but are not authoritative Fix Versions. Physical board and release configuration remains tracked in Jira and must not be reported as complete.
 
 Jira state does not prove branch promotion, tag creation, publication, or deployment. Record those states explicitly when they occur.
 

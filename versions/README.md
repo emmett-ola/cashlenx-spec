@@ -34,6 +34,10 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
   migration records all work completed before the workflow cutover under
   `v1.0.0`; remaining compatible follow-up work begins at `v1.0.1`. Jira owns
   live status, version membership, dependencies, and release-line state.
+- While the authorized Rovo surface lacks release administration, Jira items
+  use temporary `planned-version-v1-0-0` and `planned-version-v1-0-1` labels to
+  preserve migration intent. These labels are not Fix Versions and must be
+  removed after authoritative version assignment becomes available.
 
 Do not create a version directory for active planning, routine Jira work, or an audit. Create a repository-local snapshot only when durable closeout evidence explicitly needs to live with the specification.
 

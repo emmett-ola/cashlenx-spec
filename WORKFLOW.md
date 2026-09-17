@@ -72,6 +72,20 @@ The primary board is `CashLenX — Active Delivery`. It uses five states:
 
 `Intake` and `Ready` use Jira's To Do category. `In Progress` and `Awaiting Confirmation` use the In Progress category. `Done` uses the Done category.
 
+### Rovo-Only Compatibility Mapping
+
+The authorized Rovo integration can maintain issues, labels, links, comments, Confluence, searches, and transitions that already exist. It does not currently expose project administration for statuses, releases, Fix Versions, filters, boards, columns, or card fields. Until those administration capabilities are available through the authorized integration, use this logical mapping without claiming the physical board has been reconfigured:
+
+| Logical area | Current Jira representation |
+| --- | --- |
+| `Intake` | `To Do` without `agent-ready` |
+| `Ready` | `To Do` with `agent-ready` and without `blocked` or `human-action-required` |
+| `In Progress` | `In Progress` |
+| `Awaiting Confirmation` | `In Review` with `human-decision` and `human-action-required` |
+| `Done` | `Done` |
+
+Use `planned-version-vX-Y-Z` only as temporary migration metadata while the corresponding Fix Version cannot be created through Rovo. It is not an authoritative delivery version. Replace it with `Fix Version/s` and remove the temporary label when project administration becomes available. The active-board and archive-board filters remain accepted target configuration, not a completed change, until they can be verified through the authorized integration.
+
 ### Triage On Request
 
 When the product owner asks for requirement triage:
