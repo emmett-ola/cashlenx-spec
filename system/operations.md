@@ -229,12 +229,19 @@ acceptance evidence remain tracked in Jira until delivered.
   variables directly and does not rebuild them with credential, port, or
   database fallback constants.
 - `../scripts/sync-env.sh` owns workspace environment-template synchronization.
-- Run it after changing any implementation `.env.example`; it appends missing keys to ignored local `.env` files without overwriting configured values.
-- `../scripts/configure-local-env.sh` selects the standard loopback ports,
+  Without arguments it preserves the legacy `.env` behavior. `--profile local`,
+  `--profile testing`, and `--profile production` target the corresponding
+  ignored named profile. Missing files are created from `.env.example`; missing
+  keys are appended without overwriting configured values. `--check` is a
+  read-only, value-free structural check that also rejects duplicate keys.
+- Run synchronization after changing any implementation `.env.example`.
+- `../scripts/configure-local-env.sh` creates or updates `.env.local` and selects the standard loopback ports,
   shared network, and Docker frontend for all local runtime projects. It creates
   strong local-only secrets only when a required value is empty or still a
   placeholder, preserves existing configured secrets, and never reads Testing
-  or Production environment files or prints secret values.
+  or Production environment files or prints secret values. Operators may select
+  a profile with `ENV_FILE=.env.<profile>` or with a safe repository-local
+  `.env` symbolic link.
 - Each runtime project may keep ignored `.env.local`, `.env.testing`, and
   `.env.production` files for owner-managed sensitive deployment values. The
   synchronization workflow must not inspect or maintain their contents without
@@ -247,6 +254,33 @@ acceptance evidence remain tracked in Jira until delivered.
   invalid booleans, and known legacy weak values without printing their contents.
   Server start validates only its selected database and enabled capabilities.
   Stop requires the selected file but does not validate values.
+
+## Coordinated environment lifecycle
+
+`../scripts/environment-lifecycle.sh` is the Spec-owned coordination entry
+point for a selected `local`, `testing`, or `production` profile and a selected
+`mongodb` or `mysql` dependency. It exposes explicit `preflight`, `build`,
+`start`, `status`, `doctor`, `logs`, and `stop` phases. Preflight verifies the
+three repository catalogs, selected database, shared network and container
+frontend, published-port uniqueness, component identities, required secrets,
+and lifecycle entry points without printing configured values.
+
+Build and start follow dependency → Server → App → Website order. Start uses
+each repository's health gate before continuing. Stop follows reverse order and
+only manages components recorded as started by the current coordinator run;
+pre-existing healthy components are left outside coordinator state. A partial
+start failure rolls back only recorded components. Repository stop scripts
+preserve images, named volumes, and bind-mounted data.
+
+Example:
+
+```bash
+bash scripts/environment-lifecycle.sh preflight --profile local --database mongodb
+bash scripts/environment-lifecycle.sh build --profile local --database mongodb
+bash scripts/environment-lifecycle.sh start --profile local --database mongodb
+bash scripts/environment-lifecycle.sh status --profile local --database mongodb
+bash scripts/environment-lifecycle.sh stop --profile local --database mongodb
+```
 - Server dependency lifecycle scripts use the same file-selection boundary.
   Their starts validate only credentials owned by the selected dependency;
   their builds permit incomplete credentials and their stops remain available

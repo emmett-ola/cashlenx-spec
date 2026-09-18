@@ -2,3 +2,4 @@
 .rehearsal-worktrees/
 .release-worktrees/
 .release-validation-worktrees/
+.state/

@@ -4,7 +4,15 @@ set -euo pipefail
 spec_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 workspace_dir="$(cd "$spec_dir/.." && pwd -P)"
 
-"$spec_dir/scripts/sync-env.sh"
+if [[ "${1:-}" == --workspace-dir ]]; then
+  [[ $# -eq 2 ]] || { echo "Usage: scripts/configure-local-env.sh [--workspace-dir PATH]" >&2; exit 2; }
+  workspace_dir="$(cd "$2" && pwd -P)"
+elif [[ $# -ne 0 ]]; then
+  echo "Usage: scripts/configure-local-env.sh [--workspace-dir PATH]" >&2
+  exit 2
+fi
+
+"$spec_dir/scripts/sync-env.sh" --profile local --workspace-dir "$workspace_dir"
 
 set_key() {
   local file="$1"
@@ -46,9 +54,9 @@ ensure_secret() {
   fi
 }
 
-app_env="$workspace_dir/cashlenx-app/.env"
-server_env="$workspace_dir/cashlenx-server/.env"
-website_env="$workspace_dir/cashlenx-website/.env"
+app_env="$workspace_dir/cashlenx-app/.env.local"
+server_env="$workspace_dir/cashlenx-server/.env.local"
+website_env="$workspace_dir/cashlenx-website/.env.local"
 
 set_key "$app_env" APP_ENV dev
 set_key "$app_env" API_SCHEME http
@@ -91,5 +99,5 @@ set_key "$website_env" WEBSITE_PORT 11065
 
 chmod 600 "$app_env" "$server_env" "$website_env" 2>/dev/null || true
 
-echo "Local Docker environment configured for App, Server, MongoDB, MySQL compatibility, and Website."
+echo "Local Docker environment configured in .env.local for App, Server, MongoDB, MySQL compatibility, and Website."
 echo "Existing non-placeholder secrets were preserved; no secret values were printed."

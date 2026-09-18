@@ -1,5 +1,27 @@
 # Testing
 
+## Environment profile synchronization
+
+The Spec-owned disposable smoke suite verifies named-profile creation,
+value-preserving missing-key synchronization, repeat safety, read-only checks,
+duplicate rejection, invalid-profile rejection, and output redaction:
+
+```bash
+bash test/scripts/env-profile-sync-smoke.sh
+```
+
+The suite builds an isolated three-repository fixture and never reads or changes
+owner-managed `.env.testing` or `.env.production` files.
+
+The coordination suite verifies all three named profiles, MongoDB/MySQL
+selection, delegated phase order, health gating, reverse stop order,
+pre-existing resource preservation, partial-start rollback, mismatch failures,
+and value-redacted diagnostics:
+
+```bash
+bash test/scripts/environment-lifecycle-smoke.sh
+```
+
 This document owns current validation commands, evidence boundaries, and testing strategy. Select only the checks triggered by the change through `../WORKFLOW.md` and `quality-attributes.md`.
 
 ## Evidence Boundaries
