@@ -18,6 +18,7 @@ mkdir -p "$fixture_dir/cashlenx-server/scripts/dependencies/mysql"
 cat > "$fixture_dir/cashlenx-app/.env.example" <<'EOF'
 CONTAINER_FRONTEND=docker
 DOCKER_NETWORK_NAME=fixture-network
+APP_PROJECT_NAME=fixture-app-project
 CONTAINER_NAME=fixture-app
 WEB_PORT=10064
 API_PORT=10063
@@ -26,6 +27,9 @@ cat > "$fixture_dir/cashlenx-server/.env.example" <<'EOF'
 CONTAINER_FRONTEND=docker
 DOCKER_NETWORK_NAME=fixture-network
 DB_TYPE=mongodb
+SERVER_PROJECT_NAME=fixture-server-project
+MONGO_PROJECT_NAME=fixture-mongodb-project
+MYSQL_PROJECT_NAME=fixture-mysql-project
 BACKEND_CONTAINER_NAME=fixture-server
 MONGO_CONTAINER_NAME=fixture-mongodb
 MYSQL_CONTAINER_NAME=fixture-mysql
@@ -41,6 +45,7 @@ EOF
 cat > "$fixture_dir/cashlenx-website/.env.example" <<'EOF'
 CONTAINER_FRONTEND=docker
 DOCKER_NETWORK_NAME=fixture-network
+WEBSITE_PROJECT_NAME=fixture-website-project
 WEBSITE_CONTAINER_NAME=fixture-website
 WEBSITE_PORT=11065
 EOF
@@ -60,7 +65,17 @@ printf '%s:%s\n' "$component" "$action" >> "$FAKE_LIFECYCLE_LOG"
 marker="$FAKE_RUNTIME_STATE/$component"
 case "$action" in
   status)
-    if [[ -f "$marker" ]]; then echo 'health=healthy'; else echo 'container_state=missing'; exit 1; fi
+    if [[ -f "$marker" && "${FAKE_UNHEALTHY_COMPONENT:-}" == "$component" ]]; then
+      echo 'container_state=running'
+      echo 'health=unhealthy'
+      exit 1
+    elif [[ -f "$marker" ]]; then
+      echo 'container_state=running'
+      echo 'health=healthy'
+    else
+      echo 'container_state=missing'
+      exit 1
+    fi
     ;;
   start)
     [[ "${FAKE_FAIL_COMPONENT:-}" != "$component" ]] || exit 1
@@ -84,6 +99,7 @@ done
 
 run_lifecycle() {
   FAKE_LIFECYCLE_LOG="$log_file" FAKE_RUNTIME_STATE="$runtime_dir" \
+    FAKE_FAIL_COMPONENT="${FAKE_FAIL_COMPONENT:-}" FAKE_UNHEALTHY_COMPONENT="${FAKE_UNHEALTHY_COMPONENT:-}" \
     bash "$spec_dir/scripts/environment-lifecycle.sh" "$@" \
       --workspace-dir "$fixture_dir" --state-dir "$state_dir"
 }
@@ -138,6 +154,29 @@ test ! -f "$runtime_dir/database"
 test ! -e "$state_dir/local-mongodb.state"
 grep -Fx 'database:stop' "$log_file" >/dev/null
 
+: > "$log_file"
+if output="$(FAKE_UNHEALTHY_COMPONENT=database run_lifecycle start --profile local --database mongodb 2>&1)"; then
+  echo "Expected dependency health-gate failure" >&2
+  exit 1
+fi
+grep -F 'health gate failed' <<< "$output" >/dev/null
+grep -F 'value-free status/doctor diagnostics' <<< "$output" >/dev/null
+test ! -f "$runtime_dir/database"
+test ! -e "$state_dir/local-mongodb.state"
+
+: > "$runtime_dir/app"
+: > "$log_file"
+if output="$(FAKE_UNHEALTHY_COMPONENT=app run_lifecycle start --profile local --database mongodb 2>&1)"; then
+  echo "Expected a pre-existing degraded App to be rejected" >&2
+  exit 1
+fi
+grep -F 'existing degraded container' <<< "$output" >/dev/null
+test -f "$runtime_dir/app"
+test ! -f "$runtime_dir/database"
+test ! -f "$runtime_dir/server"
+test ! -e "$state_dir/local-mongodb.state"
+rm -f "$runtime_dir/app"
+
 server_env="$fixture_dir/cashlenx-server/.env.local"
 sed -i 's/^DB_TYPE=mongodb$/DB_TYPE=mysql/' "$server_env"
 run_lifecycle preflight --profile local --database mysql >/dev/null
@@ -158,5 +197,13 @@ if grep -F 'other-network' <<< "$output" >/dev/null; then
   echo "Preflight output exposed a configured value" >&2
   exit 1
 fi
+
+sed -i 's/^DOCKER_NETWORK_NAME=.*$/DOCKER_NETWORK_NAME=fixture-network/' "$app_env"
+sed -i 's/^APP_PROJECT_NAME=.*$/APP_PROJECT_NAME=fixture-server-project/' "$app_env"
+if output="$(run_lifecycle preflight --profile local --database mysql 2>&1)"; then
+  echo "Expected project identity collision" >&2
+  exit 1
+fi
+grep -F 'duplicate project identity' <<< "$output" >/dev/null
 
 echo "Environment lifecycle coordination smoke checks passed."

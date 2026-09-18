@@ -262,15 +262,17 @@ point for a selected `local`, `testing`, or `production` profile and a selected
 `mongodb` or `mysql` dependency. It exposes explicit `preflight`, `build`,
 `start`, `status`, `doctor`, `logs`, and `stop` phases. Preflight verifies the
 three repository catalogs, selected database, shared network and container
-frontend, published-port uniqueness, component identities, required secrets,
-and lifecycle entry points without printing configured values.
+frontend, published-port uniqueness, container and Compose project identities,
+required secrets, and lifecycle entry points without printing configured values.
 
 Build and start follow dependency → Server → App → Website order. Start uses
 each repository's health gate before continuing. Stop follows reverse order and
 only manages components recorded as started by the current coordinator run;
 pre-existing healthy components are left outside coordinator state. A partial
-start failure rolls back only recorded components. Repository stop scripts
-preserve images, named volumes, and bind-mounted data.
+start or health-gate failure emits the selected repository's value-free status
+and doctor evidence, then rolls back only recorded components. An existing
+degraded container is never claimed or mutated. Repository stop scripts preserve
+images, named volumes, and bind-mounted data.
 
 Example:
 

@@ -150,6 +150,17 @@ preflight() {
     seen+="$identity|"
   done
 
+  seen="|"
+  for identity in \
+    "$(require_key "$app_env" APP_PROJECT_NAME)" \
+    "$(require_key "$server_env" SERVER_PROJECT_NAME)" \
+    "$([[ "$database" == mongodb ]] && require_key "$server_env" MONGO_PROJECT_NAME || require_key "$server_env" MYSQL_PROJECT_NAME)" \
+    $([[ "$include_website" == true ]] && require_key "$website_env" WEBSITE_PROJECT_NAME || true); do
+    [[ "$identity" =~ ^[A-Za-z0-9][A-Za-z0-9_.-]*$ ]] || { echo "Preflight failed: invalid project identity" >&2; return 1; }
+    [[ "$seen" != *"|$identity|"* ]] || { echo "Preflight failed: duplicate project identity" >&2; return 1; }
+    seen+="$identity|"
+  done
+
   reject_placeholder "$server_env" JWT_SECRET
   reject_placeholder "$server_env" ADMIN_PASSWORD
   if [[ "$database" == mongodb ]]; then
@@ -187,6 +198,13 @@ rollback_started() {
   rm -f "$state_file"
 }
 
+diagnose_component() {
+  local component="$1"
+  echo "$component: value-free status/doctor diagnostics" >&2
+  run_component "$component" status >&2 || true
+  run_component "$component" doctor >&2 || true
+}
+
 case "$phase" in
   preflight)
     preflight
@@ -203,17 +221,30 @@ case "$phase" in
     fi
     : > "$state_file"
     while IFS= read -r component; do
-      if run_component "$component" status >/dev/null 2>&1; then
+      status_output=""
+      if status_output="$(run_component "$component" status 2>&1)"; then
         echo "$component: already healthy; left unmanaged by this run"
         continue
       fi
+      if grep -E '^container_state=' <<< "$status_output" | grep -Fv '=missing' >/dev/null; then
+        echo "$component: an existing degraded container was detected; refusing to mutate it" >&2
+        diagnose_component "$component"
+        rollback_started
+        exit 1
+      fi
       if ! run_component "$component" start; then
         echo "$component: start failed; rolling back resources started by this run" >&2
+        diagnose_component "$component"
         rollback_started
         exit 1
       fi
       printf '%s\n' "$component" >> "$state_file"
-      run_component "$component" status >/dev/null
+      if ! run_component "$component" status >/dev/null; then
+        echo "$component: health gate failed; rolling back resources started by this run" >&2
+        diagnose_component "$component"
+        rollback_started
+        exit 1
+      fi
       echo "$component: started and health-gated"
     done < <(components)
     ;;

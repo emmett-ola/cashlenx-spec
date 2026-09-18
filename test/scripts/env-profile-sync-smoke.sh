@@ -76,6 +76,19 @@ if [[ -L "$app_env" ]]; then
   cp "$outside_env" "$app_env"
 fi
 
+website_env="$fixture_dir/cashlenx-website/.env.local"
+sed -i '/^PUBLIC_SETTING=/d' "$website_env"
+chmod 400 "$website_env" 2>/dev/null || true
+if [[ ! -w "$website_env" ]]; then
+  if output="$(run_sync --profile local 2>&1)"; then
+    echo "Expected a non-writable profile to reject synchronization" >&2
+    exit 1
+  fi
+  grep -F '.env.local is not writable; missing key: PUBLIC_SETTING' <<< "$output" >/dev/null
+fi
+chmod 600 "$website_env" 2>/dev/null || true
+run_sync --profile local >/dev/null
+
 configure_output="$(bash "$spec_dir/scripts/configure-local-env.sh" --workspace-dir "$fixture_dir")"
 server_env="$fixture_dir/cashlenx-server/.env.local"
 grep -Fx 'API_PORT=10063' "$app_env" >/dev/null

@@ -16,7 +16,8 @@ owner-managed `.env.testing` or `.env.production` files.
 The coordination suite verifies all three named profiles, MongoDB/MySQL
 selection, delegated phase order, health gating, reverse stop order,
 pre-existing resource preservation, partial-start rollback, mismatch failures,
-and value-redacted diagnostics:
+post-start health-gate rollback, degraded pre-existing resource refusal,
+container/project identity collisions, and value-redacted diagnostics:
 
 ```bash
 bash test/scripts/environment-lifecycle-smoke.sh
