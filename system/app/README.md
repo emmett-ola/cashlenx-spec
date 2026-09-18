@@ -27,7 +27,12 @@ Current stack:
 - `lib/core/config/app_config.dart`: environment loading and API base URL composition.
 - `lib/core/services/secure_storage_service.dart`: token and remember-me persistence.
 - `lib/network/cashlenx_api.dart`: app API adapter methods.
-- `lib/features/home/presentation/pages/home_page.dart`: authenticated shell and legacy finance UI surfaces.
+- `lib/features/home/presentation/pages/home_page.dart`: authenticated shell,
+  route-section coordination, and owning library for the Home presentation
+  parts.
+- `lib/features/home/presentation/pages/home/`: dashboard, category,
+  transaction, settings, shared-widget, and model presentation parts. They
+  remain one private Dart library and are not imported independently.
 - `lib/features/budget/`: typed budget domain/data/presentation boundary.
 - `lib/features/statistics/`: typed expanded-statistics domain/data/presentation boundary.
 - `lib/features/profile/presentation/pages/profile_page.dart`: profile and avatar/currency controls.
@@ -119,9 +124,10 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 ## Known App Gaps
 
 - Auth provider/repository unit coverage is lighter than live integration coverage.
-- Dashboard, category, transaction, and settings presentation still share the
-  legacy home-shell file; budget and expanded statistics now have independent
-  feature boundaries.
+- Dashboard, category, transaction, and settings presentation are separated
+  into focused Home library parts. Their private models and shared widgets
+  still belong to the Home library; budget and expanded statistics retain
+  independent feature boundaries.
 - Transaction attachments and export/import do not yet have selected mobile/web
   product workflows.
 
