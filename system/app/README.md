@@ -89,6 +89,9 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   in-flight refresh cannot restore the session. Demo entry also clears real
   session credentials before creating isolated in-memory demo state.
 - Authenticated home shell with Home, Category, Add, Budget, and Settings tabs.
+- Primary authenticated routes replace shell content in place without a
+  horizontal whole-canvas transition; route URLs, refresh, and browser history
+  remain active.
 - Real API-backed dashboard and finance flows for normal users.
 - The dashboard summary defaults to the Day range on each mount; Month, Year,
   and Total remain session-local selectable views.
