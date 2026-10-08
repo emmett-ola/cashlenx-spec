@@ -92,6 +92,10 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 - Primary authenticated routes replace shell content in place without a
   horizontal whole-canvas transition; route URLs, refresh, and browser history
   remain active.
+- Post-splash routes share a full-height responsive shell. Interactive content
+  fills phone widths and stays centered within a 430 px mobile canvas on wider
+  viewports, while excess horizontal space uses the active theme background.
+  Splash remains a full-viewport presentation outside this shell.
 - Real API-backed dashboard and finance flows for normal users.
 - The dashboard summary defaults to the Day range on each mount; Month, Year,
   and Total remain session-local selectable views.
@@ -124,7 +128,8 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 - Cash-flow semantics are consistent across transaction list and detail
   surfaces: income uses success/green and expense uses error/red.
 - Golden visual baselines cover dashboard layout at 390 px, the 430 px maximum
-  shell width, and a 768 px host, plus settings and profile at shell width.
+  shell width, a 768 px tablet host, and a 1440 px desktop host, plus settings
+  and profile at shell width.
 - Docker-based Flutter web deployment using `docker/Dockerfile`,
   `docker/compose.yml`, explicit project/container names, the shared absolute
   `DOCKER_NETWORK_NAME`, and nginx route fallback.
