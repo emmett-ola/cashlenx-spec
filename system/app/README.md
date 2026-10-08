@@ -114,7 +114,8 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 - The selected theme color drives primary controls, accents, selected states, and highlights. Splash and pre-splash visuals remain brand-stable rather than following the selected theme color.
 - Live Figma Make colors, 4 px spacing increments, and 8/16/24 px radii are
   centralized in `AppDesignTokens`. Shared auth fields and actions use the
-  confirmed 8 px control radius.
+  confirmed 8 px control radius. Entered auth text uses a high-contrast
+  theme-aware foreground while placeholders remain visually secondary.
 - Cash-flow semantics are consistent across transaction list and detail
   surfaces: income uses success/green and expense uses error/red.
 - Golden visual baselines cover dashboard layout at 390 px, the 430 px maximum
