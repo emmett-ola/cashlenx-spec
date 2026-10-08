@@ -73,7 +73,9 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 - Live-design onboarding uses three photographic Unsplash panels with branded
   loading/error fallbacks. Splash and shared auth branding are localized.
 - First-login setup uses the official teal logo and exposes the complete
-  21-currency catalog confirmed in the live design.
+  21-currency catalog confirmed in the live design. It persists the selected
+  authenticated-user currency before marking setup complete; a failed write
+  keeps the user on setup with an error.
 - Token-backed auth persistence with remember-me state. Session pairs are saved
   refresh-first and partial writes fail signed out; remembered startup restores
   only a complete refresh-backed session.
