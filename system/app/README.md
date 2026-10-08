@@ -90,6 +90,8 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   session credentials before creating isolated in-memory demo state.
 - Authenticated home shell with Home, Category, Add, Budget, and Settings tabs.
 - Real API-backed dashboard and finance flows for normal users.
+- The dashboard summary defaults to the Day range on each mount; Month, Year,
+  and Total remain session-local selectable views.
 - Session-local editable data for demo users. Choosing demo mode resets the demo store before entering the session, and demo mode does not call authenticated APIs.
 - Transaction list, add, edit, delete, category selection, date selection, validation, and server error handling.
 - Transaction discovery supports type, category, inclusive from/to date, and
