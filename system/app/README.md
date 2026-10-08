@@ -77,6 +77,9 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 - Token-backed auth persistence with remember-me state. Session pairs are saved
   refresh-first and partial writes fail signed out; remembered startup restores
   only a complete refresh-backed session.
+- Interactive login submission keeps the signed-out route state stable. A
+  rejected login remains on the mounted form, preserves its current field
+  values, and presents the server error without a splash-screen redirect.
 - Eligible concurrent 401 responses share one rotating refresh attempt. Stale
   requests reuse the newly stored access token, rejected refresh credentials
   expire the session, and transient network failure retains it for later retry.
