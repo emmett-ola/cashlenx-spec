@@ -40,6 +40,9 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
   `v1.0.3` record for the unified identity already promoted to Testing.
 - [CLV-11](https://macacloud.atlassian.net/browse/CLV-11) is the authoritative
   active `v1.0.4` delivery boundary for category and statistics correctness.
+  The exact App and Server candidates have been promoted to `testing`; Testing
+  acceptance remains pending and no production promotion or deployment is
+  implied.
 - CLX items use matching exact-version labels and
   Product Discovery delivery links. CLV owns version identity; labels support
   queries and do not form a second authority.
