@@ -70,6 +70,10 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 ## Current Implemented Behavior
 
 - Splash, login, registration, password reset, and demo mode.
+- The official camera-and-cash brand mark is shared by splash, authentication,
+  first-login setup, About, and Flutter Web bootstrap surfaces. Platform icon
+  assets cover Android adaptive and round launchers, iOS light/dark/tinted
+  appearances, macOS, Windows, and Flutter Web/PWA metadata.
 - Live-design onboarding uses three photographic Unsplash panels with branded
   loading/error fallbacks. Splash and shared auth branding are localized.
 - First-login setup uses the official teal logo and exposes the complete

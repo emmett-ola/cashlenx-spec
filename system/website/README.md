@@ -17,6 +17,9 @@ Current stack:
 
 The first scaffold keeps content in `src/App.tsx` so the documentation structure is easy to revise while the source of truth is still settling.
 
+The site header uses the official camera-and-cash brand mark. Browser favicon,
+Apple touch icon, and installable web-app metadata use the matching icon set.
+
 Future MDX, generated OpenAPI summaries, and spec-to-website content pipelines remain deferred in `../../backlog/`; they are not current website behavior.
 
 ## Standard Commands
