@@ -48,6 +48,8 @@ Current English authentication branding uses the subtitle `Your Financial Compan
 - Create, edit, and delete categories.
 - Use parent/child hierarchy.
 - Select a parent to expose children; selecting the active parent can return to the previous level in the app category selector.
+- Select an emoji and background color that persist after category refresh,
+  screen re-entry, and later sign-in.
 
 ### Dashboard
 
@@ -74,6 +76,9 @@ Current English authentication branding uses the subtitle `Your Financial Compan
 - The server exposes statistics summary, breakdown, trends, top expenses, dashboard, chart, import, and export endpoints.
 - The app's expanded statistics screen uses yearly summary, monthly comparison,
   and top-expense APIs with an isolated ledger-derived demo equivalent.
+- The monthly comparison shows January through December in order, including
+  zero-value months, with every localized month label visible on compact and
+  wide layouts.
 
 ### Budgeting
 

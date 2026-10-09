@@ -128,6 +128,10 @@ and `active_theme_color` per authenticated user.
 - `PUT /category/{id}`
 - `DELETE /category/{id}`
 
+Category create/update bodies accept additive `emoji` and `bg_color` fields.
+`bg_color` uses `#RRGGBB`. Existing values are preserved when an update omits a
+field, and records created before the fields use `🙂` and `#E5E7EB` defaults.
+
 ### Budget
 
 - `POST /budget`
@@ -162,6 +166,10 @@ duplicate ledger totals.
 - `GET /statistic/chart/category-distribution/{period}/{date}`
 - `GET /statistic/chart/monthly-comparison/{year}`
 - `GET /statistic/chart/spending-heatmap/{year}`
+
+Monthly comparison returns January through December in chronological order.
+The `months`, `income`, `expense`, and `balance` arrays each contain 12 entries,
+with zero values for months without transactions.
 
 ## Client Integration Rules
 

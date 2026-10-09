@@ -36,7 +36,11 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
   promoted, deployed, migrated, or accepted in production.
 - [CLV-8](https://macacloud.atlassian.net/browse/CLV-8) is the authoritative
   `v1.0.1` version record for compatible follow-up maintenance.
-- CLX items use matching `version-v1-0-0` or `version-v1-0-1` labels and
+- [CLV-10](https://macacloud.atlassian.net/browse/CLV-10) is the authoritative
+  `v1.0.3` record for the unified identity already promoted to Testing.
+- [CLV-11](https://macacloud.atlassian.net/browse/CLV-11) is the authoritative
+  active `v1.0.4` delivery boundary for category and statistics correctness.
+- CLX items use matching exact-version labels and
   Product Discovery delivery links. CLV owns version identity; labels support
   queries and do not form a second authority.
 

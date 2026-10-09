@@ -7,8 +7,8 @@
 Current stack:
 
 - Flutter with Dart SDK `>=3.13.0 <4.0.0`.
-- Runtime/displayed version `1.0.3+9` on the coordinated, untagged 1.0.3
-  testing-candidate line.
+- Runtime/displayed version `1.0.4+10` on the coordinated, untagged 1.0.4
+  delivery line.
 - Feature-first Clean Architecture.
 - Riverpod for state.
 - GoRouter for routing.
@@ -111,12 +111,17 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   recovery expose the current filter state.
 - Add and edit transactions share amount/keypad, category, date, description, remark, and attachment-placeholder behavior. Their category selectors remember the last income and expense selections independently while the transaction type changes.
 - Hierarchical category management.
+- Category emoji and background-color customization persists through the Server
+  and remains visible after list/tree reloads; demo categories use the same
+  presentation fields in memory.
 - Monthly category-budget CRUD for authenticated users through `/budget`, with
   ledger-derived usage, month navigation, loading/error/empty recovery, and a
   mutable isolated demo equivalent.
 - Expanded yearly statistics aggregate existing summary, monthly-comparison,
   and top-expense endpoints instead of prototype test data; demo statistics are
-  derived from the demo ledger.
+  derived from the demo ledger. Monthly comparison normalizes compatible
+  partial responses into January through December with zero-filled gaps, and
+  all twelve localized labels remain visible on compact and wide layouts.
 - Localized transaction dates, calendar month titles, weekday labels, and first-day-of-week behavior through Flutter localizations.
 - Profile fetch/update for `nickname`, `avatar_url`, `gender`, `phone_number`,
   `location`, and `birth_date`. Avatars come from the fixed preset library; the fallback asset is `assets/images/avatars/f9b59ca5421b2b7ef2e31c2ba4d827f48d22594a.png`.

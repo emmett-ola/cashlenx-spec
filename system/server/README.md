@@ -6,8 +6,8 @@
 
 Current stack:
 
-- Runtime contract version `1.0.3` on canonical `/api/v1`, with frozen `/api/v0`
-  compatibility routing. This is an untagged testing candidate.
+- Runtime contract version `1.0.4` on canonical `/api/v1`, with frozen `/api/v0`
+  compatibility routing. This is an untagged delivery candidate.
 - Go `1.27.1`.
 - Cobra CLI.
 - Gorilla Mux HTTP routing.
@@ -75,7 +75,9 @@ cashlenx-server/
 - User profile query/update, configuration query/create/update, password change, email change request/confirm, and account deletion.
 - Admin bootstrap user initialization on server startup.
 - Cash flow CRUD, date/range queries, summaries, pagination, and filtering.
-- Category CRUD plus tree, children, and name lookup.
+- Category CRUD plus tree, children, and name lookup. User-selected `emoji` and
+  `bg_color` values persist through both database backends, backup/restore, and
+  all response shapes; omitted update fields preserve stored values.
 - User-scoped monthly budget CRUD. Limits persist per expense category and
   `YYYY-MM` period; spent, remaining, and progress values are derived from the
   authoritative cash-flow ledger.
@@ -85,6 +87,8 @@ cashlenx-server/
 - Backup/restore preflight validation and progress reporting.
 - Compensating rollback for destructive admin restore and versioned MySQL migrations; failed migration compensation retains dirty state and blocks startup.
 - MySQL migration tracking and startup migration application.
+- Ordered migration `017` adds/backfills category presentation defaults in
+  MySQL and MongoDB without replacing existing non-empty values.
 - MongoDB startup migration tracking through immutable ordered JavaScript
   identities, SHA-256 checksums, native Go handlers, and durable
   `schema_migrations` records. Unknown, reordered, renamed, modified, or dirty

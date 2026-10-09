@@ -102,6 +102,8 @@ Current behavior includes:
 - Lookup children by parent ID.
 - Query the category tree.
 - Support hierarchical parent/child categories in the app selector.
+- Persist a bounded Unicode `emoji` and opaque `#RRGGBB` background color for
+  each category, with safe defaults for older records.
 
 ### Statistic
 
@@ -115,6 +117,8 @@ Current server capabilities include:
 - Top expenses by daily, monthly, and yearly period.
 - Dashboard data by period and date.
 - Chart data for income/expense, category distribution, monthly comparison, and spending heatmap.
+- Monthly comparison always represents all twelve calendar months in order;
+  empty months remain present with zero values.
 
 ### Budget
 
