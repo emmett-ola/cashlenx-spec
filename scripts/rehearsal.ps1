@@ -8,24 +8,8 @@ param(
 $ErrorActionPreference = "Stop"
 $specPath = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $workspacePath = (Resolve-Path (Join-Path $specPath "..")).Path
-$windowsGitBashPath = "C:\Program Files\Git\bin\bash.exe"
-$bashCommand = Get-Command bash -ErrorAction SilentlyContinue
-$bashPath = if (Test-Path -LiteralPath $windowsGitBashPath -PathType Leaf) {
-    $windowsGitBashPath
-} elseif ($bashCommand) {
-    $bashCommand.Source
-} else {
-    $null
-}
-$windowsGitOpenSSLPath = "C:\Program Files\Git\mingw64\bin\openssl.exe"
-$opensslCommand = Get-Command openssl -ErrorAction SilentlyContinue
-$opensslPath = if (Test-Path -LiteralPath $windowsGitOpenSSLPath -PathType Leaf) {
-    $windowsGitOpenSSLPath
-} elseif ($opensslCommand) {
-    $opensslCommand.Source
-} else {
-    $null
-}
+$bashPath = "C:\Program Files\Git\bin\bash.exe"
+$opensslPath = "C:\Program Files\Git\mingw64\bin\openssl.exe"
 $runId = (Get-Date).ToUniversalTime().ToString("yyyyMMddTHHmmssZ") + "-" + ([Guid]::NewGuid().ToString("N").Substring(0, 8))
 $worktreeRoot = Join-Path $specPath ".rehearsal-worktrees\$runId"
 if (-not $OutputRoot) { $OutputRoot = Join-Path $specPath ".artifacts\rehearsal" }
@@ -307,8 +291,8 @@ location / { proxy_pass http://${appContainer}:8080; } } }
 
 try {
     foreach ($required in @("git", "docker")) { if (-not (Get-Command $required -ErrorAction SilentlyContinue)) { throw "$required is required." } }
-    if (-not $bashPath -or -not (Test-Path -LiteralPath $bashPath -PathType Leaf)) { throw "Bash is required." }
-    if (-not $opensslPath -or -not (Test-Path -LiteralPath $opensslPath -PathType Leaf)) { throw "OpenSSL is required." }
+    if (-not (Test-Path -LiteralPath $bashPath)) { throw "Git Bash is required at $bashPath" }
+    if (-not (Test-Path -LiteralPath $opensslPath)) { throw "Git OpenSSL is required at $opensslPath" }
     $dockerRuntime.engine_version = (& docker version --format '{{.Server.Version}}').Trim()
     Assert-LastExit "Resolve Docker engine version"
     $dockerRuntime.compose_version = (& docker compose version --short).Trim()

@@ -13,15 +13,7 @@ param(
 $ErrorActionPreference = "Stop"
 $specPath = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $workspacePath = (Resolve-Path (Join-Path $specPath "..")).Path
-$windowsGitBashPath = "C:\Program Files\Git\bin\bash.exe"
-$bashCommand = Get-Command bash -ErrorAction SilentlyContinue
-$bashPath = if (Test-Path -LiteralPath $windowsGitBashPath -PathType Leaf) {
-    $windowsGitBashPath
-} elseif ($bashCommand) {
-    $bashCommand.Source
-} else {
-    $null
-}
+$bashPath = "C:\Program Files\Git\bin\bash.exe"
 $versionPath = Join-Path $specPath "release\VERSION"
 
 if (-not $Version) { $Version = (Get-Content -Raw -LiteralPath $versionPath).Trim() }
@@ -158,7 +150,7 @@ function Invoke-PackagePass([hashtable]$Worktrees, [string]$PassRoot, [hashtable
     }
 }
 
-if (-not $bashPath -or -not (Test-Path -LiteralPath $bashPath -PathType Leaf)) { throw "Bash is required." }
+if (-not (Test-Path -LiteralPath $bashPath)) { throw "Git Bash is required at $bashPath." }
 
 $states = @{}
 foreach ($key in $repositories.Keys) { $states[$key] = Get-RepositoryState $key }

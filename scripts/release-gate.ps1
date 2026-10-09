@@ -8,15 +8,7 @@ param(
 $ErrorActionPreference = "Stop"
 $specPath = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $workspacePath = (Resolve-Path (Join-Path $specPath "..")).Path
-$windowsGitBashPath = "C:\Program Files\Git\bin\bash.exe"
-$bashCommand = Get-Command bash -ErrorAction SilentlyContinue
-$bashPath = if (Test-Path -LiteralPath $windowsGitBashPath -PathType Leaf) {
-    $windowsGitBashPath
-} elseif ($bashCommand) {
-    $bashCommand.Source
-} else {
-    $null
-}
+$bashPath = "C:\Program Files\Git\bin\bash.exe"
 $version = (Get-Content -Raw -LiteralPath (Join-Path $specPath "release\VERSION")).Trim()
 $runId = (Get-Date).ToUniversalTime().ToString("yyyyMMddTHHmmssZ") + "-" + ([Guid]::NewGuid().ToString("N").Substring(0, 8))
 $gateRoot = Join-Path $specPath ".artifacts\release-gates\$runId"
@@ -94,7 +86,7 @@ function Invoke-ContainerValidation(
     Assert-LastExit $Label
 }
 
-if (-not $bashPath -or -not (Test-Path -LiteralPath $bashPath -PathType Leaf)) { throw "Bash is required." }
+if (-not (Test-Path -LiteralPath $bashPath -PathType Leaf)) { throw "Git Bash is required at $bashPath." }
 if (-not $TechnicalOnly -and [string]::IsNullOrWhiteSpace($JiraPreflightReference)) {
     throw "JiraPreflightReference is required unless TechnicalOnly is selected."
 }
