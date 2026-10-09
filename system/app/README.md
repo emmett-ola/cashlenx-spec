@@ -6,9 +6,9 @@
 
 Current stack:
 
-- Flutter with Dart SDK `>=3.8.0 <4.0.0`.
-- Runtime/displayed version `1.0.0-rc.1+8` on the coordinated, untagged v1
-  release-candidate line.
+- Flutter with Dart SDK `>=3.13.0 <4.0.0`.
+- Runtime/displayed version `1.0.3+9` on the coordinated, untagged 1.0.3
+  testing-candidate line.
 - Feature-first Clean Architecture.
 - Riverpod for state.
 - GoRouter for routing.

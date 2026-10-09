@@ -6,9 +6,9 @@
 
 Current stack:
 
-- Runtime contract version `1.0.0-rc.1` on canonical `/api/v1`, with frozen
-  `/api/v0` compatibility routing. This is an untagged non-production candidate.
-- Go `1.23.0`.
+- Runtime contract version `1.0.3` on canonical `/api/v1`, with frozen `/api/v0`
+  compatibility routing. This is an untagged testing candidate.
+- Go `1.27.1`.
 - Cobra CLI.
 - Gorilla Mux HTTP routing.
 - Gin remains a direct dependency only for legacy response helpers; it is not the active router.

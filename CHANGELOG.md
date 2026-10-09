@@ -6,7 +6,15 @@ state and the evidence manifest owns exact candidate identities.
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-10-09
+
 ### Changed
+
+- Coordinated the unified CashLenX camera-and-cash brand identity across App
+  launcher and in-product surfaces, Flutter Web/PWA metadata, and Website
+  branding.
+- Aligned App, Server, Website, OpenAPI, Spec, changelogs, and release notes on
+  the 1.0.3 testing candidate without changing API or database behavior.
 
 - Added fail-closed candidate deployment and non-destructive application
   rollback using verified manifests, immutable image identities, public App
