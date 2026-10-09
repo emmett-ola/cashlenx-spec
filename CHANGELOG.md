@@ -6,6 +6,18 @@ state and the evidence manifest owns exact candidate identities.
 
 ## [Unreleased]
 
+## [1.0.4] - 2026-10-09
+
+### Fixed
+
+- Persisted category `emoji` and `bg_color` values through the App, API,
+  MongoDB, MySQL, backup, restore, and category read paths with safe defaults
+  for existing records.
+- Normalized yearly monthly-comparison data to an ordered January-to-December
+  series with zero-filled gaps and visible localized labels at compact widths.
+- Added ordered migration `017` and retained separate evidence for source
+  promotion, Website deployment, and unexecuted shared-environment migration.
+
 ## [1.0.3] - 2026-10-09
 
 ### Changed
