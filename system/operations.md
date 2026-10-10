@@ -69,12 +69,18 @@ code defaults to the local development API when they are omitted.
 | Environment | App | API |
 | --- | --- | --- |
 | Development | `http://127.0.0.1:10064` | `http://127.0.0.1:10063/api/v1` |
-| Testing | `https://app.test.cashlenx.com` | `https://api.test.cashlenx.com/api/v1` |
+| Testing | `https://app.test.cashlenx.com` | `https://test-api.cashlenx.com/api/v1` |
 | Production | `https://app.cashlenx.com` | `https://api.cashlenx.com/api/v1` |
 
 Testing and production public endpoints are terminated and routed by their host
 reverse proxy. Their project-local container ports remain independently
 configurable and are not implied by the public HTTPS URLs.
+
+`test-api.cashlenx.com` is the only supported Testing API hostname. The former
+`api.test.cashlenx.com` documentation value and the certificate-incompatible
+`test.api.cashlenx.com` hostname are legacy cleanup candidates and must not be
+used by clients or acceptance tooling. DNS or certificate removal remains a
+separate external operation and does not block the canonical Testing service.
 
 ## Runtime Project Boundaries
 
