@@ -6,8 +6,8 @@
 
 Current stack:
 
-- Runtime contract version `1.0.4` on canonical `/api/v1`, with frozen `/api/v0`
-  compatibility routing. This is an untagged delivery candidate.
+- Runtime contract version `1.0.5` on canonical `/api/v1`, with frozen `/api/v0`
+  compatibility routing.
 - Go `1.27.1`.
 - Cobra CLI.
 - Gorilla Mux HTTP routing.
