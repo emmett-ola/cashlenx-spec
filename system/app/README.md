@@ -39,7 +39,10 @@ Current stack:
 - `lib/features/settings/data/user_configuration_sync.dart`: authenticated and
   demo configuration synchronization while retaining local offline fallback.
 - `lib/features/demo/data/demo_data_store.dart`: editable demo-mode data store.
-- `lib/theme/app_theme.dart`: theme mode and theme color providers.
+- `lib/theme/app_theme.dart`: theme mode, theme color, and locale-aware
+  typography.
+- `lib/theme/app_fonts.dart`: startup loading and locale selection for bundled
+  Chinese interface fonts.
 - `lib/shared/widgets/app_surface.dart`: shared panels, cards, and list tiles.
 - `lib/shared/widgets/app_color_picker.dart`: shared theme-color picker.
 - `assets/images/avatars/`: fixed preset avatar library.
@@ -123,6 +126,10 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   partial responses into January through December with zero-filled gaps, and
   all twelve localized labels remain visible on compact and wide layouts.
 - Localized transaction dates, calendar month titles, weekday labels, and first-day-of-week behavior through Flutter localizations.
+- Simplified and Traditional Chinese interface text uses repository-owned Noto
+  Sans SC/TC subsets loaded before the first Flutter frame. The shared theme
+  selects the regional family and retains both as fallbacks, avoiding runtime
+  font-network dependencies and transient missing glyphs.
 - Profile fetch/update for `nickname`, `avatar_url`, `gender`, `phone_number`,
   `location`, and `birth_date`. Avatars come from the fixed preset library; the fallback asset is `assets/images/avatars/f9b59ca5421b2b7ef2e31c2ba4d827f48d22594a.png`.
 - Theme color, currency, and language synchronize through the authenticated user
