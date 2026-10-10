@@ -106,7 +106,11 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 - Real API-backed dashboard and finance flows for normal users.
 - The dashboard summary defaults to the Day range on each mount; Month, Year,
   and Total remain session-local selectable views.
-- Session-local editable data for demo users. Choosing demo mode resets the demo store before entering the session, and demo mode does not call authenticated APIs.
+- Session-local editable data for demo users. Choosing demo mode clears any real
+  session and resets finance, profile, currency, and theme data before entering
+  the session. The reset carries the language selected on the unauthenticated
+  screen into the new demo configuration, and demo mode does not call
+  authenticated APIs.
 - Transaction list, add, edit, delete, category selection, date selection, validation, and server error handling.
 - Transaction discovery supports type, category, inclusive from/to date, and
   search filters. Authenticated ranges use `/cash/range`; demo ranges stay
@@ -134,8 +138,10 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   `location`, and `birth_date`. Avatars come from the fixed preset library; the fallback asset is `assets/images/avatars/f9b59ca5421b2b7ef2e31c2ba4d827f48d22594a.png`.
 - Theme color, currency, and language synchronize through the authenticated user
   configuration API while local preferences remain the offline fallback; demo
-  configuration is isolated in memory. About reads package version/build
-  metadata, and logout remains available.
+  configuration is isolated in memory. Its first synchronization preserves the
+  language selected at demo entry, and later in-session language changes update
+  both local preferences and demo configuration. About reads package
+  version/build metadata, and logout remains available.
 - The selected theme color drives primary controls, accents, selected states, and highlights. Splash and pre-splash visuals remain brand-stable rather than following the selected theme color.
 - Live Figma Make colors, 4 px spacing increments, and 8/16/24 px radii are
   centralized in `AppDesignTokens`. Shared auth fields and actions use the
