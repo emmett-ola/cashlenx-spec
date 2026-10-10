@@ -82,6 +82,10 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   21-currency catalog confirmed in the live design. It persists the selected
   authenticated-user currency before marking setup complete; a failed write
   keeps the user on setup with an error.
+- Authenticated routing resolves account-backed configuration before choosing
+  Home or first-login setup. Existing users on a clean device restore currency,
+  language, theme, and setup completion without repeating setup; local state is
+  retained only as a failure fallback.
 - Token-backed auth persistence with remember-me state. Session pairs are saved
   refresh-first and partial writes fail signed out; remembered startup restores
   only a complete refresh-backed session.
@@ -103,8 +107,9 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   viewports, while excess horizontal space uses the active theme background.
   Splash remains a full-viewport presentation outside this shell.
 - Real API-backed dashboard and finance flows for normal users.
-- The dashboard summary defaults to the Day range on each mount; Month, Year,
-  and Total remain session-local selectable views.
+- The dashboard summary defaults to Day. A single shared range keeps its
+  balance, income, expense, category donut, legend, amounts, percentages, and
+  empty state aligned for Day, Month, Year, and Total.
 - Session-local editable data for demo users. Choosing demo mode clears any real
   session and resets finance, profile, currency, and theme data before entering
   the session. The reset carries the language selected on the unauthenticated
@@ -123,11 +128,12 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 - Monthly category-budget CRUD for authenticated users through `/budget`, with
   ledger-derived usage, month navigation, loading/error/empty recovery, and a
   mutable isolated demo equivalent.
-- Expanded yearly statistics aggregate existing summary, monthly-comparison,
-  and top-expense endpoints instead of prototype test data; demo statistics are
-  derived from the demo ledger. Monthly comparison normalizes compatible
-  partial responses into January through December with zero-filled gaps, and
-  all twelve localized labels remain visible on compact and wide layouts.
+- Expanded statistics inherit Day, Month, or Year from the dashboard and let
+  users change the range and matching period. Summary, trend, and top-expense
+  data always use that period for authenticated and Demo users. Year mode
+  normalizes compatible monthly-comparison responses into January through
+  December with zero-filled gaps, and all twelve localized labels remain
+  visible on compact and wide layouts. Dashboard Total opens Year mode.
 - Localized transaction dates, calendar month titles, weekday labels, and first-day-of-week behavior through Flutter localizations.
 - Simplified and Traditional Chinese interface text uses repository-owned Noto
   Sans SC/TC subsets loaded before the first Flutter frame. The shared theme
@@ -136,8 +142,10 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 - Profile fetch/update for `nickname`, `avatar_url`, `gender`, `phone_number`,
   `location`, and `birth_date`. Avatars come from the fixed preset library; the fallback asset is `assets/images/avatars/f9b59ca5421b2b7ef2e31c2ba4d827f48d22594a.png`.
 - Theme color, currency, and language synchronize through the authenticated user
-  configuration API while local preferences remain the offline fallback; demo
-  configuration is isolated in memory. Its first synchronization preserves the
+  configuration API before authenticated route selection. The additive
+  `setup_completed` response field distinguishes an explicit default-looking
+  choice from an unconfigured account; local preferences remain the offline
+  fallback and demo configuration is isolated in memory. Its first synchronization preserves the
   language selected at demo entry, and later in-session language changes update
   both local preferences and demo configuration. About reads package
   version/build metadata, and logout remains available.

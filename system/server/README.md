@@ -72,7 +72,9 @@ cashlenx-server/
   lookup/revocation and rotate into digest storage on successful use.
 - Password reset using verification codes.
 - Purpose-scoped email verification for sign-up, password reset, and email change.
-- User profile query/update, configuration query/create/update, password change, email change request/confirm, and account deletion.
+- User profile query/update, configuration query/create/update with a derived
+  account-backed `setup_completed` response signal, password change, email
+  change request/confirm, and account deletion.
 - Admin bootstrap user initialization on server startup.
 - Cash flow CRUD, date/range queries, summaries, pagination, and filtering.
 - Category CRUD plus tree, children, and name lookup. User-selected `emoji` and

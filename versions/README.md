@@ -47,6 +47,11 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
   publication and Website Vercel Production deployment succeeded. No release
   tag, Server runtime deployment, shared-environment migration, or
   whole-product production acceptance is implied.
+- [CLV-14](https://macacloud.atlassian.net/browse/CLV-14) is the authoritative
+  active `v1.0.7` boundary for range-consistent dashboard/statistics behavior
+  and account-backed setup restoration across devices. Implementation work is
+  tracked by CLX-74, CLX-75, and CLX-76; no Testing promotion, tag,
+  publication, deployment, migration, or production acceptance is implied.
 - CLX items use matching exact-version labels and
   Product Discovery delivery links. CLV owns version identity; labels support
   queries and do not form a second authority.

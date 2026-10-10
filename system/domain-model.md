@@ -70,6 +70,11 @@ preferences for authenticated users and retains a local offline fallback:
 - Theme color.
 - Language.
 
+The configuration response also derives `setup_completed` from the existence
+of the account-backed configuration record. The signal is not persisted as a
+separate database field and does not infer completion from preference values,
+so an explicit `USD` selection remains valid.
+
 ### Cash Flow
 
 A user-owned income or expense record.

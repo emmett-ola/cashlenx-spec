@@ -57,6 +57,8 @@ Current English authentication branding uses the subtitle `Your Financial Compan
 - Show income/expense overview.
 - Show recent transactions.
 - Show category breakdown.
+- Keep the category breakdown, legend, amounts, percentages, and empty state on
+  the same Day, Month, Year, or Total range as the dashboard summary.
 - Support loading, error, retry, and empty states.
 - Use real API data for normal users and session-local demo data for demo users.
 
@@ -68,17 +70,21 @@ Current English authentication branding uses the subtitle `Your Financial Compan
 - Store selected avatar preset path in `avatar_url`.
 - Synchronize currency, theme color, and language through the authenticated user
   configuration API while retaining local offline values.
+- Resolve the account-backed setup-completion signal before authenticated route
+  selection. A persisted configuration restores currency, language, and theme
+  on a clean device; an unconfigured account still enters first-login setup.
 - Keep demo profile and configuration changes in the isolated session store.
 - Display installed package version and build number in About.
 
 ### Statistics And Reporting
 
 - The server exposes statistics summary, breakdown, trends, top expenses, dashboard, chart, import, and export endpoints.
-- The app's expanded statistics screen uses yearly summary, monthly comparison,
-  and top-expense APIs with an isolated ledger-derived demo equivalent.
-- The monthly comparison shows January through December in order, including
-  zero-value months, with every localized month label visible on compact and
-  wide layouts.
+- The app's expanded statistics screen inherits Day, Month, or Year from the
+  dashboard and exposes a range selector plus matching date, month, or year
+  navigation. Each range uses matching summary, trend, and top-expense data,
+  with an isolated ledger-derived demo equivalent.
+- Year mode preserves January through December in order, including zero-value
+  months, with every localized month label visible on compact and wide layouts.
 
 ### Budgeting
 
@@ -91,8 +97,9 @@ Current English authentication branding uses the subtitle `Your Financial Compan
 
 ## Known Product Limits
 
-- Additional existing statistics chart types do not yet have selected app
-  surfaces beyond yearly summary, monthly comparison, and top expenses.
+- Additional existing statistics breakdown and chart types do not yet have
+  selected app surfaces beyond the delivered summary, trend, and top-expense
+  views.
 - Export/import remains management capability; normal app user UI is deferred.
 - Dashboard, category, transaction, and settings presentation remain
   concentrated in the legacy home-shell file; budget and expanded statistics

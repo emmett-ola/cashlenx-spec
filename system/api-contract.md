@@ -99,7 +99,11 @@ These endpoints bypass JWT and OpenAPI validation. Production deployments should
 `PUT /user/profile` supports optional `nickname`, `avatar_url`, `gender`,
 `phone_number`, `location`, and `birth_date`; non-empty birth dates use
 `YYYY-MM-DD`. User configuration persists `display_language`, `currency_code`,
-and `active_theme_color` per authenticated user.
+and `active_theme_color` per authenticated user. Configuration responses add
+`setup_completed`: `true` when a persisted account configuration exists and
+`false` when default values are returned without a record. This compatible
+signal lets clients route first-login setup without interpreting `USD` or any
+other preference value as completion.
 
 ### Cash Flow
 
