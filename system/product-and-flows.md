@@ -50,6 +50,9 @@ Current English authentication branding uses the subtitle `Your Financial Compan
 - Select a parent to expose children; selecting the active parent can return to the previous level in the app category selector.
 - Select an emoji and background color that persist after category refresh,
   screen re-entry, and later sign-in.
+- Use the current category icon and color on dashboard and transaction surfaces,
+  including with compatible legacy cash-flow responses that expose only the
+  category ID.
 
 ### Dashboard
 

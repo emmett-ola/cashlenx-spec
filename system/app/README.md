@@ -124,7 +124,10 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 - Hierarchical category management.
 - Category emoji and background-color customization persists through the Server
   and remains visible after list/tree reloads; demo categories use the same
-  presentation fields in memory.
+  presentation fields in memory. Authenticated transaction surfaces reconcile
+  cash flows with the current category list by normalized category ID, so
+  compatible legacy cash-flow payloads that omit category presentation still
+  show the current icon and color.
 - Monthly category-budget CRUD for authenticated users through `/budget`, with
   ledger-derived usage, month navigation, loading/error/empty recovery, and a
   mutable isolated demo equivalent.
@@ -135,10 +138,11 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   December with zero-filled gaps, and all twelve localized labels remain
   visible on compact and wide layouts. Dashboard Total opens Year mode.
 - Localized transaction dates, calendar month titles, weekday labels, and first-day-of-week behavior through Flutter localizations.
-- Simplified and Traditional Chinese interface text uses repository-owned Noto
-  Sans SC/TC subsets loaded before the first Flutter frame. The shared theme
-  selects the regional family and retains both as fallbacks, avoiding runtime
-  font-network dependencies and transient missing glyphs.
+- Simplified and Traditional Chinese text uses complete repository-owned Noto
+  Sans SC/TC fonts loaded and integrity-checked before the first Flutter frame.
+  The shared theme selects the regional family and retains both as fallbacks,
+  covering dynamic API and user-provided text without runtime font-network
+  dependencies or transient missing glyphs.
 - Profile fetch/update for `nickname`, `avatar_url`, `gender`, `phone_number`,
   `location`, and `birth_date`. Avatars come from the fixed preset library; the fallback asset is `assets/images/avatars/f9b59ca5421b2b7ef2e31c2ba4d827f48d22594a.png`.
 - Theme color, currency, and language synchronize through the authenticated user
@@ -154,8 +158,10 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   centralized in `AppDesignTokens`. Shared auth fields and actions use the
   confirmed 8 px control radius. Entered auth text uses a high-contrast
   theme-aware foreground while placeholders remain visually secondary.
-- Cash-flow semantics are consistent across transaction list and detail
-  surfaces: income uses success/green and expense uses error/red.
+- Cash-flow semantics are consistent across dashboard, transaction list, and
+  detail surfaces: income uses success/green and expense uses error/red. When a
+  compatible legacy cash-flow payload omits the resolved category type, the App
+  derives it from the current category matched by normalized category ID.
 - Golden visual baselines cover dashboard layout at 390 px, the 430 px maximum
   shell width, a 768 px tablet host, and a 1440 px desktop host, plus settings
   and profile at shell width.
