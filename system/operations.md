@@ -76,6 +76,26 @@ Testing and production public endpoints are terminated and routed by their host
 reverse proxy. Their project-local container ports remain independently
 configurable and are not implied by the public HTTPS URLs.
 
+### Runtime Identity And Observer Context
+
+- Verify a deployed App from `<app-origin>/version.json?cachebuster=<unique>`.
+  Record `version` and `build_number` together. Do not infer the deployed App
+  identity from a Git branch, CI result, browser shell, or Server response.
+- Verify a deployed Server from `<api-origin>/api/v1/open/version`. App and
+  Server versions are independent runtime identities and may temporarily
+  differ while their deployments proceed separately.
+- The Testing App is protected by Vercel authentication. An authorized owner
+  session can read its runtime identity, while an unauthenticated operator may
+  receive a redirect to Vercel SSO. That redirect proves only the observer's
+  missing session; it is not evidence of DNS failure, App downtime, version
+  drift, or a release blocker. Accept an exact owner-provided `version.json`
+  response as runtime evidence when the operator cannot obtain that session.
+- Treat source commits, branch promotion, App publication, Server deployment,
+  database execution, and runtime acceptance as separate states. A successful
+  fast-forward or App publication neither deploys nor identifies the Server.
+- Record the exact URL, response identity, observation time, and whether the
+  observer was authenticated whenever runtime evidence is used for delivery.
+
 `test-api.cashlenx.com` is the only supported Testing API hostname. The former
 `api.test.cashlenx.com` documentation value and the certificate-incompatible
 `test.api.cashlenx.com` hostname are legacy cleanup candidates and must not be
@@ -355,6 +375,17 @@ cover a deployment after every applicable gate passes and the external target
 and credentials are configured. Target, implementation refs, results,
 migration state, and current deployment state still require separate evidence
 outside `system/`.
+
+Deployment authorization and deployment access are different facts. Standing
+or explicit authority permits the operation, but the executing machine must
+also have the approved non-echoing remote-access profile and host connectivity.
+Do not reinterpret a missing credential profile as missing Human authority,
+and do not ask the operator to place credentials in chat, Jira, logs, command
+arguments, or Git. Owner-managed remote-access profiles remain mode `0600` and
+outside the repositories. Bash or Zsh is the required execution shell for this
+workspace; the PowerShell orchestrators documented below are optional tooling
+and their absence is not a release or deployment blocker when equivalent gate
+evidence is collected through Bash-owned entry points.
 
 For an isolated local production-like run from exact committed implementation
 revisions, use the specification-owned delivery orchestrator:
