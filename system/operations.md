@@ -69,7 +69,7 @@ code defaults to the local development API when they are omitted.
 | Environment | App | API |
 | --- | --- | --- |
 | Development | `http://127.0.0.1:10064` | `http://127.0.0.1:10063/api/v1` |
-| Testing | `https://app.test.cashlenx.com` | `https://test-api.cashlenx.com/api/v1` |
+| Testing | `https://test.app.cashlenx.com` | `https://test-api.cashlenx.com/api/v1` |
 | Production | `https://app.cashlenx.com` | `https://api.cashlenx.com/api/v1` |
 
 Testing and production public endpoints are terminated and routed by their host
