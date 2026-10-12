@@ -34,10 +34,12 @@ bash scripts/release-gate.sh \
 
 This single entry point runs exact-toolchain validation for affected
 repositories, reproducible candidate packaging, compatibility checks against
-retained repositories, and whole-product browser acceptance. An App-only
-release with no Server or persistence change uses `--database unchanged`; a
-Server or persistence release must use a Bash-owned database rehearsal before
-it is eligible. The gate writes a checksummed aggregate manifest under
+retained repositories, and whole-product browser acceptance. A release with no
+database or persistence-boundary change uses `--database unchanged`. When the
+Server is selected, the gate compares the delivered `origin/main` commit to the
+candidate and rejects that scope if a database-sensitive path changed. A
+persistence-changing release must use a Bash-owned database rehearsal before it
+is eligible. The gate writes a checksummed aggregate manifest under
 `.artifacts/release-gates/` and performs no delivery action.
 
 Pass every implementation repository changed by the product version through

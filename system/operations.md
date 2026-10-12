@@ -426,9 +426,13 @@ inputs and local development configuration only; it never reads Testing or
 Production environment files and performs no tag, promotion, publication,
 deployment, migration, or production-acceptance action.
 
-Server or persistence releases remain fail-closed until the legacy
-dual-database rehearsal and controlled deployment capabilities have Bash
-replacements. The retained PowerShell scripts are not accepted entry points.
+Server releases with no database or persistence-boundary change may pass the
+candidate gate with `--database unchanged`; the gate compares the delivered
+`origin/main` commit to the candidate and fails when a database-sensitive path
+changed. Persistence-changing releases and controlled Server deployment remain
+fail-closed until the legacy dual-database rehearsal and deployment capabilities
+have Bash replacements. The retained PowerShell scripts are not accepted entry
+points.
 
 ## Database-Level Data Protection
 

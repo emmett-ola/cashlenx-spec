@@ -152,11 +152,13 @@ selected dependency without restarts, and confirms graceful and timeout-forced
 termination behavior.
 
 The MySQL migration, MongoDB migration, and dual-database data-protection
-PowerShell harnesses are retained as historical evidence only. Any release that
-changes those boundaries must first provide Bash replacements with the same
-fresh, upgrade, repeat, checksum, dirty-state, encrypted-backup, corrupt-input,
-retention, restore, recovery, generated-secret, isolation, and teardown
-coverage.
+PowerShell harnesses are retained as historical evidence only. A Server release
+with no database or persistence-boundary change may use `--database unchanged`;
+the Bash gate compares `origin/main` to the candidate and rejects the scope when
+a database-sensitive path changed. Any release that changes those boundaries
+must first provide Bash replacements with the same fresh, upgrade, repeat,
+checksum, dirty-state, encrypted-backup, corrupt-input, retention, restore,
+recovery, generated-secret, isolation, and teardown coverage.
 
 After the Jira preflight has been recorded, run the complete release gate with:
 

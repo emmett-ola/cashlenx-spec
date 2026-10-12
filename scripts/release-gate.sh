@@ -63,13 +63,9 @@ for component in "${affected_components[@]}"; do
 done
 (( ${#selected[@]} > 0 )) || { echo "At least one affected component is required." >&2; exit 1; }
 
-if [[ "$database_scope" == "unchanged" && -n "${selected[server]:-}" ]]; then
-  echo "Server releases must select an explicit database validation scope." >&2
-  exit 1
-fi
 if [[ "$database_scope" != "unchanged" ]]; then
   echo "The Bash dual-database rehearsal has not yet replaced the legacy PowerShell harness." >&2
-  echo "Use --database unchanged only when the release introduces no Server or persistence change." >&2
+  echo "Use --database unchanged only when the release introduces no database or persistence-boundary change." >&2
   exit 1
 fi
 
@@ -165,6 +161,33 @@ for key in "${repo_keys[@]}"; do
   git -C "$path" worktree add --detach "$validation_path" "${commits[$key]}" >/dev/null
   validation_paths[$key]="$validation_path"
 done
+
+if [[ -n "${selected[server]:-}" && "$database_scope" == "unchanged" ]]; then
+  server_delivered_ref="refs/remotes/origin/main"
+  git -C "${repo_paths[server]}" show-ref --verify --quiet "$server_delivered_ref" || {
+    echo "Server delivered ref origin/main is unavailable for database preflight." >&2
+    exit 1
+  }
+  server_delivered_commit="$(git -C "${repo_paths[server]}" rev-parse "$server_delivered_ref")"
+  git -C "${repo_paths[server]}" merge-base --is-ancestor "$server_delivered_commit" "${commits[server]}" || {
+    echo "Server origin/main is not an ancestor of the candidate." >&2
+    exit 1
+  }
+  database_boundary_changes="$(
+    git -C "${repo_paths[server]}" diff --name-only \
+      "$server_delivered_commit..${commits[server]}" -- \
+      migrations mapper config/default_categories.json \
+      docker/dependencies scripts/data-protection \
+      service/manage_service service/user_service/init_admin.go \
+      cmd/root.go util/db_util.go
+  )"
+  if [[ -n "$database_boundary_changes" ]]; then
+    printf 'Server candidate changes database-sensitive paths:\n%s\n' \
+      "$database_boundary_changes" >&2
+    echo "A Bash-owned database rehearsal is required; --database unchanged is invalid." >&2
+    exit 1
+  fi
+fi
 
 if [[ -n "${selected[app]:-}" ]]; then
   app_version="$(awk '/^version:/ { print $2; exit }' "${validation_paths[app]}/pubspec.yaml")"
