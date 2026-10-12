@@ -27,8 +27,14 @@ Current English authentication branding uses the subtitle `Your Financial Compan
 ### App Shell
 
 - Authenticated users land in a mobile-first home shell.
-- Current tabs are Home, Category, Add, Budget, and Settings.
-- The shell contains dashboard, transactions, transaction entry/editing, category management, monthly budget management, settings, and profile interactions.
+- Current tabs are Home, Transactions, Add, Budget, and Settings.
+- The Transactions tab owns the full cash-flow ledger. Home's recent-activity
+  `See All` action opens that same stable destination.
+- Category administration is a secondary surface under Settings > Resource
+  Management > Category Management.
+- The shell contains dashboard, transactions, transaction entry/editing,
+  category management, monthly budget management, settings, and profile
+  interactions.
 - Stable surfaces may not present unfinished placeholder behavior as complete.
 - The selected Flutter Web top-level and detail surfaces must become
   URL-addressable and pass refresh, back-navigation, and deep-link acceptance
@@ -46,6 +52,8 @@ Current English authentication branding uses the subtitle `Your Financial Compan
 ### Categories
 
 - Create, edit, and delete categories.
+- Open category administration from Settings > Resource Management rather than
+  from primary bottom navigation.
 - Use parent/child hierarchy.
 - Select a parent to expose children; selecting the active parent can return to the previous level in the app category selector.
 - Select an emoji and background color that persist after category refresh,
@@ -58,10 +66,10 @@ Current English authentication branding uses the subtitle `Your Financial Compan
 
 - Show balance summaries.
 - Show income/expense overview.
-- Show recent transactions.
-- Show category breakdown.
-- Keep the category breakdown, legend, amounts, percentages, and empty state on
-  the same Day, Month, Year, or Total range as the dashboard summary.
+- Show the five most recent transactions and link the full list to the primary
+  Transactions tab.
+- End with a compact Financial Insights entry that opens expanded Statistics;
+  the dashboard does not duplicate a category chart.
 - Support loading, error, retry, and empty states.
 - Use real API data for normal users and session-local demo data for demo users.
 

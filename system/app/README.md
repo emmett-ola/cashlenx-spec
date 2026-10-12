@@ -98,7 +98,10 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 - Explicit logout clears local authority before contacting the API so an
   in-flight refresh cannot restore the session. Demo entry also clears real
   session credentials before creating isolated in-memory demo state.
-- Authenticated home shell with Home, Category, Add, Budget, and Settings tabs.
+- Authenticated home shell with Home, Transactions, Add, Budget, and Settings
+  tabs. Home's recent-activity `See All` action opens the same Transactions
+  destination, while category administration is available under Settings >
+  Resource Management > Category Management.
 - Primary authenticated routes replace shell content in place without a
   horizontal whole-canvas transition; route URLs, refresh, and browser history
   remain active.
@@ -107,15 +110,19 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   viewports, while excess horizontal space uses the active theme background.
   Splash remains a full-viewport presentation outside this shell.
 - Real API-backed dashboard and finance flows for normal users.
-- The dashboard summary defaults to Day. A single shared range keeps its
-  balance, income, expense, category donut, legend, amounts, percentages, and
-  empty state aligned for Day, Month, Year, and Total.
+- The dashboard summary defaults to Day and keeps balance, income, and expense
+  aligned for Day, Month, Year, and Total. The dashboard ends with a compact
+  Financial Insights entry for expanded Statistics instead of duplicating a
+  category chart.
 - Session-local editable data for demo users. Choosing demo mode clears any real
   session and resets finance, profile, currency, and theme data before entering
   the session. The reset carries the language selected on the unauthenticated
   screen into the new demo configuration, and demo mode does not call
   authenticated APIs.
-- Transaction list, add, edit, delete, category selection, date selection, validation, and server error handling.
+- Primary-tab transaction list plus add, edit, delete, category selection, date
+  selection, validation, and server error handling. Transaction details remain
+  focused secondary surfaces and return to the originating Home or Transactions
+  context.
 - Transaction discovery supports type, category, inclusive from/to date, and
   search filters. Authenticated ranges use `/cash/range`; demo ranges stay
   local. Removable active chips, localized result summaries, and filtered-empty
