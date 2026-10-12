@@ -86,6 +86,10 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   Home or first-login setup. Existing users on a clean device restore currency,
   language, theme, and setup completion without repeating setup; local state is
   retained only as a failure fallback.
+- The selected currency's catalog symbol is the single presentation source for
+  finance amounts on Home, Recent Activity, Transactions, transaction entry and
+  editing, Statistics, and Budget surfaces. Multi-character symbols remain
+  responsive; stored numeric values are not converted or rewritten.
 - Token-backed auth persistence with remember-me state. Session pairs are saved
   refresh-first and partial writes fail signed out; remembered startup restores
   only a complete refresh-backed session.

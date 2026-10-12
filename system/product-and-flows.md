@@ -81,6 +81,9 @@ The canonical CashLenX slogan is `Times shape your wealth, mind secures your con
 - Store selected avatar preset path in `avatar_url`.
 - Synchronize currency, theme color, and language through the authenticated user
   configuration API while retaining local offline values.
+- Apply the selected currency symbol consistently to Home, transaction,
+  Statistics, Budget, and amount-entry surfaces without converting or rewriting
+  stored numeric values.
 - Resolve the account-backed setup-completion signal before authenticated route
   selection. A persisted configuration restores currency, language, and theme
   on a clean device; an unconfigured account still enters first-login setup.
