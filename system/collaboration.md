@@ -37,7 +37,9 @@ The local workspace uses stable short checkout directories:
 Automation maps these columns explicitly. Local path resolution never assumes
 the `cashlenx-*` remote name is also the checkout directory, and remote links,
 image names, source archives, and repository reports never replace the remote
-identity with the short local directory.
+identity with the short local directory. Shared automation prefers the short
+local directories and accepts full remote-style checkout names only as a
+compatibility fallback.
 
 ## Language
 

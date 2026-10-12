@@ -3,7 +3,8 @@ set -euo pipefail
 
 spec_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 workspace_dir="$(cd "$spec_dir/.." && pwd -P)"
-projects=(cashlenx-app cashlenx-server cashlenx-website)
+source "$spec_dir/scripts/lib/workspace-paths.sh"
+projects=(app server website)
 profile=""
 mode="sync"
 
@@ -60,8 +61,11 @@ list_duplicate_keys() {
 }
 
 sync_project() {
-  local project="$1"
-  local project_dir="$workspace_dir/$project"
+  local project_key="$1"
+  local project
+  local project_dir
+  project="$(workspace_repo_remote_name "$project_key")"
+  project_dir="$(resolve_workspace_repo_dir "$workspace_dir" "$project_key")"
   local example_file="$project_dir/.env.example"
   local env_file="$project_dir/$target_name"
   local project_root

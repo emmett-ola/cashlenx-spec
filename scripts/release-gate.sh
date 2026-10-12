@@ -3,6 +3,7 @@ set -euo pipefail
 
 spec_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 workspace_dir="$(cd "$spec_dir/.." && pwd -P)"
+source "$spec_dir/scripts/lib/workspace-paths.sh"
 database_scope="unchanged"
 jira_preflight_reference=""
 affected_components=(app server website)
@@ -111,12 +112,6 @@ declare -A repo_names=(
   [website]=cashlenx-website
   [spec]=cashlenx-spec
 )
-declare -A repo_dirs=(
-  [app]=app
-  [server]=server
-  [website]=website
-  [spec]=spec
-)
 declare -A expected_branches=(
   [app]=develop
   [server]=develop
@@ -141,7 +136,7 @@ cleanup() {
 trap cleanup EXIT
 
 for key in "${repo_keys[@]}"; do
-  path="$workspace_dir/${repo_dirs[$key]}"
+  path="$(resolve_workspace_repo_dir "$workspace_dir" "$key")"
   repo_paths[$key]="$path"
   [[ -d "$path/.git" ]] || { echo "Missing Git repository: $path" >&2; exit 1; }
   [[ -z "$(git -C "$path" status --porcelain)" ]] || {

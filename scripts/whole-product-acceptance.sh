@@ -3,8 +3,10 @@ set -euo pipefail
 
 spec_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 workspace_dir="$(cd "$spec_dir/.." && pwd -P)"
-app_dir="$workspace_dir/cashlenx-app"
-server_dir="$workspace_dir/cashlenx-server"
+source "$spec_dir/scripts/lib/workspace-paths.sh"
+app_dir="$(resolve_workspace_repo_dir "$workspace_dir" app)"
+server_dir="$(resolve_workspace_repo_dir "$workspace_dir" server)"
+website_dir="$(resolve_workspace_repo_dir "$workspace_dir" website)"
 acceptance_env="$app_dir/.env.acceptance.local"
 run_id="$(date -u +%Y%m%dT%H%M%SZ)-$(git -C "$app_dir" rev-parse --short=8 HEAD)"
 evidence_root="${EVIDENCE_ROOT:-$spec_dir/.artifacts/browser}"
@@ -21,7 +23,7 @@ done < <(
   awk -F= '/^[A-Za-z_][A-Za-z0-9_]*=/ { print $1 }' \
     "$app_dir/.env.example" \
     "$server_dir/.env.example" \
-    "$workspace_dir/cashlenx-website/.env.example" | sort -u
+    "$website_dir/.env.example" | sort -u
 )
 
 read_key() {

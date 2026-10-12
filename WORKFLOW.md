@@ -22,7 +22,9 @@ This workflow keeps CashLenX specification and delivery work proportionate to ri
 - Workspace paths are `app/`, `server/`, `website/`, and `spec/`; remote
   repositories and artifact identities retain the `cashlenx-*` names. Every
   cross-repository script uses an explicit mapping instead of constructing one
-  from the other.
+  from the other. Path resolution prefers the short workspace names and
+  accepts the full repository names as a fallback for compatible external
+  checkouts.
 
 ## Work Levels
 

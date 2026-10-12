@@ -3,6 +3,7 @@ set -euo pipefail
 
 spec_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 workspace_dir="$(cd "$spec_dir/.." && pwd -P)"
+source "$spec_dir/scripts/lib/workspace-paths.sh"
 
 if [[ "${1:-}" == --workspace-dir ]]; then
   [[ $# -eq 2 ]] || { echo "Usage: scripts/configure-local-env.sh [--workspace-dir PATH]" >&2; exit 2; }
@@ -54,9 +55,12 @@ ensure_secret() {
   fi
 }
 
-app_env="$workspace_dir/cashlenx-app/.env.local"
-server_env="$workspace_dir/cashlenx-server/.env.local"
-website_env="$workspace_dir/cashlenx-website/.env.local"
+app_dir="$(resolve_workspace_repo_dir "$workspace_dir" app)"
+server_dir="$(resolve_workspace_repo_dir "$workspace_dir" server)"
+website_dir="$(resolve_workspace_repo_dir "$workspace_dir" website)"
+app_env="$app_dir/.env.local"
+server_env="$server_dir/.env.local"
+website_env="$website_dir/.env.local"
 
 set_key "$app_env" APP_ENV dev
 set_key "$app_env" API_SCHEME http

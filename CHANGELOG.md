@@ -6,6 +6,12 @@ state and the evidence manifest owns exact candidate identities.
 
 ## [Unreleased]
 
+### Fixed
+
+- Centralized cross-repository path resolution so active Bash workflows prefer
+  the short local checkout layout while remaining compatible with full
+  remote-style checkout names.
+
 ## [1.0.8] - 2026-10-12
 
 ### Changed

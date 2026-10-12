@@ -3,6 +3,7 @@ set -euo pipefail
 
 spec_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 workspace_dir="$(cd "$spec_dir/.." && pwd -P)"
+source "$spec_dir/scripts/lib/workspace-paths.sh"
 state_dir="$spec_dir/.state/environment-lifecycle"
 profile=""
 database=""
@@ -42,9 +43,9 @@ case "$profile" in local|testing|production) ;; *) echo "Invalid or missing prof
 case "$database" in mongodb|mysql) ;; *) echo "Invalid or missing database" >&2; exit 2 ;; esac
 
 env_name=".env.$profile"
-app_dir="$workspace_dir/cashlenx-app"
-server_dir="$workspace_dir/cashlenx-server"
-website_dir="$workspace_dir/cashlenx-website"
+app_dir="$(resolve_workspace_repo_dir "$workspace_dir" app)"
+server_dir="$(resolve_workspace_repo_dir "$workspace_dir" server)"
+website_dir="$(resolve_workspace_repo_dir "$workspace_dir" website)"
 mkdir -p "$state_dir"
 state_file="$state_dir/$profile-$database.state"
 

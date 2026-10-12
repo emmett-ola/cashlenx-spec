@@ -31,7 +31,9 @@ current macOS host.
 - Local checkout directories are permanently mapped as `app/`, `server/`,
   `website/`, and `spec/`. Remote repositories and artifact identities remain
   `cashlenx-app`, `cashlenx-server`, `cashlenx-website`, and `cashlenx-spec`.
-  Automation must map the two naming systems explicitly.
+  Automation must map the two naming systems explicitly, prefer the short
+  local directories, and accept full remote-style checkout names as a
+  compatibility fallback.
 - The current project-owner local Flutter/Dart installation is the selected
   toolchain baseline. Tracked version, framework revision, CI setup, and
   container build metadata move together when that baseline changes; release
