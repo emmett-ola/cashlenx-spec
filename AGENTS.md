@@ -5,6 +5,7 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 ## Startup Rules
 
 - Start by reading `README.md`, then `WORKFLOW.md`, then `GUIDELINE.md`, then `system/README.md`, then `versions/README.md`.
+- Before any task work, identify every active repository relevant to the request, fetch its remote refs, and confirm that its worktree is clean, on the expected branch, and synchronized with its upstream. Fast-forward a clean local branch that is only behind; stop on uncommitted changes, divergence, an unexpected branch, or a missing upstream instead of resetting, stashing, switching, or overwriting work.
 - Before changing or investigating a sibling project, read that project's nearest `AGENTS.md` when one exists. Treat it as repository-local operating guidance and reconcile its durable content with this spec's canonical document owners.
 - Use `sources/` as imported source material, not as current truth.
 - If specs conflict with implementation, inspect the implementation first and then update the affected spec.
@@ -40,7 +41,7 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 ## Repository Boundaries
 
 - Treat `cashlenx-spec`, `cashlenx-app`, `cashlenx-server`, and `cashlenx-website` as active project areas. Treat `cashlenx-design` as a separate archived historical prototype.
-- In `cashlenx-app`, `cashlenx-server`, and `cashlenx-website`, use `develop` as the default working branch, `testing` only for explicitly authorized test-environment promotion, and `main` only for explicitly authorized production release promotion. Do not retain or create the legacy code branch name `test`. Keep `cashlenx-spec` on its sole `main` branch. Inspect branch and worktree state before switching; do not create, replace, or switch branches when doing so would displace unrelated user work.
+- In `cashlenx-app`, `cashlenx-server`, and `cashlenx-website`, perform implementation work on `develop`, use `testing` only as the verified fast-forward target for a complete version, and use `main` only after explicit manual Human confirmation of that production release promotion. Do not retain or create the legacy code branch name `test`. Keep `cashlenx-spec` on its sole `main` branch. Inspect branch and worktree state before switching; do not create, replace, or switch branches when doing so would displace unrelated user work.
 - `cashlenx-spec` is the specification workspace and should not contain runtime code.
 - `cashlenx-app` owns current UI behavior and presentation. Do not maintain parity with `cashlenx-design`, use it as a current design authority, or modify it for new UI work. Consult it only when historical prototype evidence is relevant.
 - Sibling repositories are source-of-truth inputs for implementation facts.
@@ -70,13 +71,13 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 - Add ADRs under `decisions/` only for choices that should remain discoverable after a version closes.
 - Use `versions/_template/` only when an explicit repository-local closeout snapshot is required; Jira remains the active control surface.
 - Do not treat Jira or a version record as the current implementation source of truth after delivery; `system/` is the current-facts layer.
-- Before any release tag, artifact publication, `testing` or `main` promotion, or deployment, execute the release-candidate gate in `WORKFLOW.md`. Stop on unresolved Jira blockers, version drift, migration uncertainty, missing validation, dirty or divergent source, unsafe environment handling, or absent authority for the requested delivery action.
+- Before any release tag, artifact publication, `testing` or `main` promotion, or deployment, execute the release-candidate gate in `WORKFLOW.md`. Stop on unresolved Jira blockers, version drift, migration uncertainty, missing validation, dirty or divergent source, unsafe environment handling, or absent authority for a controlled delivery action. A complete version has standing authority for its verified `develop` to `testing` fast-forward; `main` always requires explicit manual Human confirmation.
 - Never infer database migration, runtime deployment, or production acceptance from a commit, branch, tag, image, or Jira status. Record each state and its evidence separately.
 
 ## Editing Practices
 
 - Prefer small, stable documents over large mixed notes.
-- After completing a request or coherent change set, create a repository-local commit by default unless the user explicitly asks not to commit. Implementation commits use `develop` by default; spec-only commits use the spec repository's sole `main` branch. Stage only intended files. A commit or working-branch push does not authorize implementation promotion to `testing` or `main`, tag creation, publication, or deployment.
+- After completing a request or coherent change set, create a repository-local commit by default unless the user explicitly asks not to commit. Implementation commits use `develop`; spec-only commits use the spec repository's sole `main` branch. Stage only intended files. A commit or working-branch push alone does not make a version eligible for `testing`; the complete version and its release-candidate gate do. Promotion to `main`, tag creation, publication, and production deployment remain separately controlled actions.
 - For a user-selected batch, implement items sequentially unless the user explicitly requests parallel execution. Give each completed issue or coherent change its own focused commit and push the affected implementation repository's `develop` branch after validation.
 - Keep product requirements separate from implementation notes.
 - At the spec root, keep conventional governance entry points uppercase (`AGENTS.md`, `README.md`, `WORKFLOW.md`, and `GUIDELINE.md`). Below the root, reserve uppercase `README.md` for directory indexes and use lowercase names for other project-authored documents.

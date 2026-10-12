@@ -12,13 +12,13 @@ This workflow keeps CashLenX specification and delivery work proportionate to ri
 
 ## Branch Model
 
-- The code repositories (`cashlenx-app`, `cashlenx-server`, and `cashlenx-website`) use `develop` as the default development and integration branch.
-- The code repositories use `testing` as the shared test and acceptance branch. It receives explicitly selected changes from `develop` and is the only branch name for the test environment; do not retain or create `test`.
+- The code repositories (`cashlenx-app`, `cashlenx-server`, and `cashlenx-website`) use `develop` as the required development and integration branch. Implementation work begins there after the workspace preflight passes.
+- The code repositories use `testing` as the shared test and acceptance branch. After a complete selected version passes its release-candidate gate, affected repositories may be fast-forwarded directly from `develop` to `testing` under standing authority. `testing` is the only branch name for the test environment; do not retain or create `test`.
 - The code repositories use `main` as the production release branch. It receives validated changes from `testing`, except through an explicitly approved production hotfix workflow.
 - Normal code promotion flows in one direction: `develop` -> `testing` -> `main`.
 - `cashlenx-spec` uses `main` as its only branch; specification commits do not represent an implementation release or deployment.
-- Creating commits, reconciling history, or pushing a working branch does not itself authorize implementation promotion or deployment.
-- Promotion to `testing` requires an explicit user instruction that identifies the selected work or version. Promotion from `testing` to `main`, release tagging, publication, and production deployment require explicit authorization for that delivery step.
+- Creating commits, reconciling history, or pushing a working branch does not itself prove that a version is complete or eligible for promotion.
+- Promotion from `testing` to `main` requires explicit manual Human confirmation for the exact version and repositories after Testing evidence is complete. Release tagging, publication, production deployment, and other controlled actions retain their own authority and evidence requirements.
 
 ## Work Levels
 
@@ -33,14 +33,14 @@ When levels overlap, use the highest applicable level. Technical difficulty alon
 ## Required For Every Task
 
 1. State the goal and observable done condition.
-2. Inspect relevant evidence and Git status in every repository that may be touched.
+2. Before task work, identify every relevant active repository and fetch its remote refs. Confirm a clean worktree, the expected branch (`develop` for implementation repositories and `main` for the spec), and equality with the upstream ref. Fast-forward a clean branch that is only behind. Stop on a dirty worktree, divergence, an unexpected branch, or a missing upstream; do not reset, stash, switch, or overwrite unrelated work to manufacture a clean preflight.
 3. Identify the authoritative documents and repositories actually affected.
 4. For Standard and High-impact work, use a CLX issue connected to the selected CLV version Idea, apply its `version-vX-Y-Z` label, and keep the task contract current. Confirm the user selected the Ready item or batch, then run the Jira blocker scan before moving it from `Ready` to `In Progress`.
 5. Preserve unrelated user work and implement the smallest complete change.
 6. Validate in proportion to the behavior and risk changed.
 7. Synchronize the canonical `system/` fact when implementation behavior changes.
 8. When an implementation `.env.example` changes, run `cashlenx-spec/scripts/sync-env.sh` for local `.env` structure and preserve every existing configured value unless an explicit migration requires changing it. Do not inspect or synchronize owner-managed `.env.testing` or `.env.production` files without explicit authorization.
-9. Commit the completed request or coherent change set by default unless the user explicitly opts out. Implementation commits use `develop` by default; spec-only commits use the spec repository's sole `main` branch. Stage only intended files and keep implementation promotion to `testing` or `main`, tag creation, publication, and deployment as separately authorized actions.
+9. Commit the completed request or coherent change set by default unless the user explicitly opts out. Implementation commits use `develop`; spec-only commits use the spec repository's sole `main` branch. Stage only intended files. A complete selected version may proceed through the verified `develop` to `testing` fast-forward under standing authority; `main`, tag creation, publication, and production deployment remain separately controlled actions.
 10. Before moving a Jira item to `Done`, run the blocker scan again. Update the issue with validation, implementation refs, known limits, and accurate delivery, release, and deployment state.
 11. Recheck repository state and report validation, changed files, known limits, commits, and delivery actions.
 
@@ -102,14 +102,15 @@ When the product owner selects one or more Ready items:
 1. Record the selected item keys, intended order, owning repositories, and target CLV version before implementation.
 2. Execute the items sequentially unless the product owner explicitly requests parallel work. Run the start blocker scan separately for each item immediately before it enters `In Progress`.
 3. Validate each item in proportion to its behavior and risk, synchronize its facts and Jira evidence, and create one focused commit for the completed item or coherent change.
-4. Push the affected implementation repository's `develop` branch after the item passes its checks. A pushed `develop` commit does not imply promotion.
+4. Push the affected implementation repository's `develop` branch after the item passes its checks. An individual pushed commit does not make an incomplete version eligible for promotion.
 5. Run the completion blocker scan and close each item only when its acceptance criteria and evidence are complete.
 6. Do not add other Ready inventory to the selected batch without a new product-owner instruction.
 
-An instruction that selects a batch and names its terminal delivery step remains
-authorization for that stated sequence. Continue through its routine substeps
-without asking again, but do not extend it to another batch, environment, tag,
-publication, deployment, migration, or production acceptance.
+An instruction that selects a batch remains authorization for that stated
+implementation sequence. When the complete version passes its gates, standing
+authority also covers its verified fast-forward to `testing`. Do not extend
+that authority to another batch, `main`, a tag, publication, production
+deployment, migration, or production acceptance.
 
 ### Human Decision Loop
 
@@ -138,7 +139,7 @@ Request a Human decision only when one of these remains unresolved:
 - Two or more plausible interpretations materially change business behavior or scope.
 - A major architecture direction or long-lived external contract is being selected.
 - Breaking compatibility, destructive data mutation, irreversible operation, or security/privacy risk must be accepted.
-- Production or shared-environment deployment, branch promotion, release/tag action, secret change, or external-system mutation lacks concrete authorization.
+- Production deployment, promotion to `main`, release/tag action, secret change, or external-system mutation lacks concrete authorization. The standard verified fast-forward of a complete version to `testing` is already authorized; any exception to that path requires a separate decision.
 - Completion requires expanding beyond the requested outcome or accepting a known High-impact risk.
 
 Human approval covers only the stated decision or operation. Reversible implementation choices, focused tests, documentation synchronization, and repository-local commits inside an approved outcome remain AI responsibilities.
@@ -171,7 +172,7 @@ Do not request a Human response before it is actionable. Prepare the options, ev
 | API, schema, permission, workflow, or state change | Positive and negative cases, authority owner, and compatibility or migration behavior |
 | Migration or data rewrite | Existing-data behavior, repeat safety, and rollback or forward-fix plan |
 | Security, privacy, credential, or file-access change | Threat or abuse cases, sensitive-data handling, authorization, and audit evidence |
-| Deployment, release, branch promotion, or shared-environment action | Target, timing, reversibility, compatibility, and explicit Human authorization |
+| Production deployment, release, `main` promotion, or nonstandard shared-environment action | Target, timing, reversibility, compatibility, and explicit Human authorization |
 | Major architecture or product direction | Options, trade-offs, recommendation, and recorded Human decision |
 | User-facing documentation, marketing, or training claim | Review the derived artifact against current `system/` facts |
 
@@ -182,16 +183,17 @@ Do not request a Human response before it is actionable. Prepare the options, ev
 3. **Select:** wait for the product owner to select a Ready item or batch; record its order and delivery boundary without changing unselected Ready inventory.
 4. **Implement:** run the start blocker scan, move the selected Jira item from `Ready` to `In Progress`, work repository by repository, and preserve independent build/runtime boundaries.
 5. **Validate:** run focused checks first, add only triggered enhanced scenarios, synchronize affected facts and guidance, and record evidence and implementation refs on the item.
-6. **Close:** commit and push the coherent change set to `develop` by default, run the completion blocker scan, and move the Jira item to `Done` only when acceptance is satisfied and no closing gate remains. Merge, branch promotion, tag, publication, deployment, and other controlled delivery actions occur only when authorized.
+6. **Close:** commit and push the coherent change set to `develop`, run the completion blocker scan, and move the Jira item to `Done` only when acceptance is satisfied and no closing gate remains. After every item in the selected version is complete, run the release-candidate gate and fast-forward the affected repositories to `testing` when it passes. Promotion to `main`, tags, publication, production deployment, and other controlled delivery actions occur only when authorized.
 
 ## Release Delivery Convention
 
 - Jira Product Discovery project `CLV` controls exact product-version identity and lifecycle; Jira project `CLX` controls executable work. Implementation version advancement follows `decisions/0002-jira-controlled-delivery-with-project-local-advancement.md`.
 - Candidate validation, release tags, artifact publication, branch promotion,
   deployment, migration, and production acceptance are separate evidenced
-  actions. Current explicit instructions control each delivery step. Prior
-  standing authority does not authorize an unrequested `testing` or `main`
-  promotion, tag, publication, deployment, or production acceptance.
+  actions. Standing authority covers only a complete version's verified
+  `develop` to `testing` fast-forward and its configured Testing workflow.
+  Promotion to `main`, tags, publication, production deployment, migration,
+  and production acceptance require their applicable explicit authority.
 - A completed CLV version Idea records accepted scope and linked evidence; it does not imply deployment.
 - Release tags are annotated `vX.Y.Z` identities in affected implementation
   repositories. Create them only for exact accepted commits, never tag the spec
@@ -202,7 +204,7 @@ Do not request a Human response before it is actionable. Prepare the options, ev
 
 ### Testing Fast-Forward
 
-After the product owner authorizes promotion of a completed selected batch to `testing`:
+After every selected item in an exact product version is complete, run these steps without requesting another Human confirmation:
 
 1. Confirm every selected CLX item is complete, unblocked, and connected to the intended CLV version Idea.
 2. Confirm every affected worktree is clean, its local `develop` matches `origin/develop`, runtime and display versions are consistent, focused validation passes, and required `develop` CI is green.
@@ -210,7 +212,7 @@ After the product owner authorizes promotion of a completed selected batch to `t
 4. Promote only with `git push origin develop:testing` from the verified candidate repository.
 5. Verify the exact remote `testing` ref, wait for the Testing workflow, and record its result and candidate SHA in the CLV Idea and applicable CLX items.
 
-Keep the CLV Idea in Delivery until Human Testing acceptance is recorded. Promotion to `main`, tags, publication, and production deployment remain separate explicitly authorized actions after testing evidence is complete.
+Keep the CLV Idea in Delivery until Human Testing acceptance is recorded. Request explicit manual Human confirmation before promoting the exact accepted candidate from `testing` to `main`. Tags, publication, and production deployment remain separate controlled actions after Testing evidence is complete.
 
 ## Release Candidate Gate
 
@@ -225,7 +227,7 @@ Run this gate for every product release candidate. It is the reusable acceptance
 7. **Production-like rehearsal:** use generated disposable secrets and isolated names to run the selected production topology locally. Do not read `.env.testing` or `.env.production`. Verify ingress, health, restart, graceful shutdown, persistence, backup/restore, failure behavior, and safe teardown.
 8. **Whole-product acceptance:** exercise the selected stable user journeys through built client and server artifacts against the primary database profile, then run the required compatibility suite against every supported alternate database.
 9. **Evidence manifest:** emit a safe machine-readable record containing the version, commits, image and artifact identities, migration classification, validation results, timestamps, known limits, and requested delivery actions. Do not include secret values.
-10. **Delivery authority:** perform only delivery actions covered by an explicit current instruction. Authorization persists for the stated batch and step but does not expand to `main`, tags, publication, deployment, migration, or production acceptance. Keep all of those states separate.
+10. **Delivery authority:** the selected version has standing authority for its verified `develop` to `testing` fast-forward after every preceding gate passes. Perform all other controlled delivery actions only under their applicable explicit current instruction. This authority does not expand to `main`, tags, publication, production deployment, migration, or production acceptance. Keep all states separate.
 11. **Post-delivery verification:** verify remote refs and immutable tags, deployed identities when deployment occurred, health and smoke evidence, migration state when applicable, and rollback readiness. Synchronize Jira, canonical facts, and affected Confluence guidance.
 
 The gate fails closed. Do not bypass a failed check, force-push a delivery branch, move an existing release tag, or substitute a build result for runtime, migration, or acceptance evidence.

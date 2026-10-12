@@ -8,8 +8,10 @@ The stable product, deployment, migration, backup, recovery, and release
 identity decisions remain accepted. The autonomous delivery authority in this
 decision is narrowed by
 `0007-owner-selected-execution-and-explicit-promotion.md`: Ready work requires
-product-owner selection, and every branch promotion, tag, publication, and
-deployment requires explicit current authorization.
+product-owner selection; a complete version may be fast-forwarded from
+`develop` to `testing` after its gates pass; and promotion to `main`, tags,
+publication, and production deployment require their applicable explicit
+authority.
 
 ## Context
 

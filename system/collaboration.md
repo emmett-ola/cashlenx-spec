@@ -38,8 +38,10 @@ English is the default working language for code, documentation, Jira, Confluenc
 - Use issue links for cross-version or cross-area dependencies.
 - When a version close gate passes and the next delivery boundary opens, record the final evidence and set the CLV Idea's native `Idea archived` field. Leave completed CLX items in place with their history and labels.
 - Treat release publication, tags, branch promotion, and deployment as separate
-  evidenced actions. Perform each only under an explicit current instruction
-  after every applicable gate passes.
+  evidenced actions. A complete version may be fast-forwarded from `develop`
+  to `testing` under standing authority after every applicable gate passes.
+  Promotion to `main` requires explicit manual Human confirmation; other
+  controlled delivery actions retain their applicable authority requirements.
 
 ## Jira Work Item Contract
 
@@ -65,12 +67,15 @@ Every executable item also has one of `size-s`, `size-m`, or `size-l`. Size expr
 - Before moving work from `Ready` to `In Progress` and before moving it to `Done`, inspect linked blockers, the CLV version Idea and release-line state, Human-gate markers, comments, and acceptance conditions.
 - When a blocker is found or changes, record a concise `Blocker scan` comment in Jira and alert the user in the active conversation. State the issue key, exact Human action when applicable, and what cannot proceed.
 - Prepare decision options, evidence, and a recommendation before requesting Human input unless the missing input prevents preparation itself.
-- A selected implementation item does not authorize a branch promotion, tag,
-  publication, deployment, migration, or production acceptance. Require an
-  explicit current instruction for each applicable delivery step and preserve
-  additional Human gates for force-push, existing-tag mutation, secret exposure
-  or change, destructive or ambiguous production-data migration, security
-  exceptions, and failed-gate bypass.
+- A selected implementation item authorizes work on `develop`, but an individual
+  item does not make an incomplete version eligible for promotion. A complete
+  version that passes the release-candidate gate has standing authority for a
+  verified fast-forward to `testing`. Require explicit manual Human confirmation
+  for `main` and the applicable authority for tags, publication, production
+  deployment, migration, or production acceptance. Preserve additional Human
+  gates for force-push, existing-tag mutation, secret exposure or change,
+  destructive or ambiguous production-data migration, security exceptions,
+  and failed-gate bypass.
 
 ## Workflow And Evidence
 
@@ -90,16 +95,18 @@ inventory unchanged. Selected items are normally implemented sequentially, each
 with its own blocker scan, focused validation, Jira evidence, and coherent
 commit pushed to the affected repository's `develop` branch.
 
-A product-owner instruction that selects a batch and names its terminal delivery
-step remains valid for that stated sequence. Routine substeps continue without
-repeated approval, but the authorization does not expand to another batch or
-delivery boundary.
+A product-owner instruction that selects a batch remains valid for its stated
+implementation sequence on `develop`. When the complete version passes its
+release-candidate gate, standing authority covers the standard `testing`
+fast-forward without another confirmation. The authority does not expand to
+another batch or to `main`.
 
-Promotion to `testing` occurs only when the selected batch is complete, its
-release-candidate checks pass, the product owner has authorized that promotion,
-and `testing` can be fast-forwarded to the exact `develop` candidate. Human
-Testing acceptance is recorded before a separately authorized promotion to
-`main`, tag, publication, or production deployment.
+Promotion to `testing` occurs when the exact selected version is complete, its
+release-candidate checks pass, and `testing` can be fast-forwarded to the exact
+`develop` candidate. No additional Human confirmation is required for this
+standard promotion. Record Human Testing acceptance, then obtain explicit
+manual Human confirmation before promotion to `main`. Tags, publication, and
+production deployment remain separate controlled actions.
 
 After the Human answers a decision task, they move it from `Awaiting Confirmation` to `Intake`. The next triage records the decision, updates and unblocks affected work, and moves the decision task to `Done`.
 
