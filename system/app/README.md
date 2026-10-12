@@ -7,7 +7,7 @@
 Current stack:
 
 - Flutter with Dart SDK `>=3.13.0 <4.0.0`.
-- Runtime/displayed version `1.0.8+14` on the coordinated 1.0.8 delivery line.
+- Runtime/displayed version `1.0.10+16` on the coordinated 1.0.10 delivery line.
 - Feature-first Clean Architecture.
 - Riverpod for state.
 - GoRouter for routing.
@@ -34,7 +34,8 @@ Current stack:
   remain one private Dart library and are not imported independently.
 - `lib/features/budget/`: typed budget domain/data/presentation boundary.
 - `lib/features/statistics/`: typed expanded-statistics domain/data/presentation boundary.
-- `lib/features/profile/presentation/pages/profile_page.dart`: profile and avatar/currency controls.
+- `lib/features/profile/presentation/pages/profile_page.dart`: account identity,
+  profile information, avatar selection, and presentation-only account statistics.
 - `lib/features/settings/data/user_configuration_sync.dart`: authenticated and
   demo configuration synchronization while retaining local offline fallback.
 - `lib/features/demo/data/demo_data_store.dart`: editable demo-mode data store.
@@ -155,7 +156,12 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   covering dynamic API and user-provided text without runtime font-network
   dependencies or transient missing glyphs.
 - Profile fetch/update for `nickname`, `avatar_url`, `gender`, `phone_number`,
-  `location`, and `birth_date`. Avatars come from the fixed preset library; the fallback asset is `assets/images/avatars/f9b59ca5421b2b7ef2e31c2ba4d827f48d22594a.png`.
+  `location`, and `birth_date`. Profile does not edit currency, theme, language,
+  or persist user configuration; Settings is the sole UI owner for those
+  preferences. Presentation-only account statistics may display the active
+  currency symbol without making it a Profile control. Avatars come from the
+  fixed preset library; the fallback asset is
+  `assets/images/avatars/f9b59ca5421b2b7ef2e31c2ba4d827f48d22594a.png`.
 - Theme color, currency, and language synchronize through the authenticated user
   configuration API before authenticated route selection. The additive
   `setup_completed` response field distinguishes an explicit default-looking

@@ -79,6 +79,9 @@ The canonical CashLenX slogan is `Times shape your wealth, mind secures your con
   `gender`, `phone_number`, `location`, and `birth_date`.
 - Use fixed preset avatar assets; user-uploaded avatars are not supported.
 - Store selected avatar preset path in `avatar_url`.
+- Keep Profile focused on account identity, account information, and account
+  statistics. Settings is the sole UI owner of currency, theme color, and
+  language, and Profile saves do not write user configuration.
 - Synchronize currency, theme color, and language through the authenticated user
   configuration API while retaining local offline values.
 - Apply the selected currency symbol consistently to Home, transaction,
