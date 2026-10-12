@@ -85,7 +85,10 @@ The canonical CashLenX slogan is `Times shape your wealth, mind secures your con
   selection. A persisted configuration restores currency, language, and theme
   on a clean device; an unconfigured account still enters first-login setup.
 - Keep demo profile and configuration changes in the isolated session store.
-- Display installed package version and build number in About.
+- Display App Version from the installed package, API Version from the connected
+  `/api/v1/open/version` response, and the artifact-generated UTC Build Date in
+  `YYYY-MM-DD` form as separate About rows. API loading or failure does not
+  replace the valid App identity, and failed API identity retrieval is retryable.
 
 ### Statistics And Reporting
 

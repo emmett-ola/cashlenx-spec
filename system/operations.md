@@ -205,8 +205,10 @@ acceptance evidence remain tracked in Jira until delivered.
 - Runtime images record the full source commit and normalized product version
   through the OCI `org.opencontainers.image.revision` and
   `org.opencontainers.image.version` labels. App and Website also expose a
-  public `build-metadata.json`; Server embeds version, commit, and deterministic
-  commit time in its executable.
+  public `build-metadata.json`; App metadata additionally records the UTC
+  artifact Build Date in `YYYY-MM-DD` form and embeds that same immutable value
+  in the client. Server embeds version, commit, and deterministic commit time in
+  its executable.
 - Each repository `scripts/build.sh` validates version and image inputs, builds
   from its lockfile, and then verifies required runtime assets, provenance
   metadata, and the absence of environment, credential, and Git files from the

@@ -158,8 +158,10 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   choice from an unconfigured account; local preferences remain the offline
   fallback and demo configuration is isolated in memory. Its first synchronization preserves the
   language selected at demo entry, and later in-session language changes update
-  both local preferences and demo configuration. About reads package
-  version/build metadata, and logout remains available.
+  both local preferences and demo configuration. About shows the installed App
+  Version, the connected API runtime Version, and the artifact-generated UTC
+  Build Date independently; API loading and failure never hide the App identity.
+  Logout remains available.
 - The selected theme color drives primary controls, accents, selected states, and highlights. Splash and pre-splash visuals remain brand-stable rather than following the selected theme color.
 - Live Figma Make colors, 4 px spacing increments, and 8/16/24 px radii are
   centralized in `AppDesignTokens`. Shared auth fields and actions use the
