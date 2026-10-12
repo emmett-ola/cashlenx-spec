@@ -71,8 +71,9 @@ prohibited file absence.
 
 The App owns a containerized Playwright journey gate. The specification owns
 the complete local orchestration, including safe local environment
-configuration, an isolated built App container, the live Server and selected
-database, disposable user/data setup, cleanup, and checksummed evidence:
+configuration, exact current-source Server and App image builds, an isolated
+built App container, the selected database, disposable user/data setup,
+cleanup, and checksummed evidence:
 
 ```bash
 bash scripts/whole-product-acceptance.sh

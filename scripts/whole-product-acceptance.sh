@@ -72,7 +72,11 @@ set_key "$acceptance_env" API_DOMAIN cashlenx-server
 set_key "$acceptance_env" API_PORT 10063
 set_key "$acceptance_env" API_VERSION api/v1
 
-(cd "$server_dir" && bash scripts/dependencies/mongodb/status.sh && bash scripts/start.sh && bash scripts/status.sh)
+(cd "$server_dir" && \
+  bash scripts/dependencies/mongodb/status.sh && \
+  bash scripts/build.sh && \
+  bash scripts/start.sh && \
+  bash scripts/status.sh)
 (cd "$app_dir" && ENV_FILE=.env.acceptance.local bash scripts/build.sh)
 (cd "$app_dir" && ENV_FILE=.env.acceptance.local bash scripts/start.sh)
 (cd "$app_dir" && ENV_FILE=.env.acceptance.local bash scripts/status.sh)
