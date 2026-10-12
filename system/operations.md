@@ -272,6 +272,13 @@ acceptance evidence remain tracked in Jira until delivered.
   `.env.production` files for owner-managed sensitive deployment values. The
   synchronization workflow must not inspect or maintain their contents without
   explicit owner authorization.
+- When the owner authorizes Testing or Production reconciliation, use the latest
+  tracked `.env.example` as the structural authority and the corresponding
+  deployed environment file as the authority for environment-specific secrets.
+  Compare key sets, duplicate keys, file modes, and value fingerprints without
+  printing values. Keep the local and deployed files for the same environment
+  byte-identical after reconciliation, but never copy secrets between Testing
+  and Production.
 - Runtime lifecycle scripts use `.env` by default and accept a repository-local
   override through `ENV_FILE`. `.env` and an explicit `ENV_FILE` may be symbolic
   links when their fully resolved targets remain regular files inside the owning
@@ -280,6 +287,13 @@ acceptance evidence remain tracked in Jira until delivered.
   invalid booleans, and known legacy weak values without printing their contents.
   Server start validates only its selected database and enabled capabilities.
   Stop requires the selected file but does not validate values.
+- After changing a deployed environment file, compare selected parsed file
+  values with the running container through non-reversible fingerprints. If the
+  runtime still has old values, explicitly recreate the stateless application
+  container while preserving databases and volumes. Reload the host reverse
+  proxy when it resolves container addresses at configuration-load time, then
+  verify internal readiness and the public health, version, and affected
+  capability endpoints.
 
 ## Coordinated environment lifecycle
 
