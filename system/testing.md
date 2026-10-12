@@ -43,14 +43,10 @@ git diff --check
 
 Spec-only work also validates local Markdown links, moved paths, accidental non-English content, duplicated policy owners, and unchanged sibling repositories.
 
-Validate candidate deployment, idempotency, rollback, automatic partial-start
-recovery, no-database behavior, and fail-before-lifecycle rejection of tampered
-artifacts, mutable tags, revision drift, public-configuration mismatch, and
-missing rollback images with:
-
-```powershell
-pwsh -File scripts/deploy-candidate-smoke.ps1
-```
+The retained PowerShell candidate-deployment smoke harness is legacy evidence,
+not an active validation entry point. A runtime-deployment change must first
+port its idempotency, rollback, partial-start recovery, tamper rejection,
+revision, public-configuration, and missing-image scenarios to Bash.
 
 ### App
 
@@ -91,16 +87,10 @@ editable Demo journey that is rejected if it calls authenticated APIs. Results
 are retained under ignored `.artifacts/browser/<run-id>/`; secrets and test
 accounts are not retained.
 
-The focused dual-database evidence remains the server-owned disposable flow,
-run from `../cashlenx-server`:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File test/scripts/budget-smoke.ps1 -Database mongodb
-powershell -ExecutionPolicy Bypass -File test/scripts/budget-smoke.ps1 -Database mysql
-```
-
-It verifies authenticated profile/configuration persistence and budget/ledger
-behavior against both databases without retaining test data.
+The former PowerShell budget smoke harness is retained only as historical
+evidence. Before a Server or persistence release depends on those scenarios,
+port the authenticated profile/configuration and budget/ledger matrix for
+MongoDB and MySQL to Bash.
 
 ### Build toolchain convergence
 
@@ -161,67 +151,30 @@ verifies effective image identity, observes a paused service and a stopped
 selected dependency without restarts, and confirms graceful and timeout-forced
 termination behavior.
 
-Validate numbered MySQL migrations against a disposable MySQL 8 instance on Windows with:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File test/scripts/mysql-migrations-smoke.ps1
-```
-
-Validate MongoDB fresh, existing-data baseline, repeat, changed-checksum,
-reordered, native-handler, and failed/dirty migration behavior against a
-disposable MongoDB 7 instance with:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File test/scripts/mongodb-migrations-smoke.ps1
-```
-
-Validate encrypted database backup, checksum and corrupt-input rejection,
-tier retention, disposable restore, and migration-state recovery against both
-database profiles with:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File test/scripts/data-protection-smoke.ps1 -Database all
-```
-
-The smoke test generates its own database data, passphrase, container names,
-and ignored backup path. It never reads Testing or Production environment files
-and removes its source and restore containers plus temporary artifacts on exit.
-
-Run the complete production-like topology against the MongoDB primary and
-MySQL compatibility profiles with:
-
-```powershell
-pwsh -File scripts/rehearsal.ps1 -Database all
-```
-
-The orchestrator first validates the coordinated candidate contract, candidate
-deploy/rollback behavior, and the App, Server dependency, and Website fake
-Docker/nerdctl frontend suites. It then uses real Docker exclusively for the
-production-like topology. This is release-rehearsal evidence rather than a
-replacement for repository unit, static-analysis, or focused integration
-suites. The generated matrix and profile manifests are checksummed, distinguish
-real Docker execution from fake nerdctl compatibility evidence, contain exact
-commits, image IDs, and acceptance-artifact checksums, and contain no secret
-values.
+The MySQL migration, MongoDB migration, and dual-database data-protection
+PowerShell harnesses are retained as historical evidence only. Any release that
+changes those boundaries must first provide Bash replacements with the same
+fresh, upgrade, repeat, checksum, dirty-state, encrypted-backup, corrupt-input,
+retention, restore, recovery, generated-secret, isolation, and teardown
+coverage.
 
 After the Jira preflight has been recorded, run the complete release gate with:
 
-```powershell
-pwsh -File scripts/release-gate.ps1 -Database all -JiraPreflightReference "CLX-30 comment 12345"
+```bash
+bash scripts/release-gate.sh \
+  --affected-components app \
+  --database unchanged \
+  --jira-preflight-reference "CLV-15 comment 10250"
 ```
 
-The gate uses real Docker for all local execution, retains nerdctl only as a
-fake-frontend compatibility contract, and aggregates exact-toolchain static and
-unit checks, reproducible candidate evidence, the dual-database rehearsal, and
-the built-client browser journey into one checksummed manifest under ignored
+The gate uses real Docker for local execution and aggregates affected-repository
+static and unit checks, reproducible candidate evidence, retained-contract
+compatibility, and the built-client browser journey into one checksummed
+manifest under ignored
 `.artifacts/release-gates/` storage. Repository checks run from detached clean
 worktrees, so owner-managed local environment files are absent rather than
 merely hidden by a command-line option. The gate does not tag, publish, promote,
 deploy, or mutate persistent product data.
-
-`-TechnicalOnly` is available during a Jira outage. It runs the complete local
-technical matrix but records `release_ready: false`; the missing blocker scan
-must be completed later and the normal gate rerun for a release-ready result.
 
 ### Website
 

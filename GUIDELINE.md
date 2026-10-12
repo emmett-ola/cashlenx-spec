@@ -64,6 +64,12 @@ This is the reusable charter for CashLenX delivery. It records how to think abou
 - Treat project-owned compiler warnings, stale facts, broken links, exposed secrets, contradictory policy owners, and mismatched route summaries as defects.
 - Keep workflow state separate from deployment state and report both accurately.
 - Close work when its stated scope and evidence are complete; future scope belongs in `backlog/` or a new version.
+- Keep active automation portable through Bash, with Zsh as an interactive
+  caller when desired. Do not make PowerShell or `pwsh` a delivery dependency.
+- Coordinate product versions centrally while allowing App, Server, and Website
+  runtime versions to differ. Advance only the repositories whose selected
+  behavior or artifact changes, and preserve retained component versions in
+  release evidence.
 
 ## 7. Container And Lifecycle Governance
 

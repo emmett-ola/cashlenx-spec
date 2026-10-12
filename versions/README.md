@@ -52,6 +52,14 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
   and account-backed setup restoration across devices. Implementation work is
   tracked by CLX-74, CLX-75, and CLX-76; no Testing promotion, tag,
   publication, deployment, migration, or production acceptance is implied.
+- [CLV-15](https://macacloud.atlassian.net/browse/CLV-15) is the authoritative
+  `v1.0.8` boundary for promoting Transactions to primary navigation, moving
+  Category Management under Settings, and replacing the dashboard category
+  chart with the Financial Insights entry. CLX-81 owns the completed App work;
+  delivery evidence is recorded separately from deployment and acceptance.
+- [CLV-16](https://macacloud.atlassian.net/browse/CLV-16) is the authoritative
+  planned `v1.0.9` boundary for the deferred About, dashboard-context, slogan,
+  and release-identity work in CLX-77 through CLX-80.
 - CLX items use matching exact-version labels and
   Product Discovery delivery links. CLV owns version identity; labels support
   queries and do not form a second authority.

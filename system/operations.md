@@ -400,84 +400,33 @@ also have the approved non-echoing remote-access profile and host connectivity.
 Do not reinterpret a missing credential profile as missing Human authority,
 and do not ask the operator to place credentials in chat, Jira, logs, command
 arguments, or Git. Owner-managed remote-access profiles remain mode `0600` and
-outside the repositories. Bash or Zsh is the required execution shell for this
-workspace; the PowerShell orchestrators documented below are optional tooling
-and their absence is not a release or deployment blocker when equivalent gate
-evidence is collected through Bash-owned entry points.
+outside the repositories. Bash is the portable automation contract and Zsh may
+invoke the same entry points interactively. PowerShell and `pwsh` are not active
+release or deployment dependencies; retained PowerShell scripts are legacy
+evidence only.
 
-For an isolated local production-like run from exact committed implementation
-revisions, use the specification-owned delivery orchestrator:
+After recording the Jira blocker scan, validate an App-only candidate with no
+Server or persistence change by running:
 
-```powershell
-pwsh -File scripts/rehearsal.ps1 -Database all
+```bash
+bash scripts/release-gate.sh \
+  --affected-components app \
+  --database unchanged \
+  --jira-preflight-reference "CLV-15 comment 10250"
 ```
 
-The orchestrator creates detached clean worktrees so unrelated local changes do
-not enter candidate images. It generates disposable production-mode
-configuration and secrets, uses isolated project/container/network/port/volume
-identities, builds through each repository's own entry point, starts local TLS
-ingress, runs API and static-surface checks, restarts the database and verifies
-persistence, and performs encrypted backup and disposable restore. Before the
-real Docker topology, it runs coordinated candidate validation, candidate
-deploy/rollback tests, and every repository's fake Docker/nerdctl lifecycle
-contract suite. It writes checksummed secret-free matrix and profile manifests
-under `.artifacts/rehearsal/`, recording Docker versions, the fake nerdctl 2.2+
-compatibility contract, exact commits, image identities, and acceptance-script
-checksums. It never requires a real nerdctl runtime and never reads Testing or
-Production environment files. Normal teardown removes only the generated
-containers, network, volume, plaintext, and clean worktrees while retaining the
-evidence manifests and candidate images for inspection or a warm rerun.
+The Bash gate creates detached clean worktrees, validates only affected
+repository versions and tests, verifies the retained App/Server OpenAPI copy,
+packages affected images and source archives twice, compares identities and
+checksums, runs the built-client browser journey, and writes a checksummed
+secret-free manifest under `.artifacts/release-gates/`. It reads tracked release
+inputs and local development configuration only; it never reads Testing or
+Production environment files and performs no tag, promotion, publication,
+deployment, migration, or production-acceptance action.
 
-For a coordinated, untagged release candidate from clean synchronized commits,
-use:
-
-```powershell
-pwsh -File scripts/release-candidate.ps1
-```
-
-After recording the Jira blocker scan, compose candidate packaging with the
-repository, production-like, and browser gates by running:
-
-```powershell
-pwsh -File scripts/release-gate.ps1 -Database all -JiraPreflightReference "CLX-30 comment 12345"
-```
-
-The aggregate command is the local and future CI/CD release-readiness entry
-point. It uses Docker for execution, treats nerdctl as contract compatibility
-only, produces no delivery action, and retains a checksummed evidence manifest
-under `.artifacts/release-gates/`.
-
-During a Jira outage, `-TechnicalOnly` retains the full technical evidence but
-sets `release_ready` to false. It does not waive or replace the blocker scan.
-
-The candidate builder verifies App, Server, Website, OpenAPI, Spec, changelogs,
-and release notes against `release/VERSION`; rejects an existing target tag;
-packages exact clean commits twice; compares image identities plus image/source
-artifact hashes; and writes one retained artifact set, `SHA256SUMS`, and a
-checksummed secret-free manifest under `.artifacts/release-candidates/`. It reads
-only tracked release inputs and `.env.example`, creates no tag, publishes
-nothing, promotes no branch, deploys nothing, and records no secret. The tag,
-publication, rollback, and future CI/CD handoff contract is in
-`release/README.md`.
-
-To consume one of those candidates without rebuilding it, use the controlled
-deployment entry point with repository-local environment files for the target:
-
-```powershell
-pwsh -File scripts/deploy-candidate.ps1 -Action Deploy -ManifestPath <manifest.json> -TargetName local
-pwsh -File scripts/deploy-candidate.ps1 -Action Rollback -TargetName local
-```
-
-Before container replacement, it verifies the manifest sidecar, all listed
-artifact lengths and checksums, package sidecars and metadata, exact version and
-revision binding, App public configuration identity, immutable tag form, and
-loaded image IDs. It refuses a conflicting local tag, loads only an absent
-verified archive, starts Server then App then Website without pulling, and
-automatically restores the previously recorded identities after a partial
-start. Target state has its own checksum. Each success or failure produces
-secret-free evidence with requested/effective identities, configuration
-profile and fingerprint, target, result, timestamps, and an explicit `none`
-database action. Rollback never invokes database lifecycle or volume actions.
+Server or persistence releases remain fail-closed until the legacy
+dual-database rehearsal and controlled deployment capabilities have Bash
+replacements. The retained PowerShell scripts are not accepted entry points.
 
 ## Database-Level Data Protection
 

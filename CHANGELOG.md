@@ -6,6 +6,24 @@ state and the evidence manifest owns exact candidate identities.
 
 ## [Unreleased]
 
+## [1.0.8] - 2026-10-12
+
+### Changed
+
+- Promoted the App transaction ledger to primary navigation, routed Home's
+  recent-activity See All action to the same destination, and moved category
+  administration under Settings > Resource Management.
+- Replaced the dashboard category chart with a compact Financial Insights entry
+  for the expanded Statistics destination.
+- Added component-scoped release-candidate validation so post-v1.0 product
+  versions advance only affected implementation repositories.
+
+### Fixed
+
+- Reconciled legacy cash-flow category presentation and replaced repository-text
+  Chinese font subsets with pinned complete Simplified and Traditional Chinese
+  assets.
+
 ## [1.0.4] - 2026-10-09
 
 ### Fixed

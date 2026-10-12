@@ -195,6 +195,16 @@ Do not request a Human response before it is actionable. Prepare the options, ev
   Promotion to `main`, tags, publication, production deployment, migration,
   and production acceptance require their applicable explicit authority.
 - A completed CLV version Idea records accepted scope and linked evidence; it does not imply deployment.
+- One CLV Idea coordinates the product version, while each implementation
+  repository retains an independent runtime and artifact version. After the
+  coordinated v1.0.0 baseline, only repositories changed by the selected
+  version advance their version source, changelog, tag, artifacts, and
+  promotion branches. Release notes and manifests record every untouched
+  component at its retained version.
+- Bash is the active cross-platform automation contract. Zsh may invoke the
+  same Bash entry points interactively, but active workflows must not require
+  PowerShell or `pwsh`. A retained PowerShell script is legacy evidence and is
+  not an accepted gate or delivery entry point.
 - Release tags are annotated `vX.Y.Z` identities in affected implementation
   repositories. Create them only for exact accepted commits, never tag the spec
   repository, and never move or recreate an existing tag. A correction receives
@@ -220,9 +230,9 @@ Run this gate for every product release candidate. It is the reusable acceptance
 
 1. **Jira preflight:** run the blocker scan for the selected CLV version Idea and every connected CLX item. Stop on an unresolved dependency, `human-action-required`, incomplete acceptance criterion, or unrecorded required decision.
 2. **Source preflight:** record exact repository branches and commits, confirm intended worktrees contain no unrelated change, confirm the candidate ancestry is suitable for any requested fast-forward, and identify every affected project area.
-3. **Version contract:** verify the selected product version against each affected runtime/display version, API path, OpenAPI document, image label, artifact name, changelog, and release note. Generated metadata must derive from an authoritative source and must not act as an independent fallback.
+3. **Version contract:** verify the selected product version against each affected runtime/display version, image label, artifact name, changelog, and release note. Verify API paths and OpenAPI versions only when their owning repository changes. Record each unaffected repository and its retained version explicitly. Generated metadata must derive from an authoritative source and must not act as an independent fallback.
 4. **Database preflight:** compare the currently delivered database boundary with the candidate, enumerate ordered migrations and recovery requirements, verify migration identity and immutability, and state explicitly when no database change is required. Source delivery never proves that an environment ran a migration.
-5. **Repository validation:** run focused checks first, then the required package tests, static analysis, contract tests, builds, and generated-file checks for every affected repository.
+5. **Repository validation:** run focused checks first, then the required package tests, static analysis, contract tests, builds, and generated-file checks for every affected repository through Bash-owned entry points.
 6. **Image validation:** build candidate images from controlled contexts, verify required runtime contents and version/revision metadata, and prove that environment files, credentials, Git state, logs, local data, and unrelated outputs are absent.
 7. **Production-like rehearsal:** use generated disposable secrets and isolated names to run the selected production topology locally. Do not read `.env.testing` or `.env.production`. Verify ingress, health, restart, graceful shutdown, persistence, backup/restore, failure behavior, and safe teardown.
 8. **Whole-product acceptance:** exercise the selected stable user journeys through built client and server artifacts against the primary database profile, then run the required compatibility suite against every supported alternate database.

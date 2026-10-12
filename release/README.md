@@ -6,15 +6,17 @@ repositories remain independently buildable and do not read this directory.
 
 ## Candidate flow
 
-1. Update `VERSION`, the matching release note, every affected implementation
-   version source, OpenAPI, display copy, and changelog in one coordinated
-   delivery.
-2. Run `scripts/release-candidate.ps1`. The script fails before packaging when
-   a repository is dirty or unsynchronized, a version or changelog conflicts,
-   the OpenAPI copies differ, or the target tag already exists.
-3. The script packages exact clean commits twice, compares image identities and
-   artifact hashes, and retains one checksummed set plus a secret-free manifest
-   under `.artifacts/release-candidates/`.
+1. Update `VERSION`, the matching release note, and the version source,
+   display copy, and changelog of every affected implementation repository.
+   Update OpenAPI only when the Server contract changes. Record every unaffected
+   component at its retained version.
+2. Run `scripts/release-gate.sh` with the exact affected-component set. The
+   script fails before packaging when a repository is dirty or unsynchronized,
+   an affected version or changelog conflicts, the OpenAPI copies differ, or an
+   affected repository already has the target tag.
+3. The Bash gate packages exact clean affected commits twice, compares image
+   identities and artifact hashes, and retains one checksummed set plus a
+   secret-free manifest under `.artifacts/release-gates/`.
    App candidates include the selected public configuration profile and a
    normalized fingerprint in both their immutable tag and manifest identity.
 4. Review the exact candidate evidence. Candidate acceptance does not create a
@@ -23,18 +25,25 @@ repositories remain independently buildable and do not read this directory.
 For the complete local release-readiness gate, first complete and record the
 Jira blocker scan, then run:
 
-```powershell
-pwsh -File scripts/release-gate.ps1 -Database all -JiraPreflightReference "CLX-30 comment 12345"
+```bash
+bash scripts/release-gate.sh \
+  --affected-components app \
+  --database unchanged \
+  --jira-preflight-reference "CLV-15 comment 10250"
 ```
 
-This single entry point runs exact-toolchain repository validation, reproducible
-candidate packaging, both production-like database profiles, and whole-product
-browser acceptance. It writes a checksummed aggregate manifest under
+This single entry point runs exact-toolchain validation for affected
+repositories, reproducible candidate packaging, compatibility checks against
+retained repositories, and whole-product browser acceptance. An App-only
+release with no Server or persistence change uses `--database unchanged`; a
+Server or persistence release must use a Bash-owned database rehearsal before
+it is eligible. The gate writes a checksummed aggregate manifest under
 `.artifacts/release-gates/` and performs no delivery action.
 
-When Jira is temporarily unavailable, `-TechnicalOnly` may collect the same
-technical evidence, but its manifest is explicitly not release-ready and cannot
-substitute for a later blocker scan.
+Pass every implementation repository changed by the product version through
+`--affected-components`. The gate validates, packages, and checks target-tag
+availability only for those components while retaining every repository commit
+and unaffected runtime version in the release note and evidence.
 
 ## Authorized release flow
 
@@ -46,17 +55,11 @@ their recorded SHA-256 digests. Do not rebuild between acceptance and
 publication. Publication failure leaves source and tags unchanged; retry the
 same bytes or correct the issue under a new semantic version.
 
-Deployment is a separate action. `scripts/deploy-candidate.ps1` verifies the
-candidate manifest sidecar, every listed artifact, package metadata, version,
-revision, App public configuration fingerprint, and exact local image ID before
-replacing any application container. It loads only a missing verified archive,
-starts with pulling disabled, records checksummed target state and secret-free
-evidence, and treats a repeated deployment of the same candidate as idempotent.
-Non-destructive rollback selects the previously recorded App, Server, and
-Website image identities without changing database services or volumes.
-Rollback never rewrites a tag or overwrites an artifact. Any destructive or
-ambiguous data action, secret change, security exception, force-push, existing
-tag mutation, or failed-gate bypass still requires a new Human decision.
+Deployment remains a separate action. The retained PowerShell deployment
+scripts are legacy evidence and are not active entry points. Runtime deployment
+or rollback must wait for a Bash replacement that preserves manifest,
+checksum, immutable-image, no-pull, target-state, and non-destructive rollback
+semantics. This does not block branch-driven static App publication.
 
 ## CI/CD integration
 
@@ -64,13 +67,6 @@ Each implementation repository owns a manual, secret-free candidate job and a
 repository-local `scripts/package-image.sh`. Future CI/CD can call those entry
 points and the same release gate, then attach publication or deployment only as
 separate jobs that consume the accepted manifest and exact artifact digests.
-
-Example local controlled deployment and rollback:
-
-```powershell
-pwsh -File scripts/deploy-candidate.ps1 -Action Deploy -ManifestPath <manifest.json> -TargetName local
-pwsh -File scripts/deploy-candidate.ps1 -Action Rollback -TargetName local
-```
 
 The three selected environment files remain repository-local and own target
 names, ports, resource settings, and Server secrets. Their values are never

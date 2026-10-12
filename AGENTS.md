@@ -73,6 +73,15 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 - Do not treat Jira or a version record as the current implementation source of truth after delivery; `system/` is the current-facts layer.
 - Before any release tag, artifact publication, `testing` or `main` promotion, or deployment, execute the release-candidate gate in `WORKFLOW.md`. Stop on unresolved Jira blockers, version drift, migration uncertainty, missing validation, dirty or divergent source, unsafe environment handling, or absent authority for a controlled delivery action. A complete version has standing authority for its verified `develop` to `testing` fast-forward; `main` always requires explicit manual Human confirmation.
 - Never infer database migration, runtime deployment, or production acceptance from a commit, branch, tag, image, or Jira status. Record each state and its evidence separately.
+- Use Bash as the portable automation contract and Zsh for interactive local
+  execution when useful. Do not invoke, add, or require PowerShell or `pwsh` in
+  active delivery, validation, release, or deployment workflows. Retained
+  PowerShell scripts are legacy evidence only until a Bash replacement exists.
+- Product versions remain coordinated through one CLV Idea, but implementation
+  repository versions advance independently after v1.0.0. Change version
+  metadata, changelogs, tags, artifacts, and promotion branches only for
+  repositories affected by the selected version; record untouched component
+  versions explicitly in the release note and evidence manifest.
 
 ## Editing Practices
 
