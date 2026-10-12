@@ -72,7 +72,7 @@ if [[ "$database_scope" != "unchanged" ]]; then
   exit 1
 fi
 
-for command in git docker jq awk sed find cmp; do
+for command in git docker jq awk sed find cmp flutter dart; do
   command -v "$command" >/dev/null || { echo "$command is required." >&2; exit 1; }
 done
 docker version >/dev/null
@@ -209,14 +209,28 @@ release_note="${validation_paths[spec]}/release/notes/$version.md"
 
 if [[ -n "${selected[app]:-}" ]]; then
   app_images="${validation_paths[app]}/docker/images.env"
-  flutter_image="$(read_env_value "$app_images" FLUTTER_BUILD_IMAGE)"
   flutter_version="$(read_env_value "$app_images" FLUTTER_VERSION)"
+  flutter_revision="$(read_env_value "$app_images" FLUTTER_REVISION)"
   dart_version="$(read_env_value "$app_images" DART_VERSION)"
-  docker run --rm \
-    --volume "${validation_paths[app]}:/workspace" \
-    --workdir /workspace \
-    "$flutter_image" bash -lc \
-    "flutter pub get --enforce-lockfile && flutter --version --machine | grep -F '\"frameworkVersion\": \"$flutter_version\"' >/dev/null && dart --version 2>&1 | grep -F 'Dart SDK version: $dart_version' >/dev/null && flutter analyze && flutter test"
+  flutter_machine="$(flutter --version --machine)"
+  [[ "$(jq -r '.frameworkVersion' <<<"$flutter_machine")" == "$flutter_version" ]] || {
+    echo "Local Flutter does not match the tracked toolchain version $flutter_version." >&2
+    exit 1
+  }
+  [[ "$(jq -r '.frameworkRevision' <<<"$flutter_machine")" == "$flutter_revision" ]] || {
+    echo "Local Flutter does not match the tracked framework revision $flutter_revision." >&2
+    exit 1
+  }
+  [[ "$(jq -r '.dartSdkVersion' <<<"$flutter_machine")" == "$dart_version" ]] || {
+    echo "Local Dart does not match the tracked toolchain version $dart_version." >&2
+    exit 1
+  }
+  (
+    cd "${validation_paths[app]}"
+    flutter pub get --enforce-lockfile
+    flutter analyze
+    flutter test
+  )
 fi
 
 if [[ -n "${selected[server]:-}" ]]; then

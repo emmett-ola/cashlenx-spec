@@ -41,6 +41,11 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 ## Repository Boundaries
 
 - Treat `cashlenx-spec`, `cashlenx-app`, `cashlenx-server`, and `cashlenx-website` as active project areas. Treat `cashlenx-design` as a separate archived historical prototype.
+- Keep local checkout names and remote repository identities separate. The
+  workspace always uses `app/`, `server/`, `website/`, and `spec/`; Git remotes,
+  repository links, images, and artifacts use `cashlenx-app`, `cashlenx-server`,
+  `cashlenx-website`, and `cashlenx-spec`. Automation must map these identities
+  explicitly and must not derive one naming scheme from the other.
 - In `cashlenx-app`, `cashlenx-server`, and `cashlenx-website`, perform implementation work on `develop`, use `testing` only as the verified fast-forward target for a complete version, and use `main` only after explicit manual Human confirmation of that production release promotion. Do not retain or create the legacy code branch name `test`. Keep `cashlenx-spec` on its sole `main` branch. Inspect branch and worktree state before switching; do not create, replace, or switch branches when doing so would displace unrelated user work.
 - `cashlenx-spec` is the specification workspace and should not contain runtime code.
 - `cashlenx-app` owns current UI behavior and presentation. Do not maintain parity with `cashlenx-design`, use it as a current design authority, or modify it for new UI work. Consult it only when historical prototype evidence is relevant.

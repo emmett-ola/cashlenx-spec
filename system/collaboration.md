@@ -23,6 +23,22 @@ All routine Jira and Confluence operations are performed through the authorized 
 archived on 2026-10-12 and remains historical prototype evidence only; it is not
 maintained in parallel and does not impose a parity requirement.
 
+## Workspace And Remote Identities
+
+The local workspace uses stable short checkout directories:
+
+| Area | Local directory | Remote repository and artifact identity |
+| --- | --- | --- |
+| App | `app/` | `cashlenx-app` |
+| Server | `server/` | `cashlenx-server` |
+| Website | `website/` | `cashlenx-website` |
+| Spec | `spec/` | `cashlenx-spec` |
+
+Automation maps these columns explicitly. Local path resolution never assumes
+the `cashlenx-*` remote name is also the checkout directory, and remote links,
+image names, source archives, and repository reports never replace the remote
+identity with the short local directory.
+
 ## Language
 
 English is the default working language for code, documentation, Jira, Confluence, commit messages, release notes, and engineering artifacts. Another language is used only when explicitly required by localized product content, translation, or i18n validation.

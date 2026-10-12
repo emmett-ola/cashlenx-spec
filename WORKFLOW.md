@@ -19,6 +19,10 @@ This workflow keeps CashLenX specification and delivery work proportionate to ri
 - `cashlenx-spec` uses `main` as its only branch; specification commits do not represent an implementation release or deployment.
 - Creating commits, reconciling history, or pushing a working branch does not itself prove that a version is complete or eligible for promotion.
 - Promotion from `testing` to `main` requires explicit manual Human confirmation for the exact version and repositories after Testing evidence is complete. Release tagging, publication, production deployment, and other controlled actions retain their own authority and evidence requirements.
+- Workspace paths are `app/`, `server/`, `website/`, and `spec/`; remote
+  repositories and artifact identities retain the `cashlenx-*` names. Every
+  cross-repository script uses an explicit mapping instead of constructing one
+  from the other.
 
 ## Work Levels
 
@@ -205,6 +209,11 @@ Do not request a Human response before it is actionable. Prepare the options, ev
   same Bash entry points interactively, but active workflows must not require
   PowerShell or `pwsh`. A retained PowerShell script is legacy evidence and is
   not an accepted gate or delivery entry point.
+- The checked-in toolchain identity follows the current project-owner local
+  toolchain. Before a release gate, compare the local Flutter/Dart version and
+  revision with tracked toolchain metadata; when the local toolchain is the
+  selected newer baseline, update CI and container metadata together before
+  validation so hosts cannot silently use an older platform-specific image.
 - Release tags are annotated `vX.Y.Z` identities in affected implementation
   repositories. Create them only for exact accepted commits, never tag the spec
   repository, and never move or recreate an existing tag. A correction receives

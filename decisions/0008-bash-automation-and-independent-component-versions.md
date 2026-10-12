@@ -28,6 +28,14 @@ current macOS host.
 - Cross-repository compatibility checks remain required when an affected
   component consumes another component's contract, even when the provider's
   version does not advance.
+- Local checkout directories are permanently mapped as `app/`, `server/`,
+  `website/`, and `spec/`. Remote repositories and artifact identities remain
+  `cashlenx-app`, `cashlenx-server`, `cashlenx-website`, and `cashlenx-spec`.
+  Automation must map the two naming systems explicitly.
+- The current project-owner local Flutter/Dart installation is the selected
+  toolchain baseline. Tracked version, framework revision, CI setup, and
+  container build metadata move together when that baseline changes; release
+  validation rejects any silent mismatch.
 
 ## Consequences
 
@@ -38,6 +46,8 @@ current macOS host.
   version.
 - A legacy PowerShell-only check cannot satisfy a new delivery gate. Its
   triggered capability must first receive a Bash replacement.
+- Cross-repository scripts no longer fail because they confuse a short local
+  checkout path with a full remote repository name.
 - Product version, component runtime version, branch promotion, tag,
   publication, deployment, migration, and acceptance remain separate states.
 
