@@ -16,7 +16,10 @@ The canonical CashLenX slogan is `Times shape your wealth, mind secures your con
 
 ### Authentication
 
-- Register with purpose-scoped email verification.
+- Register with purpose-scoped email verification. The verification step names
+  the destination email, accepts a six-digit code, preserves resend countdown
+  feedback, and provides Confirm and Return to edit email actions while retaining
+  unrelated registration state.
 - Login with username/password.
 - Refresh a session through refresh token login.
 - Persist access token, refresh token, and remember-me state in secure storage.

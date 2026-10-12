@@ -7,7 +7,7 @@
 Current stack:
 
 - Flutter with Dart SDK `>=3.13.0 <4.0.0`.
-- Runtime/displayed version `1.0.10+16` on the coordinated 1.0.10 delivery line.
+- Runtime/displayed version `1.1.0+17` on the coordinated 1.1.0 delivery line.
 - Feature-first Clean Architecture.
 - Riverpod for state.
 - GoRouter for routing.
@@ -72,7 +72,11 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 
 ## Current Implemented Behavior
 
-- Splash, login, registration, password reset, and demo mode.
+- Splash, login, registration, password reset, and demo mode. Registration's
+  email-verification step presents the destination email as read-only context,
+  accepts a focused six-digit numeric code, retains resend countdown feedback,
+  and offers localized Confirm and Return to edit email actions without changing
+  the verification API contract.
 - The official camera-and-cash brand mark is shared by splash, authentication,
   first-login setup, About, and Flutter Web bootstrap surfaces. Platform icon
   assets cover Android adaptive and round launchers, iOS light/dark/tinted
