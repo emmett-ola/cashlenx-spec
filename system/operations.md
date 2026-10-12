@@ -64,6 +64,11 @@ file. It does not send or copy that file into the build context or runtime
 image. Direct Flutter runs may supply the same values with `--dart-define`; the
 code defaults to the local development API when they are omitted.
 
+Hosted App releases receive those five public settings from the CI branch map,
+not from a VM environment file. Local `.env.testing` and `.env.production`
+should match the `testing` and `main` branch inputs respectively; HTTPS targets
+use an empty `API_PORT` so the client uses the scheme default.
+
 ## Environment Endpoints
 
 | Environment | App | API |
