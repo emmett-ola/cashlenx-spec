@@ -4,7 +4,7 @@
 
 CashLenX is a personal-finance application for recording cash flows, organizing them by category, viewing summaries, and managing account preferences.
 
-Current English authentication branding uses the subtitle `Your Financial Companion`. Localized variants remain owned by the app's localization resources.
+The canonical CashLenX slogan is `Times shape your wealth, mind secures your control.` in English, `财流顺时而变，定力由己自持` in Simplified Chinese, and `財流順時而變，定力由己自持` in Traditional Chinese. Active splash, authentication, About, design-reference, and public-website brand surfaces use this wording without independent paraphrases.
 
 ## Primary Users
 
