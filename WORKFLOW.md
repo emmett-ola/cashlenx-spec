@@ -19,6 +19,13 @@ This workflow keeps CashLenX specification and delivery work proportionate to ri
 - `cashlenx-spec` uses `main` as its only branch; specification commits do not represent an implementation release or deployment.
 - Creating commits, reconciling history, or pushing a working branch does not itself prove that a version is complete or eligible for promotion.
 - Promotion from `testing` to `main` requires explicit manual Human confirmation for the exact version and repositories after Testing evidence is complete. Release tagging, publication, production deployment, and other controlled actions retain their own authority and evidence requirements.
+- The normal confirmation to promote an accepted production release covers the
+  complete ordered delivery for its affected repositories: fast-forward to
+  `main`, wait for and verify the App branch-triggered Production publication,
+  then deploy and verify the exact Server `main` candidate when Server is
+  affected. These remain separate evidenced states. Missing deployment access
+  or tooling leaves the release incomplete after branch promotion; it never
+  turns a Server source push into deployment evidence.
 - Workspace paths are `app/`, `server/`, `website/`, and `spec/`; remote
   repositories and artifact identities retain the `cashlenx-*` names. Every
   cross-repository script uses an explicit mapping instead of constructing one
@@ -145,7 +152,7 @@ Request a Human decision only when one of these remains unresolved:
 - Two or more plausible interpretations materially change business behavior or scope.
 - A major architecture direction or long-lived external contract is being selected.
 - Breaking compatibility, destructive data mutation, irreversible operation, or security/privacy risk must be accepted.
-- Production deployment, promotion to `main`, release/tag action, secret change, or external-system mutation lacks concrete authorization. The standard verified fast-forward of a complete version to `testing` is already authorized; any exception to that path requires a separate decision.
+- Production deployment, promotion to `main`, release/tag action, secret change, or external-system mutation lacks concrete authorization. The standard verified fast-forward of a complete version to `testing` is already authorized. An explicit instruction to promote an accepted release to `main` also authorizes its normal non-destructive App publication and affected Server deployment sequence; tags, database execution, secret changes, exceptional deployment actions, and production acceptance remain separate gates.
 - Completion requires expanding beyond the requested outcome or accepting a known High-impact risk.
 
 Human approval covers only the stated decision or operation. Reversible implementation choices, focused tests, documentation synchronization, and repository-local commits inside an approved outcome remain AI responsibilities.
@@ -198,7 +205,9 @@ Do not request a Human response before it is actionable. Prepare the options, ev
   deployment, migration, and production acceptance are separate evidenced
   actions. Standing authority covers only a complete version's verified
   `develop` to `testing` fast-forward and its configured Testing workflow.
-  Promotion to `main`, tags, publication, production deployment, migration,
+  An explicit accepted-release instruction to promote to `main` covers the
+  normal App publication and affected Server deployment sequence described
+  below. Tags, other publication, database execution, exceptional deployment,
   and production acceptance require their applicable explicit authority.
 - A completed CLV version Idea records accepted scope and linked evidence; it does not imply deployment.
 - One CLV Idea coordinates the product version, while each implementation
@@ -233,7 +242,34 @@ After every selected item in an exact product version is complete, run these ste
 4. Promote only with `git push origin develop:testing` from the verified candidate repository.
 5. Verify the exact remote `testing` ref, wait for the Testing workflow, and record its result and candidate SHA in the CLV Idea and applicable CLX items.
 
-Keep the CLV Idea in Delivery until Human Testing acceptance is recorded. Request explicit manual Human confirmation before promoting the exact accepted candidate from `testing` to `main`. Tags, publication, and production deployment remain separate controlled actions after Testing evidence is complete.
+Keep the CLV Idea in Delivery until Human Testing acceptance is recorded. Request explicit manual Human confirmation before promoting the exact accepted candidate from `testing` to `main`. That confirmation invokes the normal App publication and affected Server deployment sequence below; tags, other publication, database execution, exceptional deployment, and production acceptance remain separately controlled.
+
+### Main Promotion And Production Delivery
+
+After the Human authorizes the exact accepted release for `main`:
+
+1. Re-run the promotion and database preflights and fast-forward only the
+   affected repositories from their exact accepted `testing` refs to `main`.
+2. Wait for every required `main` workflow. When App is affected, require its
+   Production static publication to succeed and verify the public App runtime
+   identity before continuing.
+3. When Server is affected, use only the approved Bash deployment entry point
+   and non-echoing owner-managed access profile to deploy the exact Server
+   `main` revision. Do not read or print the owner-managed Production
+   environment file, rebuild from a different revision, pull an unverified
+   image, or use retained PowerShell tooling.
+4. Verify the deployed Server version and revision, container-local health,
+   ingress health, selected-database connectivity and migration state, absence
+   of unintended host ports, and rollback readiness.
+5. Record branch refs, workflow results, App publication, Server deployment,
+   database execution, and production acceptance as distinct states in Jira
+   and the release evidence.
+
+The promotion instruction covers this normal non-destructive sequence for the
+affected repositories. If the Bash entry point, deployment access, exact image
+or revision, rollback identity, or required health evidence is unavailable,
+stop at the last verified state and record the release as incomplete. Do not
+substitute a successful `main` push or App publication for Server deployment.
 
 ## Release Candidate Gate
 
@@ -248,7 +284,7 @@ Run this gate for every product release candidate. It is the reusable acceptance
 7. **Production-like rehearsal:** use generated disposable secrets and isolated names to run the selected production topology locally. Do not read `.env.testing` or `.env.production`. Verify ingress, health, restart, graceful shutdown, persistence, backup/restore, failure behavior, and safe teardown.
 8. **Whole-product acceptance:** exercise the selected stable user journeys through built client and server artifacts against the primary database profile, then run the required compatibility suite against every supported alternate database.
 9. **Evidence manifest:** emit a safe machine-readable record containing the version, commits, image and artifact identities, migration classification, validation results, timestamps, known limits, and requested delivery actions. Do not include secret values.
-10. **Delivery authority:** the selected version has standing authority for its verified `develop` to `testing` fast-forward after every preceding gate passes. Perform all other controlled delivery actions only under their applicable explicit current instruction. This authority does not expand to `main`, tags, publication, production deployment, migration, or production acceptance. Keep all states separate.
+10. **Delivery authority:** the selected version has standing authority for its verified `develop` to `testing` fast-forward after every preceding gate passes. Perform all other controlled delivery actions only under their applicable explicit current instruction. An explicit instruction to promote the exact accepted release to `main` includes its normal App publication and affected Server deployment sequence; it does not authorize tags, other publication, database execution, exceptional deployment, or production acceptance. Keep all states separate.
 11. **Post-delivery verification:** verify remote refs and immutable tags, deployed identities when deployment occurred, health and smoke evidence, migration state when applicable, and rollback readiness. Synchronize Jira, canonical facts, and affected Confluence guidance.
 
 The gate fails closed. Do not bypass a failed check, force-push a delivery branch, move an existing release tag, or substitute a build result for runtime, migration, or acceptance evidence.

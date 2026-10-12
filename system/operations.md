@@ -407,6 +407,18 @@ invoke the same entry points interactively. PowerShell and `pwsh` are not active
 release or deployment dependencies; retained PowerShell scripts are legacy
 evidence only.
 
+For an accepted Production release, an explicit `main` promotion instruction
+covers one ordered operation across the affected repositories. The App's
+branch-triggered Production publication must finish and its public runtime
+identity must be verified first. When Server is affected, the exact Server
+`main` revision must then be deployed through the approved Bash entry point and
+verified through container-local health, public ingress, runtime identity,
+selected-database connectivity and migration state, absence of unintended host
+ports, and rollback readiness. These are separate evidence records even though
+they share one release instruction. Missing access or Bash deployment tooling
+leaves the release incomplete and must not be hidden by a successful branch
+push.
+
 After recording the Jira blocker scan, validate an App-only candidate with no
 Server or persistence change by running:
 

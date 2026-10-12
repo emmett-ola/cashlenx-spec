@@ -61,7 +61,11 @@ Deployment remains a separate action. The retained PowerShell deployment
 scripts are legacy evidence and are not active entry points. Runtime deployment
 or rollback must wait for a Bash replacement that preserves manifest,
 checksum, immutable-image, no-pull, target-state, and non-destructive rollback
-semantics. This does not block branch-driven static App publication.
+semantics. This does not block branch-driven static App publication, but an
+accepted release with an affected Server remains incomplete until the exact
+Server `main` candidate is deployed and verified. The explicit `main`
+promotion instruction covers that normal non-destructive deployment once the
+approved Bash entry point and access profile are available.
 
 ## CI/CD integration
 

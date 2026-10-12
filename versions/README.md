@@ -70,8 +70,10 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
   branded HTML verification email. Exact App and Server candidates were
   fast-forwarded from `testing` to `main`; App Production static Web
   publication and the App/Server main workflows succeeded. Website was
-  unchanged. No release tag, Server runtime deployment, database execution,
-  provider email, or whole-product production acceptance was performed.
+  unchanged. Production Server still reports `1.0.4`, so v1.1.0 Server
+  deployment remains incomplete pending the approved Bash deployment channel.
+  No release tag, database execution, provider email, or whole-product
+  production acceptance was performed.
 - CLX items use matching exact-version labels and
   Product Discovery delivery links. CLV owns version identity; labels support
   queries and do not form a second authority.

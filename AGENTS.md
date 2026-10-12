@@ -79,6 +79,15 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 - Use `versions/_template/` only when an explicit repository-local closeout snapshot is required; Jira remains the active control surface.
 - Do not treat Jira or a version record as the current implementation source of truth after delivery; `system/` is the current-facts layer.
 - Before any release tag, artifact publication, `testing` or `main` promotion, or deployment, execute the release-candidate gate in `WORKFLOW.md`. Stop on unresolved Jira blockers, version drift, migration uncertainty, missing validation, dirty or divergent source, unsafe environment handling, or absent authority for a controlled delivery action. A complete version has standing authority for its verified `develop` to `testing` fast-forward; `main` always requires explicit manual Human confirmation.
+- Treat an explicitly authorized production promotion as one ordered release
+  operation for the affected repositories. Wait for the App `main` workflow to
+  publish and verify the Production static client, then deploy and verify the
+  exact Server `main` candidate when Server is affected. Record branch
+  promotion, App publication, Server runtime deployment, database execution,
+  and production acceptance separately even though the normal non-destructive
+  Server deployment is covered by the same promotion instruction. Stop and
+  record an incomplete release when the approved Bash deployment entry point,
+  access profile, rollback identity, or health verification is unavailable.
 - Never infer database migration, runtime deployment, or production acceptance from a commit, branch, tag, image, or Jira status. Record each state and its evidence separately.
 - Use Bash as the portable automation contract and Zsh for interactive local
   execution when useful. Do not invoke, add, or require PowerShell or `pwsh` in

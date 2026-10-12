@@ -63,6 +63,11 @@ This is the reusable charter for CashLenX delivery. It records how to think abou
 - Treat normal package/unit suites and live integration coverage as separate evidence; passing `go test ./...` or Flutter widget tests does not prove the Docker-backed API/database flow.
 - Treat project-owned compiler warnings, stale facts, broken links, exposed secrets, contradictory policy owners, and mismatched route summaries as defects.
 - Keep workflow state separate from deployment state and report both accurately.
+- Complete an authorized production promotion as an ordered release operation:
+  verify the App's branch-triggered Production publication first, then deploy
+  and verify the exact Server `main` candidate when Server is affected. Keep
+  each state separately evidenced and fail closed when the approved Bash
+  deployment channel is unavailable.
 - Close work when its stated scope and evidence are complete; future scope belongs in `backlog/` or a new version.
 - Keep active automation portable through Bash, with Zsh as an interactive
   caller when desired. Do not make PowerShell or `pwsh` a delivery dependency.

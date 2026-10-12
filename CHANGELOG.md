@@ -6,6 +6,12 @@ state and the evidence manifest owns exact candidate identities.
 
 ## [Unreleased]
 
+### Changed
+
+- Defined an authorized Production promotion as one ordered operation that
+  verifies the App's branch-triggered publication and then deploys and verifies
+  the exact Server `main` candidate when Server is affected.
+
 ### Fixed
 
 - Centralized cross-repository path resolution so active Bash workflows prefer
