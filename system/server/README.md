@@ -6,7 +6,7 @@
 
 Current stack:
 
-- Runtime contract version `1.0.5` on canonical `/api/v1`, with frozen `/api/v0`
+- Runtime contract version `1.1.0` on canonical `/api/v1`, with frozen `/api/v0`
   compatibility routing.
 - Go `1.27.1`.
 - Cobra CLI.
@@ -71,7 +71,10 @@ cashlenx-server/
   SHA-256 digests. Legacy plaintext rows are accepted only for compatible
   lookup/revocation and rotate into digest storage on successful use.
 - Password reset using verification codes.
-- Purpose-scoped email verification for sign-up, password reset, and email change.
+- Purpose-scoped email verification for sign-up, password reset, and email
+  change. Delivery uses a responsive `text/html` CashLenX message with an
+  escaped, centered, selectable code and clear expiry guidance. The template has
+  no scripts, forms, tracking pixels, remote images, or external dependencies.
 - User profile query/update, configuration query/create/update with a derived
   account-backed `setup_completed` response signal, password change, email
   change request/confirm, and account deletion.
@@ -95,7 +98,8 @@ cashlenx-server/
   identities, SHA-256 checksums, native Go handlers, and durable
   `schema_migrations` records. Unknown, reordered, renamed, modified, or dirty
   history blocks startup.
-- SMTP email utility for verification-related delivery.
+- SMTP email utility for verification-related delivery, including explicit
+  plain-text and HTML content types.
 - Snowflake ID generator initialization for distributed IDs.
 
 ## Architecture And Entry Layers
