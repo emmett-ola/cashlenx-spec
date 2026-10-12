@@ -111,6 +111,12 @@ declare -A repo_names=(
   [website]=cashlenx-website
   [spec]=cashlenx-spec
 )
+declare -A repo_dirs=(
+  [app]=app
+  [server]=server
+  [website]=website
+  [spec]=spec
+)
 declare -A expected_branches=(
   [app]=develop
   [server]=develop
@@ -135,7 +141,7 @@ cleanup() {
 trap cleanup EXIT
 
 for key in "${repo_keys[@]}"; do
-  path="$workspace_dir/${repo_names[$key]}"
+  path="$workspace_dir/${repo_dirs[$key]}"
   repo_paths[$key]="$path"
   [[ -d "$path/.git" ]] || { echo "Missing Git repository: $path" >&2; exit 1; }
   [[ -z "$(git -C "$path" status --porcelain)" ]] || {
