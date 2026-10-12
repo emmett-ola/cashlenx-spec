@@ -1,12 +1,23 @@
-# Design Reference
+# UI Authority And Archived Prototype
 
-## Snapshot
+## Current Authority
 
-The live Figma Make project is the primary visual and interaction reference.
-`../cashlenx-design` is its exported React/Vite cache and is not the runtime
-product implementation.
+The Flutter implementation in `cashlenx-app` owns current UI behavior and
+presentation. Active product requirements, shared app tokens and components,
+acceptance evidence, and accepted decisions define new UI work together.
 
-Live Figma Make project:
+The UI must represent real product and API state truthfully. When evidence
+conflicts, resolve the product rule first and update the app and this spec rather
+than copying historical prototype behavior.
+
+## Archived Prototype
+
+`cashlenx-design` and its associated Figma project were used for early product
+prototyping. The GitHub repository was archived on 2026-10-12 and is retained as
+read-only historical evidence. It is not a current visual authority, a parallel
+UI implementation, or a runtime dependency.
+
+Historical Figma project:
 
 ```text
 https://www.figma.com/make/Zk98sZ5w9YVOZlTR0AARV8/CashLenX-Design
@@ -14,18 +25,18 @@ https://www.figma.com/make/Zk98sZ5w9YVOZlTR0AARV8/CashLenX-Design
 
 ## Usage Rule
 
-Read the relevant live Figma Make source before changing UI geometry,
-behavior, or visual style. The local export may be used for faster inspection
-only after the relevant custom source files are verified against the live Make
-resources. Match component sizes, border radii, spacing, and interactions as
-closely as practical within Flutter constraints.
+Do not update the archived repository for new UI work and do not require visual
+or behavioral parity with it. Consult it only when historical product intent is
+relevant, and label any prototype-derived claim as historical until current app
+evidence or an explicit decision confirms it.
 
-Do not promote design-reference-only features into current product facts unless the app/server implementation confirms them.
+Place reusable colors, typography, spacing, radii, icons, and component behavior
+in the app's shared theme or token boundary so current screens have one
+implementation authority.
 
-When the design prototype conflicts with product correctness, API contracts, or
-truthful state, retain the implemented product rule and record the visual
-deviation. Examples include mock account statistics, unpersisted profile fields,
-and reversed income/expense semantic colors.
+Do not promote prototype-only features into current product facts unless the app
+or server implementation confirms them or the product owner explicitly accepts
+them as a new requirement.
 
 ## Key Visual Tokens
 
@@ -35,12 +46,13 @@ and reversed income/expense semantic colors.
 
 The product is mobile-first. The Flutter Windows runner uses an iPad portrait-like local testing size of `768x1024`.
 
-The parity series accepted a 430 px maximum app shell centered on a `#D1D5DB`
-host at wider viewports. On `2026-08-21`, the live Make manifest exposed 130
-text sources and 54 images; `App.tsx`, `Profile.tsx`, and `Settings.tsx` matched
-the local cache after newline normalization.
+The early parity series accepted a 430 px maximum app shell centered on a
+`#D1D5DB` host at wider viewports. On `2026-08-21`, the live Make manifest
+exposed 130 text sources and 54 images; `App.tsx`, `Profile.tsx`, and
+`Settings.tsx` matched the local cache after newline normalization. These facts
+describe the archived prototype and do not constrain current app work.
 
-## Useful Reference Areas
+## Historical Reference Areas
 
 - `src/app/components/screens/`
 - `src/app/components/atoms/`

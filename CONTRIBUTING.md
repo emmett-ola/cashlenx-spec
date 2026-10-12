@@ -10,13 +10,16 @@ buildable and reviewable.
 | --- | --- |
 | [cashlenx-app](https://github.com/emmett-ola/cashlenx-app) | Flutter client and user experience. |
 | [cashlenx-server](https://github.com/emmett-ola/cashlenx-server) | Go API, CLI, authentication, finance services, and persistence. |
-| [cashlenx-design](https://github.com/emmett-ola/cashlenx-design) | Visual and interaction reference. |
+| [cashlenx-design](https://github.com/emmett-ola/cashlenx-design) | Archived early product prototype retained as historical evidence. |
 | [cashlenx-website](https://github.com/emmett-ola/cashlenx-website) | Public product and developer-information website. |
 | [cashlenx-spec](https://github.com/emmett-ola/cashlenx-spec) | Product/system facts, governance, workflow, decisions, and delivery evidence. |
 
 Open an issue or pull request in the repository that owns the behavior. Describe
 cross-repository impact explicitly instead of coupling repositories at build
 time or runtime.
+
+Direct current UI contributions to `cashlenx-app`. The archived design
+prototype is read-only and is not maintained for UI parity.
 
 ## Contribution Workflow
 

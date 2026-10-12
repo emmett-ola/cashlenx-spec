@@ -15,17 +15,18 @@ This directory contains the current CashLenX system facts. These documents descr
 | `collaboration.md` | Jira, Confluence, repository ownership, language, issue, version, and synchronization rules. |
 | `app/README.md` | Flutter client architecture, behavior, generated-code boundary, and testing entry point. |
 | `server/README.md` | Go server architecture, CLI/API entry points, persistence, security boundaries, and testing entry point. |
-| `design/README.md` | Design reference, visual tokens, and UI guidance. |
+| `design/README.md` | Current UI authority and archived prototype boundary. |
 | `website/README.md` | Website documentation scaffold status. |
 | `quality-attributes.md` | Triggered quality scenarios and validation expectations for correctness, auth, data integrity, operations, maintainability, and documentation. |
 
 ## Current Source Priorities
 
 1. Implementation code and active contracts.
-2. Sibling project docs copied under `../sources/`.
-3. Archived staging notes.
+2. Explicit accepted product and design decisions.
+3. Sibling project docs copied under `../sources/` and archived prototype evidence.
+4. Archived staging notes.
 
-Do not promote design-prototype behavior into current facts unless it is implemented or explicitly marked as reference-only.
+Do not promote archived prototype behavior into current facts unless it is implemented in the app or explicitly accepted as a current requirement.
 
 ## Maintenance Rules
 
@@ -33,4 +34,4 @@ Do not promote design-prototype behavior into current facts unless it is impleme
 - Keep active versions, Standard and High-impact delivery status, and validation summaries in Jira. Add a repository-local version snapshot only when explicitly required.
 - Keep future ideas in `backlog/` until they become active versions.
 - If a system rule changes in code, update the affected `system/` file in the same delivery pass.
-- Mark source-derived or design-derived assumptions clearly until confirmed by implementation or user decision.
+- Mark source-derived or prototype-derived assumptions clearly until confirmed by implementation or user decision.

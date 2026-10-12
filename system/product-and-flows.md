@@ -4,7 +4,7 @@
 
 CashLenX is a personal-finance application for recording cash flows, organizing them by category, viewing summaries, and managing account preferences.
 
-Current English authentication branding uses the subtitle `Your Financial Companion`. Localized variants remain owned by the app and design-reference i18n catalogs.
+Current English authentication branding uses the subtitle `Your Financial Companion`. Localized variants remain owned by the app's localization resources.
 
 ## Primary Users
 

@@ -19,13 +19,18 @@ deployment.
 | --- | --- |
 | [cashlenx-app](https://github.com/emmett-ola/cashlenx-app) | Flutter client behavior, presentation, local state, and API consumption. |
 | [cashlenx-server](https://github.com/emmett-ola/cashlenx-server) | Go API/CLI behavior, authentication, finance services, persistence, and OpenAPI. |
-| [cashlenx-design](https://github.com/emmett-ola/cashlenx-design) | Visual and interaction reference; it is not a runtime dependency. |
+| [cashlenx-design](https://github.com/emmett-ola/cashlenx-design) | Archived early product prototype retained as historical evidence; it is not maintained in parallel with the app. |
 | [cashlenx-website](https://github.com/emmett-ola/cashlenx-website) | Public product and developer-information website. |
 | [cashlenx-spec](https://github.com/emmett-ola/cashlenx-spec) | Canonical facts, workflow, decisions, delivery evidence, and deferred scope. |
 
 Implementation repositories remain independently buildable. CashLenX Spec
 coordinates facts and delivery evidence but is not imported by application
 code, builds, tests, or runtime services.
+
+The Flutter app owns current UI behavior and presentation. New UI work follows
+active product requirements, app implementation and shared tokens, acceptance
+evidence, and durable decisions. The archived design prototype does not impose a
+parity requirement.
 
 ## Codex-Assisted Maintenance
 
@@ -44,7 +49,7 @@ validated in proportion to its risk.
 This collaboration makes a broad lifecycle practical for an individual
 maintainer:
 
-1. **Design:** reconcile product intent, visual reference, system facts, and
+1. **Design:** reconcile product intent, app UI evidence, system facts, and
    unresolved questions.
 2. **Plan:** define the outcome, ownership boundary, compatibility constraints,
    Human gates, and observable completion evidence.

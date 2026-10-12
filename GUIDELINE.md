@@ -4,7 +4,7 @@ This is the reusable charter for CashLenX delivery. It records how to think abou
 
 ## 1. Evidence First
 
-- Start from implementation code, OpenAPI contracts, tests, source docs, design reference, operations evidence, and explicit user decisions.
+- Start from implementation code, OpenAPI contracts, tests, source docs, operations evidence, explicit user decisions, and historical prototype evidence when relevant.
 - Keep verified facts, reasonable inferences, and unresolved questions distinct.
 - When evidence conflicts, preserve the conflict until resolved; update the canonical fact when a later verified decision supersedes it.
 - Do not broaden exact routes, fields, enum values, auth semantics, security behavior, or release commitments while summarizing.
@@ -19,10 +19,10 @@ This is the reusable charter for CashLenX delivery. It records how to think abou
 
 ## 3. One Owner Per Fact
 
-- `system/` owns verified current product, domain, API, app, server, design, website, operations, and quality facts.
+- `system/` owns verified current product, domain, API, app, server, UI authority, website, operations, and quality facts.
 - `WORKFLOW.md` owns work levels, Human gates, evidence triggers, state semantics, and closeout flow.
 - `backlog/` owns deferred scope, unopened delivery candidates, readiness work without a selected boundary, and unresolved questions.
-- Jira project `CLX` owns selected product versions, executable work, priority, dependencies, acceptance criteria, and delivery state.
+- Jira project `CLX` owns executable work, priority, dependencies, acceptance criteria, and delivery state. Jira Product Discovery project `CLV` owns exact product-version identity and lifecycle.
 - `versions/` holds completed repository-local evidence and explicit closeout snapshots; it is not the active work tracker or current truth.
 - `decisions/` owns durable decisions that should remain discoverable after a version closes.
 - `sources/` contains copied source material from sibling projects. It is evidence input, not current truth by itself.
@@ -31,7 +31,8 @@ This is the reusable charter for CashLenX delivery. It records how to think abou
 
 ## 4. Stable Boundaries
 
-- Keep app, server, design reference, website, and spec as independent project areas.
+- Keep app, server, website, and spec as independent active project areas. Preserve the archived design prototype as historical evidence without parallel UI maintenance.
+- Treat the Flutter app implementation, shared UI tokens, active requirements, and accepted decisions as the current UI authority. Historical prototype parity is not a delivery requirement.
 - Respect each implementation repository's established architecture. Flutter work belongs in the owning feature and follows presentation-to-domain-to-data dependency direction; server work follows the HTTP/CLI entry layer, service, mapper, and database boundaries.
 - Keep HTTP controllers and CLI commands as translation layers. Business behavior belongs in services, persistence behavior belongs in mappers, and shared API/CLI capabilities should not diverge into separate business rules.
 - Centralize API base path and version configuration. Business API wrappers and route summaries should avoid duplicating version assumptions outside their configured boundary.

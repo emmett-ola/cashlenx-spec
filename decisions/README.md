@@ -38,3 +38,5 @@ Recommended sections:
 - `0003-v1-product-deployment-and-autonomous-release-charter.md`
 - `0004-agent-led-jira-intake-and-version-archives.md`
 - `0005-clv-authoritative-version-catalog.md`
+- `0006-archive-design-prototype-and-move-ui-authority-to-app.md`
+- `0007-owner-selected-execution-and-explicit-promotion.md`

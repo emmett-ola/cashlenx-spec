@@ -4,7 +4,7 @@
 
 Accepted
 
-Operational board states are refined by `0004-agent-led-jira-intake-and-version-archives.md`. Exact-version authority, version-to-work relationships, and archival are superseded by `0005-clv-authoritative-version-catalog.md`. Repository ownership and project-local runtime/display version advancement in this decision remain in force.
+Operational board states are refined by `0004-agent-led-jira-intake-and-version-archives.md`. Exact-version authority, version-to-work relationships, and archival are superseded by `0005-clv-authoritative-version-catalog.md`. Design repository ownership is superseded by `0006-archive-design-prototype-and-move-ui-authority-to-app.md`. Delivery authorization is narrowed by `0007-owner-selected-execution-and-explicit-promotion.md`. Other repository ownership and project-local runtime/display version advancement in this decision remain in force.
 
 ## Context
 

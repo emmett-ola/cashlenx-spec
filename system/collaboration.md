@@ -19,6 +19,10 @@ All routine Jira and Confluence operations are performed through the authorized 
 | `cashlenx-spec/versions/` | Completed repository-local delivery evidence and explicitly required closeout snapshots. |
 | Implementation repositories and active contracts | Exact runtime behavior, generated artifacts, routes, fields, and executable truth. |
 
+`cashlenx-app` owns current UI behavior and presentation. `cashlenx-design` was
+archived on 2026-10-12 and remains historical prototype evidence only; it is not
+maintained in parallel and does not impose a parity requirement.
+
 ## Language
 
 English is the default working language for code, documentation, Jira, Confluence, commit messages, release notes, and engineering artifacts. Another language is used only when explicitly required by localized product content, translation, or i18n validation.
@@ -34,8 +38,8 @@ English is the default working language for code, documentation, Jira, Confluenc
 - Use issue links for cross-version or cross-area dependencies.
 - When a version close gate passes and the next delivery boundary opens, record the final evidence and set the CLV Idea's native `Idea archived` field. Leave completed CLX items in place with their history and labels.
 - Treat release publication, tags, branch promotion, and deployment as separate
-  evidenced actions. Apply the standing authority in the accepted delivery
-  charter only after every applicable gate passes.
+  evidenced actions. Perform each only under an explicit current instruction
+  after every applicable gate passes.
 
 ## Jira Work Item Contract
 
@@ -61,23 +65,41 @@ Every executable item also has one of `size-s`, `size-m`, or `size-l`. Size expr
 - Before moving work from `Ready` to `In Progress` and before moving it to `Done`, inspect linked blockers, the CLV version Idea and release-line state, Human-gate markers, comments, and acceptance conditions.
 - When a blocker is found or changes, record a concise `Blocker scan` comment in Jira and alert the user in the active conversation. State the issue key, exact Human action when applicable, and what cannot proceed.
 - Prepare decision options, evidence, and a recommendation before requesting Human input unless the missing input prevents preparation itself.
-- The accepted `v1.0.0` charter provides standing authority for routine
-  delivery actions after their automated gates pass. Do not create redundant
-  Human gates for those actions. Preserve explicit Human gates for force-push,
-  existing-tag mutation, secret exposure or change, destructive or ambiguous
-  production-data migration, security exceptions, and failed-gate bypass.
+- A selected implementation item does not authorize a branch promotion, tag,
+  publication, deployment, migration, or production acceptance. Require an
+  explicit current instruction for each applicable delivery step and preserve
+  additional Human gates for force-push, existing-tag mutation, secret exposure
+  or change, destructive or ambiguous production-data migration, security
+  exceptions, and failed-gate bypass.
 
 ## Workflow And Evidence
 
 The accepted primary-board target is `CashLenX — Active Delivery`. Its logical workflow states are `Intake`, `Ready`, `In Progress`, `Awaiting Confirmation`, and `Done`.
 
 - `Intake` contains Human-authored raw demand and answered decision tasks awaiting agent triage.
-- `Ready` contains executable task contracts connected to an authoritative CLV version Idea, with matching exact-version label, priority, size, acceptance criteria, and known dependencies.
+- `Ready` contains prepared task contracts connected to an authoritative CLV version Idea, with matching exact-version label, priority, size, acceptance criteria, and known dependencies. Blocker labels still control executability, and Ready status does not authorize execution.
 - `In Progress` contains scoped work being implemented, validated, or synchronized.
 - `Awaiting Confirmation` contains only separate decision tasks with a concrete Human question and prepared recommendation.
 - `Done` means acceptance criteria and required evidence are satisfied and canonical facts are synchronized.
 
 When the product owner requests triage, the agent reads `Intake`, preserves original intent, inspects evidence, rewrites or splits the demand, assigns priority and version, links dependencies, and moves complete unblocked work to `Ready`. A `size-l` request is normally decomposed before it is ready.
+
+Triage and execution are separate requests. An agent starts only the Ready item
+or batch explicitly selected by the product owner and leaves all other Ready
+inventory unchanged. Selected items are normally implemented sequentially, each
+with its own blocker scan, focused validation, Jira evidence, and coherent
+commit pushed to the affected repository's `develop` branch.
+
+A product-owner instruction that selects a batch and names its terminal delivery
+step remains valid for that stated sequence. Routine substeps continue without
+repeated approval, but the authorization does not expand to another batch or
+delivery boundary.
+
+Promotion to `testing` occurs only when the selected batch is complete, its
+release-candidate checks pass, the product owner has authorized that promotion,
+and `testing` can be fast-forwarded to the exact `develop` candidate. Human
+Testing acceptance is recorded before a separately authorized promotion to
+`main`, tag, publication, or production deployment.
 
 After the Human answers a decision task, they move it from `Awaiting Confirmation` to `Intake`. The next triage records the decision, updates and unblocks affected work, and moves the decision task to `Done`.
 

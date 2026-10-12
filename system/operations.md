@@ -369,12 +369,11 @@ removes the now-unused shared network.
 Reverse-proxy routing and TLS remain owned by the UAT host and are outside the
 project-local scripts.
 
-This sequence describes mechanics only. The standing authority in
-`../decisions/0003-v1-product-deployment-and-autonomous-release-charter.md` may
-cover a deployment after every applicable gate passes and the external target
-and credentials are configured. Target, implementation refs, results,
-migration state, and current deployment state still require separate evidence
-outside `system/`.
+This sequence describes mechanics only. Deployment requires an explicit current
+instruction after every applicable gate passes and the external target and
+credentials are configured. Target, implementation refs, results, migration
+state, and current deployment state still require separate evidence outside
+`system/`.
 
 Deployment authorization and deployment access are different facts. Standing
 or explicit authority permits the operation, but the executing machine must

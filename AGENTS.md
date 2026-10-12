@@ -28,6 +28,7 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 - Jira project `CLX` is the primary system for executable work, priorities, dependencies, ownership, acceptance criteria, and delivery state. Jira Product Discovery project `CLV` is the authoritative exact product-version catalog and roadmap.
 - Represent each exact product version with one CLV Idea. Connect its selected CLX work through Product Discovery delivery links, and apply the matching `version-vX-Y-Z` plus `release-line-vX-Y` labels to executable items.
 - Treat `Intake` as Human-authored raw demand. When the user requests triage, preserve the original intent, inspect evidence, rewrite or split the request into executable task contracts, assign priority, size, dependencies, and one authoritative CLV version Idea, then move complete unblocked work to `Ready`.
+- Treat `Ready` as prepared inventory, not authorization to start. Do not move a Ready item to `In Progress`, implement it, or include it in a delivery batch until the user explicitly selects that item or batch. Triage and execution are separate requests.
 - Use CLV's native Idea archive for completed and superseded versions. Do not move or copy executable CLX work into CLV, and do not treat a CLV archive action as proof of tag creation, publication, deployment, migration, or production acceptance.
 - Represent a required Human decision as a separate `Decision: ...` Jira task in `Awaiting Confirmation`. Link it as blocking the affected work, apply `human-decision` and `human-action-required`, remove `agent-ready` while either `human-action-required` or `blocked` is present, and state the exact request and blocked transition. After the Human records the answer and returns the decision task to `Intake`, triage records the decision, resolves the decision task, and unblocks the affected work.
 - Before moving a Jira item from `Ready` to `In Progress`, and again before moving it to `Done`, scan its issue links, version state, unresolved Human gates, and `blocked` or `human-action-required` labels. Do not cross a blocked transition. Record a Jira blocker-scan comment when a blocker is found or its state changes, and alert the user in the active conversation with the issue key, required action, and consequence.
@@ -38,9 +39,10 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 
 ## Repository Boundaries
 
-- Treat `cashlenx-spec`, `cashlenx-app`, `cashlenx-server`, `cashlenx-design`, and `cashlenx-website` as separate project areas.
+- Treat `cashlenx-spec`, `cashlenx-app`, `cashlenx-server`, and `cashlenx-website` as active project areas. Treat `cashlenx-design` as a separate archived historical prototype.
 - In `cashlenx-app`, `cashlenx-server`, and `cashlenx-website`, use `develop` as the default working branch, `testing` only for explicitly authorized test-environment promotion, and `main` only for explicitly authorized production release promotion. Do not retain or create the legacy code branch name `test`. Keep `cashlenx-spec` on its sole `main` branch. Inspect branch and worktree state before switching; do not create, replace, or switch branches when doing so would displace unrelated user work.
 - `cashlenx-spec` is the specification workspace and should not contain runtime code.
+- `cashlenx-app` owns current UI behavior and presentation. Do not maintain parity with `cashlenx-design`, use it as a current design authority, or modify it for new UI work. Consult it only when historical prototype evidence is relevant.
 - Sibling repositories are source-of-truth inputs for implementation facts.
 - Sibling implementation repositories must not import, read, link to, build from, test against, or otherwise depend on `cashlenx-spec`.
 - Do not put spec workflow rules, spec paths, or AI/Codex attribution into implementation code, configuration, scripts, CI, product copy, or commit messages.
@@ -75,6 +77,7 @@ This file is for agent behavior and operating rules only. Delivery workflow belo
 
 - Prefer small, stable documents over large mixed notes.
 - After completing a request or coherent change set, create a repository-local commit by default unless the user explicitly asks not to commit. Implementation commits use `develop` by default; spec-only commits use the spec repository's sole `main` branch. Stage only intended files. A commit or working-branch push does not authorize implementation promotion to `testing` or `main`, tag creation, publication, or deployment.
+- For a user-selected batch, implement items sequentially unless the user explicitly requests parallel execution. Give each completed issue or coherent change its own focused commit and push the affected implementation repository's `develop` branch after validation.
 - Keep product requirements separate from implementation notes.
 - At the spec root, keep conventional governance entry points uppercase (`AGENTS.md`, `README.md`, `WORKFLOW.md`, and `GUIDELINE.md`). Below the root, reserve uppercase `README.md` for directory indexes and use lowercase names for other project-authored documents.
 - Keep tracked text files on LF line endings through `.gitattributes`, and end files with exactly one newline.

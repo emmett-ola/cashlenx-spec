@@ -1,6 +1,6 @@
 # CashLenX Delivery Workflow
 
-This workflow keeps CashLenX specification and delivery work proportionate to risk. The spec workspace may inspect sibling implementation repositories, but app, server, design, and website repositories must remain independently buildable and must not depend on this spec workspace at runtime, build time, or test time.
+This workflow keeps CashLenX specification and delivery work proportionate to risk. The spec workspace may inspect sibling implementation repositories, but app, server, and website repositories must remain independently buildable and must not depend on this spec workspace at runtime, build time, or test time. The archived design repository is historical evidence and is not an active implementation or parity target.
 
 ## Operating Principles
 
@@ -8,7 +8,7 @@ This workflow keeps CashLenX specification and delivery work proportionate to ri
 - Use the smallest complete and reversible change.
 - Keep one authoritative document per fact.
 - Match planning, validation, and documentation effort to the risk of the change.
-- Keep app, server, website, and design reference boundaries explicit.
+- Keep app, server, website, spec, and archived prototype boundaries explicit.
 
 ## Branch Model
 
@@ -18,13 +18,14 @@ This workflow keeps CashLenX specification and delivery work proportionate to ri
 - Normal code promotion flows in one direction: `develop` -> `testing` -> `main`.
 - `cashlenx-spec` uses `main` as its only branch; specification commits do not represent an implementation release or deployment.
 - Creating commits, reconciling history, or pushing a working branch does not itself authorize implementation promotion or deployment.
+- Promotion to `testing` requires an explicit user instruction that identifies the selected work or version. Promotion from `testing` to `main`, release tagging, publication, and production deployment require explicit authorization for that delivery step.
 
 ## Work Levels
 
 | Level | Typical work | Default authority | Delivery record |
 | --- | --- | --- | --- |
 | Lightweight | Documentation correction, focused test, internal refactor, narrow defect fix with no external contract change | AI proceeds autonomously | Jira is optional unless the work is already tracked or benefits from shared visibility |
-| Standard | Clear reversible product behavior, additive API response, bounded cross-repository feature, release-scope refinement | AI proceeds after recording a concise task contract | CLX story or task connected to the selected CLV version Idea |
+| Standard | Clear reversible product behavior, additive API response, bounded cross-repository feature, release-scope refinement | AI proceeds after the product owner selects a prepared task contract | CLX story or task connected to the selected CLV version Idea |
 | High-impact | Breaking API change, destructive data action, security/privacy boundary, production deployment, release/tag action, major product direction | Human confirms the material decision or operation; AI executes the work | Jira issue with triggered evidence and the recorded Human decision |
 
 When levels overlap, use the highest applicable level. Technical difficulty alone does not make work High-impact.
@@ -34,7 +35,7 @@ When levels overlap, use the highest applicable level. Technical difficulty alon
 1. State the goal and observable done condition.
 2. Inspect relevant evidence and Git status in every repository that may be touched.
 3. Identify the authoritative documents and repositories actually affected.
-4. For Standard and High-impact work, use a CLX issue connected to the selected CLV version Idea, apply its `version-vX-Y-Z` label, and keep the task contract current. Before moving it from `Ready` to `In Progress`, run the Jira blocker scan defined below.
+4. For Standard and High-impact work, use a CLX issue connected to the selected CLV version Idea, apply its `version-vX-Y-Z` label, and keep the task contract current. Confirm the user selected the Ready item or batch, then run the Jira blocker scan before moving it from `Ready` to `In Progress`.
 5. Preserve unrelated user work and implement the smallest complete change.
 6. Validate in proportion to the behavior and risk changed.
 7. Synchronize the canonical `system/` fact when implementation behavior changes.
@@ -65,7 +66,7 @@ The primary board is `CashLenX — Active Delivery`. It uses five states:
 | State | Meaning | Exit condition |
 | --- | --- | --- |
 | `Intake` | Human-authored raw demand or a returned decision answer awaiting agent triage. | Intent is preserved, evidence is inspected, and executable work or a recorded decision is produced. |
-| `Ready` | The task contract, authoritative CLV version Idea, exact-version label, priority, size, dependencies, and acceptance criteria are sufficient to start. | The start blocker scan is clear and execution begins. |
+| `Ready` | The task contract, authoritative CLV version Idea, exact-version label, priority, size, dependencies, and acceptance criteria are sufficient to start. Readiness does not authorize execution. | The product owner selects the item or batch, the start blocker scan is clear, and execution begins. |
 | `In Progress` | An agent is implementing, validating, or synchronizing the scoped work. | Acceptance evidence is complete, or a genuinely unresolved Human decision is isolated. |
 | `Awaiting Confirmation` | A separate decision task contains a concrete Human question with prepared evidence and a recommendation. | The Human records an answer and returns the decision task to `Intake`. |
 | `Done` | Acceptance criteria and required evidence are satisfied and canonical facts are synchronized. | Terminal for the work item; archiving is controlled separately by release line. |
@@ -91,6 +92,24 @@ When the product owner asks for requirement triage:
 7. Link dependencies. Keep an externally blocked task in `Ready` with `blocked` and without `agent-ready`; otherwise add `agent-ready` and move it to `Ready`.
 
 Keep one active release line by default. The CLV Idea is the exact version authority. `version-v1-0-1` and `release-line-v1-0` labels make CLX work queryable and must match the linked CLV Idea.
+
+Moving an item to `Ready` completes triage only. Do not infer a request to implement it, transition it to `In Progress`, or promote it from its Ready status. Execution begins only when the product owner selects the item or a containing batch.
+
+### Selected Work Sequence
+
+When the product owner selects one or more Ready items:
+
+1. Record the selected item keys, intended order, owning repositories, and target CLV version before implementation.
+2. Execute the items sequentially unless the product owner explicitly requests parallel work. Run the start blocker scan separately for each item immediately before it enters `In Progress`.
+3. Validate each item in proportion to its behavior and risk, synchronize its facts and Jira evidence, and create one focused commit for the completed item or coherent change.
+4. Push the affected implementation repository's `develop` branch after the item passes its checks. A pushed `develop` commit does not imply promotion.
+5. Run the completion blocker scan and close each item only when its acceptance criteria and evidence are complete.
+6. Do not add other Ready inventory to the selected batch without a new product-owner instruction.
+
+An instruction that selects a batch and names its terminal delivery step remains
+authorization for that stated sequence. Continue through its routine substeps
+without asking again, but do not extend it to another batch, environment, tag,
+publication, deployment, migration, or production acceptance.
 
 ### Human Decision Loop
 
@@ -160,18 +179,19 @@ Do not request a Human response before it is actionable. Prepare the options, ev
 
 1. **Understand:** load governance, inspect relevant facts, identify the selected CLV version Idea and release line, and select the work level.
 2. **Decide:** create or refine the Jira task contract, isolate any required Human decision, choose the smallest safe approach, and move complete unblocked work to `Ready`.
-3. **Implement:** run the start blocker scan, move the Jira item from `Ready` to `In Progress`, work repository by repository, and preserve independent build/runtime boundaries.
-4. **Validate:** run focused checks first, add only triggered enhanced scenarios, synchronize affected facts and guidance, and record evidence and implementation refs on the item.
-5. **Close:** commit the coherent change set by default, run the completion blocker scan, and move the Jira item to `Done` only when acceptance is satisfied and no closing gate remains. Push, merge, tag, publication, deployment, and other controlled delivery actions occur only when authorized.
+3. **Select:** wait for the product owner to select a Ready item or batch; record its order and delivery boundary without changing unselected Ready inventory.
+4. **Implement:** run the start blocker scan, move the selected Jira item from `Ready` to `In Progress`, work repository by repository, and preserve independent build/runtime boundaries.
+5. **Validate:** run focused checks first, add only triggered enhanced scenarios, synchronize affected facts and guidance, and record evidence and implementation refs on the item.
+6. **Close:** commit and push the coherent change set to `develop` by default, run the completion blocker scan, and move the Jira item to `Done` only when acceptance is satisfied and no closing gate remains. Merge, branch promotion, tag, publication, deployment, and other controlled delivery actions occur only when authorized.
 
 ## Release Delivery Convention
 
 - Jira Product Discovery project `CLV` controls exact product-version identity and lifecycle; Jira project `CLX` controls executable work. Implementation version advancement follows `decisions/0002-jira-controlled-delivery-with-project-local-advancement.md`.
 - Candidate validation, release tags, artifact publication, branch promotion,
   deployment, migration, and production acceptance are separate evidenced
-  actions. The accepted v1 charter provides standing authority for routine
-  non-destructive delivery after every applicable gate passes; prohibited
-  actions still require a new explicit Human decision.
+  actions. Current explicit instructions control each delivery step. Prior
+  standing authority does not authorize an unrequested `testing` or `main`
+  promotion, tag, publication, deployment, or production acceptance.
 - A completed CLV version Idea records accepted scope and linked evidence; it does not imply deployment.
 - Release tags are annotated `vX.Y.Z` identities in affected implementation
   repositories. Create them only for exact accepted commits, never tag the spec
@@ -179,6 +199,18 @@ Do not request a Human response before it is actionable. Prepare the options, ev
   a new semantic version and tag.
 - Publish only the prebuilt artifacts and digests recorded by the accepted
   candidate manifest. Do not rebuild between acceptance and publication.
+
+### Testing Fast-Forward
+
+After the product owner authorizes promotion of a completed selected batch to `testing`:
+
+1. Confirm every selected CLX item is complete, unblocked, and connected to the intended CLV version Idea.
+2. Confirm every affected worktree is clean, its local `develop` matches `origin/develop`, runtime and display versions are consistent, focused validation passes, and required `develop` CI is green.
+3. Prove `origin/testing` is an ancestor of the exact `origin/develop` candidate. Stop on divergence; do not create a merge commit, cherry-pick, reset, or force-push to simulate a fast-forward.
+4. Promote only with `git push origin develop:testing` from the verified candidate repository.
+5. Verify the exact remote `testing` ref, wait for the Testing workflow, and record its result and candidate SHA in the CLV Idea and applicable CLX items.
+
+Keep the CLV Idea in Delivery until Human Testing acceptance is recorded. Promotion to `main`, tags, publication, and production deployment remain separate explicitly authorized actions after testing evidence is complete.
 
 ## Release Candidate Gate
 
@@ -193,7 +225,7 @@ Run this gate for every product release candidate. It is the reusable acceptance
 7. **Production-like rehearsal:** use generated disposable secrets and isolated names to run the selected production topology locally. Do not read `.env.testing` or `.env.production`. Verify ingress, health, restart, graceful shutdown, persistence, backup/restore, failure behavior, and safe teardown.
 8. **Whole-product acceptance:** exercise the selected stable user journeys through built client and server artifacts against the primary database profile, then run the required compatibility suite against every supported alternate database.
 9. **Evidence manifest:** emit a safe machine-readable record containing the version, commits, image and artifact identities, migration classification, validation results, timestamps, known limits, and requested delivery actions. Do not include secret values.
-10. **Delivery authority:** perform only delivery actions covered by recorded standing or per-action authorization. Keep candidate acceptance, tags, artifact publication, branch promotion, runtime deployment, database migration, and production acceptance as separate states.
+10. **Delivery authority:** perform only delivery actions covered by an explicit current instruction. Authorization persists for the stated batch and step but does not expand to `main`, tags, publication, deployment, migration, or production acceptance. Keep all of those states separate.
 11. **Post-delivery verification:** verify remote refs and immutable tags, deployed identities when deployment occurred, health and smoke evidence, migration state when applicable, and rollback readiness. Synchronize Jira, canonical facts, and affected Confluence guidance.
 
 The gate fails closed. Do not bypass a failed check, force-push a delivery branch, move an existing release tag, or substitute a build result for runtime, migration, or acceptance evidence.

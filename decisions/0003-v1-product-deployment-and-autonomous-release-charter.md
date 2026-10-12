@@ -4,6 +4,13 @@
 
 Accepted on 2026-09-16 by the project owner through Jira CLX-31.
 
+The stable product, deployment, migration, backup, recovery, and release
+identity decisions remain accepted. The autonomous delivery authority in this
+decision is narrowed by
+`0007-owner-selected-execution-and-explicit-promotion.md`: Ready work requires
+product-owner selection, and every branch promotion, tag, publication, and
+deployment requires explicit current authorization.
+
 ## Context
 
 CashLenX needs one stable product boundary and one reusable release contract so
