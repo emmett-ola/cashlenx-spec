@@ -12,6 +12,22 @@ state and the evidence manifest owns exact candidate identities.
   the short local checkout layout while remaining compatible with full
   remote-style checkout names.
 
+## [1.1.0] - 2026-10-12
+
+### Changed
+
+- Redesigned registration email verification around a focused six-digit code
+  step with clear localized confirmation and return-to-email actions.
+- Added a responsive branded HTML verification message with a prominent
+  selectable code, escaped dynamic values, and no active or tracking content.
+- Prepared cumulative App delivery evidence for the completed 1.0.9 and 1.0.10
+  client changes that had not previously reached the production branch.
+
+### Fixed
+
+- Refreshed Linux visual baselines for the Settings-owned preference boundary
+  so remote candidate validation matches the accepted Profile presentation.
+
 ## [1.0.8] - 2026-10-12
 
 ### Changed
