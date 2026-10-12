@@ -58,8 +58,20 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
   chart with the Financial Insights entry. CLX-81 owns the completed App work;
   delivery evidence is recorded separately from deployment and acceptance.
 - [CLV-16](https://macacloud.atlassian.net/browse/CLV-16) is the authoritative
-  planned `v1.0.9` boundary for the deferred About, dashboard-context, slogan,
-  and release-identity work in CLX-77 through CLX-80.
+  `v1.0.9` boundary for the completed About, dashboard-context, slogan, and
+  release-identity work in CLX-77 through CLX-80. Its App changes reached
+  `main` cumulatively with the accepted v1.1.0 candidate.
+- [CLV-17](https://macacloud.atlassian.net/browse/CLV-17) is the authoritative
+  `v1.0.10` boundary for consistent selected-currency presentation and
+  Settings-owned preferences. Its App changes reached `main` cumulatively with
+  the accepted v1.1.0 candidate.
+- [CLV-18](https://macacloud.atlassian.net/browse/CLV-18) is the authoritative
+  `v1.1.0` boundary for the polished registration verification journey and
+  branded HTML verification email. Exact App and Server candidates were
+  fast-forwarded from `testing` to `main`; App Production static Web
+  publication and the App/Server main workflows succeeded. Website was
+  unchanged. No release tag, Server runtime deployment, database execution,
+  provider email, or whole-product production acceptance was performed.
 - CLX items use matching exact-version labels and
   Product Discovery delivery links. CLV owns version identity; labels support
   queries and do not form a second authority.

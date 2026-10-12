@@ -22,6 +22,9 @@ state and the evidence manifest owns exact candidate identities.
   selectable code, escaped dynamic values, and no active or tracking content.
 - Prepared cumulative App delivery evidence for the completed 1.0.9 and 1.0.10
   client changes that had not previously reached the production branch.
+- Promoted the accepted App and Server candidates to `main` and published the
+  matching Production static Web release while retaining Server deployment,
+  database execution, and production acceptance as separate actions.
 
 ### Fixed
 
