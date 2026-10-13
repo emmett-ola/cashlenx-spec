@@ -48,7 +48,7 @@ When levels overlap, use the highest applicable level. Technical difficulty alon
 1. State the goal and observable done condition.
 2. Before task work, identify every relevant active repository and fetch its remote refs. Confirm a clean worktree, the expected branch (`develop` for implementation repositories and `main` for the spec), and equality with the upstream ref. Fast-forward a clean branch that is only behind. Stop on a dirty worktree, divergence, an unexpected branch, or a missing upstream; do not reset, stash, switch, or overwrite unrelated work to manufacture a clean preflight.
 3. Identify the authoritative documents and repositories actually affected.
-4. For Standard and High-impact work, use a CLX issue connected to the selected CLV version Idea, apply its `version-vX-Y-Z` label, and keep the task contract current. Confirm the user selected the Ready item or batch, then run the Jira blocker scan before moving it from `Ready` to `In Progress`.
+4. For Standard and High-impact work, use a CLX issue connected to the selected CLV version Idea, apply its `version-vX-Y-Z` label, and keep the task contract current. Confirm the user selected the item or batch from `Ready (Server)` or `Ready (App)`, then run the Jira blocker scan before moving it to `In Progress`.
 5. Preserve unrelated user work and implement the smallest complete change.
 6. Validate in proportion to the behavior and risk changed.
 7. Synchronize the canonical `system/` fact when implementation behavior changes.
@@ -74,21 +74,22 @@ For Lightweight work, a concise goal and done condition in the task conversation
 
 ## Jira Intake And Orchestration
 
-The primary board is `CashLenX — Active Delivery`. It uses five states:
+The primary CLX board uses six states:
 
 | State | Meaning | Exit condition |
 | --- | --- | --- |
 | `Intake` | Human-authored raw demand or a returned decision answer awaiting agent triage. | Intent is preserved, evidence is inspected, and executable work or a recorded decision is produced. |
-| `Ready` | The task contract, authoritative CLV version Idea, exact-version label, priority, size, dependencies, and acceptance criteria are sufficient to start. Readiness does not authorize execution. | The product owner selects the item or batch, the start blocker scan is clear, and execution begins. |
+| `Ready (Server)` | The contract is prepared for Server-owned API, service, authentication, persistence, database, operational, performance, optimization, or maintenance work. Readiness does not authorize execution. | The product owner selects the item or batch, the start blocker scan is clear, and Server implementation begins. |
+| `Ready (App)` | The contract is prepared for App-owned user-interface, interaction, visual design, accessibility, localization-presentation, navigation, client-state, App-performance, or other user-facing implementation. Readiness does not authorize execution. | The product owner selects the item or batch, the start blocker scan is clear, and App implementation begins. |
 | `In Progress` | An agent is implementing, validating, or synchronizing the scoped work. | Acceptance evidence is complete, or a genuinely unresolved Human decision is isolated. |
 | `Awaiting Confirmation` | A separate decision task contains a concrete Human question with prepared evidence and a recommendation. | The Human records an answer and returns the decision task to `Intake`. |
 | `Done` | Acceptance criteria and required evidence are satisfied and canonical facts are synchronized. | Terminal for the work item; archiving is controlled separately by release line. |
 
-`Intake` and `Ready` use Jira's To Do category. `In Progress` and `Awaiting Confirmation` use the In Progress category. `Done` uses the Done category.
+`Intake`, `Ready (Server)`, and `Ready (App)` use Jira's To Do category. `In Progress` and `Awaiting Confirmation` use the In Progress category. `Done` uses the Done category.
 
 ### Rovo Operating Model
 
-The authorized Rovo integration maintains CLX and CLV issues, labels, Product Discovery delivery links, comments, searches, existing transitions, native CLV Idea archival, and Confluence guidance. The physical CLX workflow contains `Intake`, `Ready`, `In Progress`, `Awaiting Confirmation`, and `Done`.
+The authorized Rovo integration maintains CLX and CLV issues, labels, Product Discovery delivery links, comments, searches, existing transitions, native CLV Idea archival, and Confluence guidance. The physical CLX workflow contains `Intake`, `Ready (Server)`, `Ready (App)`, `In Progress`, `Awaiting Confirmation`, and `Done`.
 
 CLV replaces Jira `Fix Version/s` and per-version archive boards as the authoritative version layer. A CLV Idea owns the exact version identity, outcome, roadmap position, lifecycle state, and release evidence. CLX remains the execution layer. Its `version-vX-Y-Z` label is a query and migration aid whose meaning is derived from the linked CLV Idea; it is not a second version authority.
 
@@ -98,26 +99,26 @@ When the product owner asks for requirement triage:
 
 1. Read every applicable `Intake` card and preserve its original wording in the issue history or an `Original request` section.
 2. Inspect the affected specification, implementation, Jira relationships, and current release boundary.
-3. Rewrite or split the request into the smallest independently verifiable tasks. A `size-l` item is normally decomposed before it reaches `Ready`.
+3. Rewrite or split the request into the smallest independently verifiable tasks. A `size-l` item is normally decomposed before it reaches a Ready lane. Split independently deliverable Server and App scope into linked items; when scope cannot be split, route it by the primary next implementation owner and identify every affected repository in the contract.
 4. Give each executable item an outcome, verified context, scope and non-goals, acceptance criteria, validation expectations, dependencies, risks, and documentation or compatibility impact.
 5. Connect the item to exactly one planned CLV version Idea and assign its exact-version label, Jira priority, one size label (`size-s`, `size-m`, or `size-l`), the release-line label, and controlled area or concern labels.
 6. Use `Highest` for urgent or severe product, security, data, or release risk; `High` for major user impact or work that unlocks the active line; `Medium` for normal planned delivery; and `Low` for non-urgent polish or optional maintenance. Effort changes decomposition, not priority or semantic versioning.
-7. Link dependencies. Keep an externally blocked task in `Ready` with `blocked` and without `agent-ready`; otherwise add `agent-ready` and move it to `Ready`.
+7. Link dependencies. Keep an externally blocked task in its owning Ready lane with `blocked` and without `agent-ready`; otherwise add `agent-ready` and move it to `Ready (Server)` or `Ready (App)` according to the primary implementation owner.
 
 Keep one active release line by default. The CLV Idea is the exact version authority. `version-v1-0-1` and `release-line-v1-0` labels make CLX work queryable and must match the linked CLV Idea.
 
-Moving an item to `Ready` completes triage only. Do not infer a request to implement it, transition it to `In Progress`, or promote it from its Ready status. Execution begins only when the product owner selects the item or a containing batch.
+Moving an item to either Ready lane completes triage only. Do not infer a request to implement it, transition it to `In Progress`, or promote it from its Ready status. Execution begins only when the product owner selects the item or a containing batch.
 
 ### Selected Work Sequence
 
-When the product owner selects one or more Ready items:
+When the product owner selects one or more items from either Ready lane:
 
 1. Record the selected item keys, intended order, owning repositories, and target CLV version before implementation.
 2. Execute the items sequentially unless the product owner explicitly requests parallel work. Run the start blocker scan separately for each item immediately before it enters `In Progress`.
 3. Validate each item in proportion to its behavior and risk, synchronize its facts and Jira evidence, and create one focused commit for the completed item or coherent change.
 4. Push the affected implementation repository's `develop` branch after the item passes its checks. An individual pushed commit does not make an incomplete version eligible for promotion.
 5. Run the completion blocker scan and close each item only when its acceptance criteria and evidence are complete.
-6. Do not add other Ready inventory to the selected batch without a new product-owner instruction.
+6. Do not add other inventory from either Ready lane to the selected batch without a new product-owner instruction.
 
 An instruction that selects a batch remains authorization for that stated
 implementation sequence. When the complete version passes its gates, standing
@@ -134,7 +135,7 @@ Do not place executable work in `Awaiting Confirmation`. When a material decisio
 3. Apply `human-decision` and `human-action-required`, remove `agent-ready`, link the decision task as blocking the affected work, and move the decision task to `Awaiting Confirmation`.
 4. Leave affected executable work in its truthful state with `blocked` and no `agent-ready` when the decision blocks its next transition.
 5. The Human records the answer and moves the decision task to `Intake`.
-6. At the next triage, record the decision with decision maker, date, scope, and constraints; update dependent task contracts; remove satisfied blocker labels; move newly executable work to `Ready`; and move the decision task to `Done`.
+6. At the next triage, record the decision with decision maker, date, scope, and constraints; update dependent task contracts; remove satisfied blocker labels; move newly executable work to its owning Ready lane; and move the decision task to `Done`.
 
 ### Version Selection And Archive
 
@@ -167,7 +168,7 @@ Human approval covers only the stated decision or operation. Reversible implemen
 
 ### Jira Blocker Scan
 
-Run this scan before moving an item from `Ready` to `In Progress` and before moving it to `Done`:
+Run this scan before moving an item from either Ready lane to `In Progress` and before moving it to `Done`:
 
 1. Inspect inward `Blocks` links and confirm every blocking issue has reached the state required by the task contract.
 2. Inspect the selected CLV version Idea, relevant CLX release or workstream item, and release line for unresolved prerequisites or a stopped delivery boundary.
@@ -192,9 +193,9 @@ Do not request a Human response before it is actionable. Prepare the options, ev
 ## Delivery Flow
 
 1. **Understand:** load governance, inspect relevant facts, identify the selected CLV version Idea and release line, and select the work level.
-2. **Decide:** create or refine the Jira task contract, isolate any required Human decision, choose the smallest safe approach, and move complete unblocked work to `Ready`.
-3. **Select:** wait for the product owner to select a Ready item or batch; record its order and delivery boundary without changing unselected Ready inventory.
-4. **Implement:** run the start blocker scan, move the selected Jira item from `Ready` to `In Progress`, work repository by repository, and preserve independent build/runtime boundaries.
+2. **Decide:** create or refine the Jira task contract, isolate any required Human decision, choose the smallest safe approach, and move complete work to `Ready (Server)` or `Ready (App)` according to its primary implementation owner.
+3. **Select:** wait for the product owner to select an item or batch from either Ready lane; record its order and delivery boundary without changing unselected Ready inventory.
+4. **Implement:** run the start blocker scan, move the selected Jira item from its Ready lane to `In Progress`, work repository by repository, and preserve independent build/runtime boundaries.
 5. **Validate:** run focused checks first, add only triggered enhanced scenarios, synchronize affected facts and guidance, and record evidence and implementation refs on the item.
 6. **Close:** commit and push the coherent change set to `develop`, run the completion blocker scan, and move the Jira item to `Done` only when acceptance is satisfied and no closing gate remains. After every item in the selected version is complete, run the release-candidate gate and fast-forward the affected repositories to `testing` when it passes. Promotion to `main`, tags, publication, production deployment, and other controlled delivery actions occur only when authorized.
 
@@ -317,7 +318,7 @@ A product version is release-ready only when the release-candidate gate passes f
 
 ## Version And Deployment Semantics
 
-- Jira workflow states are `Intake`, `Ready`, `In Progress`, `Awaiting Confirmation`, and `Done`.
+- Jira workflow states are `Intake`, `Ready (Server)`, `Ready (App)`, `In Progress`, `Awaiting Confirmation`, and `Done`.
 - `Done` means the stated scope and required evidence are accepted and canonical facts are synchronized; it does not imply deployment.
 - Product ideas that are not selected for delivery remain in `backlog/`, not Jira.
 - Deployment states are `Not deployed`, `Testing`, `Production`, and `N/A`.

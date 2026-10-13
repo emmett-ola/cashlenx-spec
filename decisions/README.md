@@ -41,3 +41,4 @@ Recommended sections:
 - `0006-archive-design-prototype-and-move-ui-authority-to-app.md`
 - `0007-owner-selected-execution-and-explicit-promotion.md`
 - `0008-bash-automation-and-independent-component-versions.md`
+- `0009-split-ready-lanes-by-implementation-owner.md`

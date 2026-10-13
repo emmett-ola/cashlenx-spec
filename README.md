@@ -72,7 +72,7 @@ vulnerabilities according to [SECURITY.md](SECURITY.md).
 
 Current implementation maturity belongs in `system/`; unopened delivery candidates and readiness work belong in `backlog/`; selected versions and delivery work belong in Jira; completed durable facts return to `system/` and `decisions/`.
 
-A Jira item in `Ready` is prepared for execution but does not start automatically. The product owner selects the item or batch before any transition to `In Progress` or implementation work.
+A Jira item in `Ready (Server)` or `Ready (App)` is prepared for execution but does not start automatically. The lane identifies the primary implementation owner: Server for API and backend service work, and App for user-facing interface and client implementation. The product owner selects the item or batch before any transition to `In Progress` or implementation work.
 
 ## Working Rule
 

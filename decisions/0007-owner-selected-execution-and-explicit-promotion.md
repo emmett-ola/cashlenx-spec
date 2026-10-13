@@ -14,6 +14,9 @@ including App publication and non-destructive Server deployment.
 This decision narrows the autonomous delivery authority recorded in
 `0003-v1-product-deployment-and-autonomous-release-charter.md`.
 
+The term Ready in this decision applies to both `Ready (Server)` and
+`Ready (App)` under `0009-split-ready-lanes-by-implementation-owner.md`.
+
 ## Context
 
 Jira contains a growing inventory of executable Ready items. Readiness proves

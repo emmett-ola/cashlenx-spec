@@ -82,7 +82,7 @@ Every executable item also has one of `size-s`, `size-m`, or `size-l`. Size expr
 - Represent a Human gate as a separate Task named `Decision: ...` in `Awaiting Confirmation`. Apply `human-decision` and place a `Human intervention gate` section near the top of its description. The section records the trigger, options, evidence, recommendation, exact requested decision or authorization, blocked transition, and current state.
 - Apply `human-action-required` only when Human input is required now. It is mutually exclusive with `agent-ready` and prevents the stated transition until the response is recorded in Jira.
 - Apply `blocked` while an unresolved linked dependency or external condition prevents the next planned transition. It is mutually exclusive with `agent-ready`. Represent Jira-to-Jira dependencies with issue links, not labels alone.
-- Before moving work from `Ready` to `In Progress` and before moving it to `Done`, inspect linked blockers, the CLV version Idea and release-line state, Human-gate markers, comments, and acceptance conditions.
+- Before moving work from either Ready lane to `In Progress` and before moving it to `Done`, inspect linked blockers, the CLV version Idea and release-line state, Human-gate markers, comments, and acceptance conditions.
 - When a blocker is found or changes, record a concise `Blocker scan` comment in Jira and alert the user in the active conversation. State the issue key, exact Human action when applicable, and what cannot proceed.
 - Prepare decision options, evidence, and a recommendation before requesting Human input unless the missing input prevents preparation itself.
 - A selected implementation item authorizes work on `develop`, but an individual
@@ -97,18 +97,20 @@ Every executable item also has one of `size-s`, `size-m`, or `size-l`. Size expr
 
 ## Workflow And Evidence
 
-The accepted primary-board target is `CashLenX — Active Delivery`. Its logical workflow states are `Intake`, `Ready`, `In Progress`, `Awaiting Confirmation`, and `Done`.
+The primary CLX board has six physical workflow states: `Intake`, `Ready (Server)`, `Ready (App)`, `In Progress`, `Awaiting Confirmation`, and `Done`.
 
 - `Intake` contains Human-authored raw demand and answered decision tasks awaiting agent triage.
-- `Ready` contains prepared task contracts connected to an authoritative CLV version Idea, with matching exact-version label, priority, size, acceptance criteria, and known dependencies. Blocker labels still control executability, and Ready status does not authorize execution.
+- `Ready (Server)` contains prepared API and Server-owned service, authentication, persistence, database, operational, performance, optimization, and maintenance work.
+- `Ready (App)` contains prepared App-owned user-interface, interaction, visual-design, accessibility, localization-presentation, navigation, client-state, App-performance, and other user-facing implementation work.
+- Both Ready lanes require an authoritative CLV version Idea, matching exact-version label, priority, size, acceptance criteria, and known dependencies. Blocker labels still control executability, and Ready status does not authorize execution.
 - `In Progress` contains scoped work being implemented, validated, or synchronized.
 - `Awaiting Confirmation` contains only separate decision tasks with a concrete Human question and prepared recommendation.
 - `Done` means acceptance criteria and required evidence are satisfied and canonical facts are synchronized.
 
-When the product owner requests triage, the agent reads `Intake`, preserves original intent, inspects evidence, rewrites or splits the demand, assigns priority and version, links dependencies, and moves complete unblocked work to `Ready`. A `size-l` request is normally decomposed before it is ready.
+When the product owner requests triage, the agent reads `Intake`, preserves original intent, inspects evidence, rewrites or splits the demand, assigns priority and version, links dependencies, and moves complete work to its owning Ready lane. A `size-l` request is normally decomposed before it is ready. Independently deliverable cross-area demand is split into linked Server and App items; an irreducible cross-area item is routed by its primary next implementation owner and names every affected repository in its contract.
 
-Triage and execution are separate requests. An agent starts only the Ready item
-or batch explicitly selected by the product owner and leaves all other Ready
+Triage and execution are separate requests. An agent starts only the item or
+batch explicitly selected by the product owner from either Ready lane and leaves all other Ready
 inventory unchanged. Selected items are normally implemented sequentially, each
 with its own blocker scan, focused validation, Jira evidence, and coherent
 commit pushed to the affected repository's `develop` branch.
@@ -128,7 +130,7 @@ production deployment remain separate controlled actions.
 
 After the Human answers a decision task, they move it from `Awaiting Confirmation` to `Intake`. The next triage records the decision, updates and unblocks affected work, and moves the decision task to `Done`.
 
-The physical CLX workflow contains all five accepted states. Rovo operates the workflow and the CLV catalog directly. CLV Ideas are authoritative; CLX `version-vX-Y-Z` labels are query aids and must match their Product Discovery delivery link.
+Rovo operates the six-state physical CLX workflow and the CLV catalog directly. CLV Ideas are authoritative; CLX `version-vX-Y-Z` labels are query aids and must match their Product Discovery delivery link.
 
 Jira state does not prove branch promotion, tag creation, publication, or deployment. Record those states explicitly when they occur.
 

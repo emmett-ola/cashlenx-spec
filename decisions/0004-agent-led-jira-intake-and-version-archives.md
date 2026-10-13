@@ -4,7 +4,7 @@
 
 Accepted on 2026-09-17.
 
-Exact-version authority and archive implementation are superseded by `0005-clv-authoritative-version-catalog.md`. The five-state CLX workflow, agent-led triage, decision-task loop, semantic version selection, sizing, and priority rules remain in force.
+Exact-version authority and archive implementation are superseded by `0005-clv-authoritative-version-catalog.md`. The original single Ready status is superseded by `0009-split-ready-lanes-by-implementation-owner.md`; agent-led triage, the decision-task loop, semantic version selection, sizing, and priority rules remain in force.
 
 ## Context
 
