@@ -4,6 +4,9 @@
 
 `../cashlenx-app` is the cross-platform Flutter client for CashLenX.
 
+See [implemented-features.md](implemented-features.md) for the detailed,
+versioned inventory of user-facing App capabilities and current exclusions.
+
 Current stack:
 
 - Flutter with Dart SDK `>=3.13.0 <4.0.0`.
@@ -172,12 +175,13 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   The shared theme selects the regional family and retains both as fallbacks,
   covering dynamic API and user-provided text without runtime font-network
   dependencies or transient missing glyphs.
-- Profile fetch/update for `nickname`, `avatar_url`, `gender`, `phone_number`,
-  `location`, and `birth_date`. Profile does not edit currency, theme, language,
-  or persist user configuration; Settings is the sole UI owner for those
-  preferences. Presentation-only account statistics may display the active
-  currency symbol without making it a Profile control. Avatars come from the
-  fixed preset library; the fallback asset is
+- Profile fetch/update for `nickname`, `avatar_url`, `phone_number`, `location`,
+  and `birth_date`. The profile data model retains `gender` when supplied by the
+  API, but the current Profile screen does not expose a gender editor. Profile
+  does not edit currency, theme, language, or persist user configuration;
+  Settings is the sole UI owner for those preferences. Presentation-only account
+  statistics may display the active currency symbol without making it a Profile
+  control. Avatars come from the fixed preset library; the fallback asset is
   `assets/images/avatars/f9b59ca5421b2b7ef2e31c2ba4d827f48d22594a.png`.
 - Theme color, currency, and language synchronize through the authenticated user
   configuration API before authenticated route selection. The additive
