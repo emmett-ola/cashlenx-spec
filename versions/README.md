@@ -75,6 +75,12 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
   retained environment-specific rollback images. Website was unchanged. No
   release tag, database execution, provider email, or whole-product production
   acceptance was performed.
+- [CLV-19](https://macacloud.atlassian.net/browse/CLV-19) is the authoritative
+  `v1.1.1` boundary for the App accessibility, URL coherence, semantic dark
+  surfaces, Budget precision and localization, responsive transaction entry,
+  reduced motion, and focused UI regression coverage. Server and Website are
+  unchanged. Testing promotion, release tags, publication, deployment,
+  database execution, and production acceptance remain separate states.
 - CLX items use matching exact-version labels and
   Product Discovery delivery links. CLV owns version identity; labels support
   queries and do not form a second authority.

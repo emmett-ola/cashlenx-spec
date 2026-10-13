@@ -7,7 +7,7 @@
 Current stack:
 
 - Flutter with Dart SDK `>=3.13.0 <4.0.0`.
-- Runtime/displayed version `1.1.0+17` on the coordinated 1.1.0 delivery line.
+- Runtime/displayed version `1.1.1+18` on the coordinated 1.1.1 delivery line.
 - Feature-first Clean Architecture.
 - Riverpod for state.
 - GoRouter for routing.
@@ -114,6 +114,10 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 - Primary authenticated routes replace shell content in place without a
   horizontal whole-canvas transition; route URLs, refresh, and browser history
   remain active.
+- Profile and transaction detail are URL-addressable secondary destinations.
+  Transaction detail preserves whether it originated from Home or Transactions
+  when navigating back, while a refreshed direct detail URL retains a stable
+  fallback destination.
 - Post-splash routes share a full-height responsive shell. Interactive content
   fills phone widths and stays centered within a 430 px mobile canvas on wider
   viewports, while excess horizontal space uses the active theme background.
@@ -136,7 +140,12 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   search filters. Authenticated ranges use `/cash/range`; demo ranges stay
   local. Removable active chips, localized result summaries, and filtered-empty
   recovery expose the current filter state.
-- Add and edit transactions share amount/keypad, category, date, description, remark, and attachment-placeholder behavior. Their category selectors remember the last income and expense selections independently while the transaction type changes.
+- Add and edit transactions share amount/keypad, category, date, description,
+  remark, and attachment-placeholder behavior. Their category selectors
+  remember the last income and expense selections independently while the
+  transaction type changes. The modal fills phone widths and remains centered
+  within the 430 px mobile canvas on tablet and desktop hosts, preserving safe
+  areas, keyboard insets, and reachable actions under large text.
 - Hierarchical category management.
 - Category emoji and background-color customization persists through the Server
   and remains visible after list/tree reloads; demo categories use the same
@@ -146,7 +155,11 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   show the current icon and color.
 - Monthly category-budget CRUD for authenticated users through `/budget`, with
   ledger-derived usage, month navigation, loading/error/empty recovery, and a
-  mutable isolated demo equivalent.
+  mutable isolated demo equivalent. Visible month labels follow the active
+  English, Simplified Chinese, or Traditional Chinese locale through the shared
+  period-formatting boundary, while query and persistence periods remain
+  canonical `YYYY-MM`. Aggregates and progress use the selected currency's
+  minor-unit precision, including zero-decimal currencies.
 - Expanded statistics inherit Day, Month, or Year from the dashboard and let
   users change the range and matching period. Summary, trend, and top-expense
   data always use that period for authenticated and Demo users. Year mode
@@ -177,6 +190,18 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   Build Date independently; API loading and failure never hide the App identity.
   Logout remains available.
 - The selected theme color drives primary controls, accents, selected states, and highlights. Splash and pre-splash visuals remain brand-stable rather than following the selected theme color.
+- Semantic surface colors provide coherent light and dark presentation across
+  authenticated routes, authentication, onboarding, setup, dialogs, sheets,
+  toast feedback, and loading, empty, and error states. Brand gradients,
+  splash foregrounds, and user-selected accent color remain intentionally
+  distinct from semantic surfaces.
+- Icon-only navigation and actions expose localized names and one actionable
+  semantics node. Auth inputs expose their visible labels, composite controls
+  avoid duplicate announcements, and navigation remains reachable with scaled
+  text.
+- Startup uses one brief scale-and-fade entrance instead of persistent motion.
+  Reduced-motion preferences remove scale and validation displacement while
+  retaining immediate error text, borders, and a short fade.
 - Live Figma Make colors, 4 px spacing increments, and 8/16/24 px radii are
   centralized in `AppDesignTokens`. Shared auth fields and actions use the
   confirmed 8 px control radius. Entered auth text uses a high-contrast
@@ -185,9 +210,12 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   detail surfaces: income uses success/green and expense uses error/red. When a
   compatible legacy cash-flow payload omits the resolved category type, the App
   derives it from the current category matched by normalized category ID.
-- Golden visual baselines cover dashboard layout at 390 px, the 430 px maximum
-  shell width, a 768 px tablet host, and a 1440 px desktop host, plus settings
-  and profile at shell width.
+- Golden visual baselines cover light dashboard layout at 390 px, the 430 px
+  maximum shell width, a 768 px tablet host, and a 1440 px desktop host, plus
+  light Settings and Profile at shell width. Representative dark baselines
+  cover Home at 390 px and Profile at 430 px. Focused widget coverage also
+  protects localized semantics, reduced motion, large text, direct routes, and
+  the add-transaction sheet at phone, tablet, and desktop widths.
 - Docker-based Flutter web deployment using `docker/Dockerfile`,
   `docker/compose.yml`, explicit project/container names, the shared absolute
   `DOCKER_NETWORK_NAME`, and nginx route fallback.
