@@ -69,11 +69,12 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
   `v1.1.0` boundary for the polished registration verification journey and
   branded HTML verification email. Exact App and Server candidates were
   fast-forwarded from `testing` to `main`; App Production static Web
-  publication and the App/Server main workflows succeeded. Website was
-  unchanged. Production Server still reports `1.0.4`, so v1.1.0 Server
-  deployment remains incomplete pending the approved Bash deployment channel.
-  No release tag, database execution, provider email, or whole-product
-  production acceptance was performed.
+  publication and the App/Server main workflows succeeded. The exact Server
+  candidate `b799edc9288342de5b6d701d625aa01a6c41db05` is deployed to Testing
+  and Production as `1.1.0`; both public health and version checks pass, with
+  retained environment-specific rollback images. Website was unchanged. No
+  release tag, database execution, provider email, or whole-product production
+  acceptance was performed.
 - CLX items use matching exact-version labels and
   Product Discovery delivery links. CLV owns version identity; labels support
   queries and do not form a second authority.
