@@ -10,8 +10,8 @@ Current stack:
 - React.
 - TypeScript.
 - `lucide-react` icons.
-- Runtime artifact version `1.0.3` on the coordinated, untagged 1.0.3
-  testing-candidate line.
+- Runtime artifact version `1.0.9`; the Website is unchanged by the coordinated
+  1.1.1 App delivery line.
 
 ## Current Content Model
 

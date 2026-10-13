@@ -18,6 +18,29 @@ state and the evidence manifest owns exact candidate identities.
   the short local checkout layout while remaining compatible with full
   remote-style checkout names.
 
+## [1.1.1] - 2026-10-13
+
+### Added
+
+- Added focused App regression coverage for localized semantics, light and dark
+  surfaces, reduced motion, large text, direct routes, and responsive
+  transaction entry.
+
+### Changed
+
+- Made Profile and transaction detail URL-addressable while preserving return
+  context and browser navigation.
+- Applied coherent semantic dark surfaces throughout the App and constrained
+  transaction entry to the mobile canvas on wider hosts.
+- Localized Budget period labels consistently with Statistics and made startup
+  and validation feedback honor reduced-motion preferences.
+
+### Fixed
+
+- Restored complete localized semantics across core App controls.
+- Preserved selected-currency minor-unit precision in Budget summaries and
+  progress.
+
 ## [1.1.0] - 2026-10-12
 
 ### Changed
