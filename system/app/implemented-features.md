@@ -24,8 +24,8 @@
 
 - [x] Sign in with email address or username and password.
 - [x] Optional remember-me behavior backed by secure storage.
-- [x] Registration with email verification, a focused six-digit code input,
-  resend countdown, and return-to-edit-email action.
+- [x] Registration with email verification, a focused six-character ASCII
+  alphanumeric code input, resend countdown, and return-to-edit-email action.
 - [x] Password-reset request and completion flows.
 - [x] Complete access-token and refresh-token session persistence.
 - [x] Shared refresh for concurrent `401` responses.

@@ -17,11 +17,12 @@ The canonical CashLenX slogan is `Times shape your wealth, mind secures your con
 ### Authentication
 
 - Register with purpose-scoped email verification. The verification step names
-  the destination email, accepts a six-digit code, preserves resend countdown
-  feedback, and provides Confirm and Return to edit email actions while retaining
-  unrelated registration state. Verification delivery is a restrained,
-  responsive CashLenX HTML message whose escaped code remains centered,
-  high-contrast, and selectable text without active or tracking content.
+  the destination email, accepts a six-character ASCII alphanumeric code without
+  changing its case, preserves resend countdown feedback, and provides Confirm
+  and Return to edit email actions while retaining unrelated registration state.
+  Verification delivery is a restrained, responsive CashLenX HTML message whose
+  escaped code remains centered, high-contrast, and selectable text without
+  active or tracking content.
 - Login with username/password.
 - Refresh a session through refresh token login.
 - Persist access token, refresh token, and remember-me state in secure storage.

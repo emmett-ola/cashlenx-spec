@@ -83,9 +83,9 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
 
 - Splash, login, registration, password reset, and demo mode. Registration's
   email-verification step presents the destination email as read-only context,
-  accepts a focused six-digit numeric code, retains resend countdown feedback,
-  and offers localized Confirm and Return to edit email actions without changing
-  the verification API contract.
+  accepts a focused six-character ASCII alphanumeric code while preserving its
+  case, retains resend countdown feedback, and offers localized Confirm and
+  Return to edit email actions without changing the verification API contract.
 - The official camera-and-cash brand mark is shared by splash, authentication,
   first-login setup, About, and Flutter Web bootstrap surfaces. Platform icon
   assets cover Android adaptive and round launchers, iOS light/dark/tinted
