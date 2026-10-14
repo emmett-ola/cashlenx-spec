@@ -6,17 +6,19 @@
 
 See [implemented-features.md](implemented-features.md) for the detailed,
 versioned inventory of user-facing App capabilities and current exclusions.
+See [code-architecture.md](code-architecture.md) for the implementation-level
+architecture, dependency flows, state model, and maintainability assessment.
 
 Current stack:
 
 - Flutter with Dart SDK `>=3.13.0 <4.0.0`.
 - Runtime/displayed version `1.1.1+18` on the coordinated 1.1.1 delivery line.
-- Feature-first Clean Architecture.
+- Feature-first architecture with selectively applied Clean Architecture layers.
 - Riverpod for state.
 - GoRouter for routing.
 - Dio through local API wrappers and interceptors.
 - Freezed and json_serializable for generated models.
-- `.env` loaded by `AppConfig.init()`.
+- Compile-time environment definitions resolved by `AppConfig.init()`.
 
 ## Important Entry Points
 
@@ -65,12 +67,14 @@ lib/
   theme/                 # App theme and theme mode providers.
 ```
 
-Expected dependency flow:
+Target dependency flow for fully layered features:
 
 ```text
 UI -> Provider/Controller -> Use Case -> Repository -> Data Source -> API
 ```
 
+The current implementation does not have a separate use-case layer, and some
+features intentionally use a shorter UI/provider -> API or Demo-store flow.
 Domain code should remain pure Dart and avoid Flutter dependencies.
 
 ## Current Implemented Behavior
