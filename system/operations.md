@@ -373,6 +373,13 @@ bash scripts/environment-lifecycle.sh stop --profile local --database mongodb
 
 ## UAT Deployment Mechanics
 
+The current Testing host uses `/workspace/macacloud/cashlenx` as its logical
+CashLenX workspace root. Its Server worktree is
+`/workspace/macacloud/cashlenx/server`, which corresponds to the local
+`server/` project in the outer workspace. Run Testing Server lifecycle commands
+from that remote worktree and keep its owner-managed `.env.testing` file
+untracked with mode `0600`.
+
 Build every affected image before starting services. In each affected project directory:
 
 ```bash
@@ -389,6 +396,12 @@ and persistent data, run `scripts/stop.sh` in that project. The final stop also
 removes the now-unused shared network.
 Reverse-proxy routing and TLS remain owned by the UAT host and are outside the
 project-local scripts.
+
+The Testing Nginx ingress resolves the `cashlenx-server:10063` upstream on the
+shared `cashlenx-network`. After recreating the Server container, validate and
+reload Nginx so it drops any cached address for the former container, then
+verify the public Testing health endpoint. A healthy Server container or host
+port alone does not prove that the public ingress route is healthy.
 
 This sequence describes mechanics only. Deployment requires an explicit current
 instruction after every applicable gate passes and the external target and
