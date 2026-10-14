@@ -8,6 +8,8 @@ See [implemented-features.md](implemented-features.md) for the detailed,
 versioned inventory of user-facing App capabilities and current exclusions.
 See [code-architecture.md](code-architecture.md) for the implementation-level
 architecture, dependency flows, state model, and maintainability assessment.
+An accompanying [Simplified Chinese translation](code-architecture.zh-cn.md) is
+available for readers who prefer Chinese; the English document remains canonical.
 
 Current stack:
 
