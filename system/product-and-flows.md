@@ -51,8 +51,11 @@ The canonical CashLenX slogan is `Times shape your wealth, mind secures your con
 - Create income and expense records.
 - View, edit, and delete transactions.
 - Search and filter the transaction list by type and category.
-- Select hierarchical categories while creating or editing transactions.
-- Capture amount, transaction type, category, date, description, remark, and an attachment placeholder in the app UI.
+- Create transactions by selecting income or expense, navigating to a leaf
+  category, and then entering a positive amount through a sequential
+  addition/subtraction calculator with a date and note.
+- Edit transactions with the detailed amount keypad, hierarchical category,
+  date, description, remark, and attachment-placeholder UI.
 - Refresh dashboard and list state after mutations.
 
 ### Categories

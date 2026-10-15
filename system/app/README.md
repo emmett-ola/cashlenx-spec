@@ -149,12 +149,16 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   search filters. Authenticated ranges use `/cash/range`; demo ranges stay
   local. Removable active chips, localized result summaries, and filtered-empty
   recovery expose the current filter state.
-- Add and edit transactions share amount/keypad, category, date, description,
-  remark, and attachment-placeholder behavior. Their category selectors
-  remember the last income and expense selections independently while the
-  transaction type changes. The modal fills phone widths and remains centered
-  within the 430 px mobile canvas on tablet and desktop hosts, preserving safe
-  areas, keyboard insets, and reachable actions under large text.
+- Add Transaction opens as a full-screen modal flow with income/expense tabs and
+  a four-column category grid. Parent categories navigate to their children;
+  choosing a leaf opens a bottom amount panel with a localized date control,
+  note field, and sequential addition/subtraction calculator. The computed
+  positive amount and note use the existing cash-flow request contract.
+- Edit Transaction retains the detailed amount keypad, category, date,
+  description, remark, and attachment-placeholder experience. Transaction
+  entry remains centered within the 430 px mobile canvas on wider hosts and
+  preserves safe areas, keyboard insets, and reachable actions under large
+  text.
 - Hierarchical category management.
 - Category emoji and background-color customization persists through the Server
   and remains visible after list/tree reloads; demo categories use the same

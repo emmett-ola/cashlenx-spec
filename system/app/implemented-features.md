@@ -58,9 +58,12 @@
 
 - [x] Paginated transaction list with loading, empty, error, and retry states.
 - [x] Add, view, edit, and delete transactions.
-- [x] Shared add/edit experience for amount keypad, transaction type, category,
+- [x] Category-first Add Transaction flow with full-screen income/expense
+  selection and a leaf-category-triggered bottom amount panel.
+- [x] Sequential addition/subtraction calculator using integer minor units,
+  plus localized date and note capture through the existing request contract.
+- [x] Detailed Edit Transaction flow with amount keypad, hierarchical category,
   date, description, remark, and attachment placeholder.
-- [x] Independent remembered category selection for income and expense.
 - [x] Search plus type, category, and inclusive date-range filters.
 - [x] Removable active-filter chips, localized result summaries, and filtered
   empty-state recovery.
