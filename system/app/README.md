@@ -224,8 +224,14 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   `docker/compose.yml`, explicit project/container names, the shared absolute
   `DOCKER_NETWORK_NAME`, and nginx route fallback.
 - GitHub Actions validation for analyze, tests, and the canonical `/api/v1` web
-  build, plus a manual secret-free candidate-image artifact job. Deployment and
-  external publication are intentionally separate.
+  build, plus a manual secret-free candidate-image artifact job. Successful
+  push validation on `develop`, `testing`, and `main` publishes the
+  branch-configured static client to the matching branch in
+  `emmett-ola/cashlenx-app-release`. The publication step fixes the Git author
+  and committer to `emmett-ola <emmett-ola@users.noreply.github.com>` regardless
+  of the workflow actor; push authentication still uses `RELEASE_REPO_TOKEN`.
+  Source validation, static publication, and runtime deployment remain separate
+  evidenced states.
 
 ## Known App Gaps
 
