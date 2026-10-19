@@ -14,13 +14,19 @@ available for readers who prefer Chinese; the English document remains canonical
 Current stack:
 
 - Flutter with Dart SDK `>=3.13.0 <4.0.0`.
-- Runtime/displayed version `1.1.1+18` on the coordinated 1.1.1 delivery line.
+- Runtime/displayed version `1.1.3+19` on the coordinated 1.1.3 delivery boundary.
 - Feature-first architecture with selectively applied Clean Architecture layers.
 - Riverpod for state.
 - GoRouter for routing.
 - Dio through local API wrappers and interceptors.
 - Freezed and json_serializable for generated models.
 - Compile-time environment definitions resolved by `AppConfig.init()`.
+- `scripts/run.sh` selects a repository-local `ENV_FILE` (default `.env`) and
+  forwards only the five public App/API settings to Flutter. Container builds
+  and candidate packaging use the same parser; explicit shell values override
+  the file, and an empty `API_PORT` remains empty. Device addresses are used
+  unchanged. Android permits HTTP only in debug builds; profile and release
+  builds retain the platform HTTPS policy.
 
 ## Important Entry Points
 

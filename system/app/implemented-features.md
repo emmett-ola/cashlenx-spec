@@ -2,10 +2,11 @@
 
 ## Verified Baseline
 
-- App version: `1.1.1+18`.
-- Source commit: `a74effdd1d4be826e8158e22820458611bce9d05` on `develop`.
-- Scope: committed Flutter App behavior only. Local uncommitted platform and
-  tooling changes are excluded from this inventory.
+- App version: `1.1.3+19`.
+- Source commit: `142cd57d077543afd5b6c1b8e98750d70fc35226` on `develop`.
+- Scope: committed Flutter App behavior and environment-configuration tooling.
+  Device addresses are selected in ignored local profiles; the native launcher
+  forwards only public configuration, and Android HTTP is limited to debug.
 - Runtime model: authenticated users use the live API; Demo users use an
   isolated, resettable in-memory data store.
 

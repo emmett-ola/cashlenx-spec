@@ -84,6 +84,11 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
 - CLX items use matching exact-version labels and
   Product Discovery delivery links. CLV owns version identity; labels support
   queries and do not form a second authority.
+- [CLV-21](https://macacloud.atlassian.net/browse/CLV-21) owns the selected
+  `v1.1.3` App environment-configuration patch in CLX-103. This request covers
+  `develop` synchronization only; Testing promotion and release-candidate
+  acceptance remain separate. CLV-20 retains the independently prepared
+  `v1.1.2` API performance scope.
 
 Do not create a version directory for active planning, routine Jira work, or an audit. Create a repository-local snapshot only when durable closeout evidence explicitly needs to live with the specification.
 

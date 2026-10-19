@@ -54,15 +54,22 @@ From `../cashlenx-app`:
 
 ```bash
 flutter pub get
-flutter run
+ENV_FILE=.env scripts/run.sh
 ```
 
 `AppConfig` consumes `APP_ENV`, `API_SCHEME`, `API_DOMAIN`, `API_PORT`, and
 `API_VERSION` through compile-time definitions. The container build script
 reads only those public settings from the selected repository-local environment
 file. It does not send or copy that file into the build context or runtime
-image. Direct Flutter runs may supply the same values with `--dart-define`; the
-code defaults to the local development API when they are omitted.
+image. `scripts/run.sh` uses the same public-setting parser for native Flutter
+runs and accepts `ENV_FILE=.env.local` plus normal device arguments. Explicit
+shell settings override the selected file, and an explicitly empty `API_PORT`
+omits the URL port. The client uses `API_DOMAIN` unchanged on every platform;
+select the address reachable from the device in the ignored local profile.
+Raw `flutter run` does not load environment files and instead accepts explicit
+`--dart-define` values or uses the local development defaults. Restart or
+rebuild the client after configuration changes. Android HTTP access is limited
+to debug builds; profile and release builds use HTTPS.
 
 Hosted App releases receive those five public settings from the CI branch map,
 not from a VM environment file. Local `.env.testing` and `.env.production`
