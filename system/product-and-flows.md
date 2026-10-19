@@ -17,11 +17,12 @@ The canonical CashLenX slogan is `Times shape your wealth, mind secures your con
 ### Authentication
 
 - Register with purpose-scoped email verification. The verification step names
-  the destination email, accepts a six-digit code, preserves resend countdown
-  feedback, and provides Confirm and Return to edit email actions while retaining
-  unrelated registration state. Verification delivery is a restrained,
-  responsive CashLenX HTML message whose escaped code remains centered,
-  high-contrast, and selectable text without active or tracking content.
+  the destination email, accepts a six-character ASCII alphanumeric code without
+  changing its case, preserves resend countdown feedback, and provides Confirm
+  and Return to edit email actions while retaining unrelated registration state.
+  Verification delivery is a restrained, responsive CashLenX HTML message whose
+  escaped code remains centered, high-contrast, and selectable text without
+  active or tracking content.
 - Login with username/password.
 - Refresh a session through refresh token login.
 - Persist access token, refresh token, and remember-me state in secure storage.
@@ -50,8 +51,11 @@ The canonical CashLenX slogan is `Times shape your wealth, mind secures your con
 - Create income and expense records.
 - View, edit, and delete transactions.
 - Search and filter the transaction list by type and category.
-- Select hierarchical categories while creating or editing transactions.
-- Capture amount, transaction type, category, date, description, remark, and an attachment placeholder in the app UI.
+- Create transactions by selecting income or expense, navigating to a leaf
+  category, and then entering a positive amount through a sequential
+  addition/subtraction calculator with a date and note.
+- Edit transactions with the detailed amount keypad, hierarchical category,
+  date, description, remark, and attachment-placeholder UI.
 - Refresh dashboard and list state after mutations.
 
 ### Categories

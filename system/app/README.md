@@ -6,17 +6,21 @@
 
 See [implemented-features.md](implemented-features.md) for the detailed,
 versioned inventory of user-facing App capabilities and current exclusions.
+See [code-architecture.md](code-architecture.md) for the implementation-level
+architecture, dependency flows, state model, and maintainability assessment.
+An accompanying [Simplified Chinese translation](code-architecture.zh-cn.md) is
+available for readers who prefer Chinese; the English document remains canonical.
 
 Current stack:
 
 - Flutter with Dart SDK `>=3.13.0 <4.0.0`.
 - Runtime/displayed version `1.1.1+18` on the coordinated 1.1.1 delivery line.
-- Feature-first Clean Architecture.
+- Feature-first architecture with selectively applied Clean Architecture layers.
 - Riverpod for state.
 - GoRouter for routing.
 - Dio through local API wrappers and interceptors.
 - Freezed and json_serializable for generated models.
-- `.env` loaded by `AppConfig.init()`.
+- Compile-time environment definitions resolved by `AppConfig.init()`.
 
 ## Important Entry Points
 
@@ -65,21 +69,23 @@ lib/
   theme/                 # App theme and theme mode providers.
 ```
 
-Expected dependency flow:
+Target dependency flow for fully layered features:
 
 ```text
 UI -> Provider/Controller -> Use Case -> Repository -> Data Source -> API
 ```
 
+The current implementation does not have a separate use-case layer, and some
+features intentionally use a shorter UI/provider -> API or Demo-store flow.
 Domain code should remain pure Dart and avoid Flutter dependencies.
 
 ## Current Implemented Behavior
 
 - Splash, login, registration, password reset, and demo mode. Registration's
   email-verification step presents the destination email as read-only context,
-  accepts a focused six-digit numeric code, retains resend countdown feedback,
-  and offers localized Confirm and Return to edit email actions without changing
-  the verification API contract.
+  accepts a focused six-character ASCII alphanumeric code while preserving its
+  case, retains resend countdown feedback, and offers localized Confirm and
+  Return to edit email actions without changing the verification API contract.
 - The official camera-and-cash brand mark is shared by splash, authentication,
   first-login setup, About, and Flutter Web bootstrap surfaces. Platform icon
   assets cover Android adaptive and round launchers, iOS light/dark/tinted
@@ -143,12 +149,16 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   search filters. Authenticated ranges use `/cash/range`; demo ranges stay
   local. Removable active chips, localized result summaries, and filtered-empty
   recovery expose the current filter state.
-- Add and edit transactions share amount/keypad, category, date, description,
-  remark, and attachment-placeholder behavior. Their category selectors
-  remember the last income and expense selections independently while the
-  transaction type changes. The modal fills phone widths and remains centered
-  within the 430 px mobile canvas on tablet and desktop hosts, preserving safe
-  areas, keyboard insets, and reachable actions under large text.
+- Add Transaction opens as a full-screen modal flow with income/expense tabs and
+  a four-column category grid. Parent categories navigate to their children;
+  choosing a leaf opens a bottom amount panel with a localized date control,
+  note field, and sequential addition/subtraction calculator. The computed
+  positive amount and note use the existing cash-flow request contract.
+- Edit Transaction retains the detailed amount keypad, category, date,
+  description, remark, and attachment-placeholder experience. Transaction
+  entry remains centered within the 430 px mobile canvas on wider hosts and
+  preserves safe areas, keyboard insets, and reachable actions under large
+  text.
 - Hierarchical category management.
 - Category emoji and background-color customization persists through the Server
   and remains visible after list/tree reloads; demo categories use the same
