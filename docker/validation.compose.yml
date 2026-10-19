@@ -1,0 +1,26 @@
+services:
+  server:
+    image: ${GO_TEST_IMAGE:?}
+    working_dir: /workspace
+    volumes:
+      - ${SERVER_SOURCE:?}:/workspace
+      - go-modules:/go/pkg/mod
+      - go-build:/root/.cache/go-build
+    command:
+      - sh
+      - -ec
+      - 'go mod download && go mod verify && test "$$(go env GOVERSION)" = go${GO_VERSION:?} && go build -mod=readonly ./... && go test -mod=readonly -race ./...'
+  website:
+    image: ${BUN_BUILD_IMAGE:?}
+    working_dir: /workspace
+    volumes:
+      - ${WEBSITE_SOURCE:?}:/workspace
+      - /workspace/node_modules
+    tmpfs: [/workspace/dist]
+    command:
+      - sh
+      - -ec
+      - 'test "$$(bun --version)" = ${BUN_VERSION:?} && bun --no-env-file install --frozen-lockfile && scripts/audit-dependencies.sh && bun --no-env-file run build'
+volumes:
+  go-modules:
+  go-build:

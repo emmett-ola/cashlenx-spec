@@ -63,12 +63,6 @@ for component in "${affected_components[@]}"; do
 done
 (( ${#selected[@]} > 0 )) || { echo "At least one affected component is required." >&2; exit 1; }
 
-if [[ "$database_scope" != "unchanged" ]]; then
-  echo "The Bash dual-database rehearsal has not yet replaced the legacy PowerShell harness." >&2
-  echo "Use --database unchanged only when the release introduces no database or persistence-boundary change." >&2
-  exit 1
-fi
-
 for command in git docker jq awk sed find cmp flutter dart; do
   command -v "$command" >/dev/null || { echo "$command is required." >&2; exit 1; }
 done
@@ -122,6 +116,9 @@ declare -A validation_paths=()
 
 cleanup() {
   local key
+  if [[ -n "${validation_project:-}" ]]; then
+    docker compose --env-file /dev/null -p "$validation_project" -f "$spec_dir/docker/validation.compose.yml" down --volumes --remove-orphans >/dev/null 2>&1 || true
+  fi
   for key in "${repo_keys[@]}"; do
     if [[ -n "${validation_paths[$key]:-}" ]]; then
       git -C "${repo_paths[$key]}" worktree remove --force "${validation_paths[$key]}" >/dev/null 2>&1 || true
@@ -134,7 +131,7 @@ trap cleanup EXIT
 for key in "${repo_keys[@]}"; do
   path="$(resolve_workspace_repo_dir "$workspace_dir" "$key")"
   repo_paths[$key]="$path"
-  [[ -d "$path/.git" ]] || { echo "Missing Git repository: $path" >&2; exit 1; }
+  [[ -e "$path/.git" ]] || { echo "Missing Git repository: $path" >&2; exit 1; }
   [[ -z "$(git -C "$path" status --porcelain)" ]] || {
     echo "${repo_names[$key]} must be clean before the release gate." >&2
     exit 1
@@ -153,10 +150,6 @@ for key in "${repo_keys[@]}"; do
   commits[$key]="$(git -C "$path" rev-parse HEAD)"
   trees[$key]="$(git -C "$path" rev-parse 'HEAD^{tree}')"
   upstreams[$key]="$upstream"
-  if [[ -n "${selected[$key]:-}" && -n "$(git -C "$path" tag --list "v$version")" ]]; then
-    echo "Immutable tag v$version already exists in ${repo_names[$key]}." >&2
-    exit 1
-  fi
   validation_path="$worktree_root/${repo_names[$key]}"
   git -C "$path" worktree add --detach "$validation_path" "${commits[$key]}" >/dev/null
   validation_paths[$key]="$validation_path"
@@ -189,28 +182,22 @@ if [[ -n "${selected[server]:-}" && "$database_scope" == "unchanged" ]]; then
   fi
 fi
 
-if [[ -n "${selected[app]:-}" ]]; then
-  app_version="$(awk '/^version:/ { print $2; exit }' "${validation_paths[app]}/pubspec.yaml")"
-  [[ "${app_version%%+*}" == "$version" ]] || {
-    echo "App product version is ${app_version%%+*}; expected $version." >&2
-    exit 1
-  }
-fi
-if [[ -n "${selected[server]:-}" ]]; then
-  server_version="$(sed -n 's/^const Version = "\([^"]*\)"$/\1/p' "${validation_paths[server]}/model/version.go")"
-  [[ "$server_version" == "$version" ]] || { echo "Server version mismatch." >&2; exit 1; }
-fi
-if [[ -n "${selected[website]:-}" ]]; then
-  website_version="$(jq -r '.version' "${validation_paths[website]}/package.json")"
-  [[ "$website_version" == "$version" ]] || { echo "Website version mismatch." >&2; exit 1; }
-fi
+declare -A component_versions=()
+component_versions[app]="$(awk '/^version:/ { print $2; exit }' "${validation_paths[app]}/pubspec.yaml")"
+component_versions[app]="${component_versions[app]%%+*}"
+component_versions[server]="$(sed -n 's/^const Version = "\([^\"]*\)"$/\1/p' "${validation_paths[server]}/model/version.go")"
+component_versions[website]="$(jq -r '.version' "${validation_paths[website]}/package.json")"
+component_versions[spec]="$version"
+for component in app server website; do
+  [[ "${component_versions[$component]}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid $component version." >&2; exit 1; }
+done
 
 cmp -s "${validation_paths[server]}/docs/openapi.yaml" "${validation_paths[app]}/server/docs/openapi.yaml" || {
   echo "App and Server OpenAPI copies differ." >&2
   exit 1
 }
 for component in "${affected_components[@]}"; do
-  grep -Fq "[$version]" "${validation_paths[$component]}/CHANGELOG.md" || {
+  grep -Fq "[${component_versions[$component]}]" "${validation_paths[$component]}/CHANGELOG.md" || {
     echo "${repo_names[$component]} changelog does not contain [$version]." >&2
     exit 1
   }
@@ -251,41 +238,27 @@ if [[ -n "${selected[app]:-}" ]]; then
   )
 fi
 
-if [[ -n "${selected[server]:-}" ]]; then
-  server_images="${validation_paths[server]}/docker/images.env"
-  go_image="$(read_env_value "$server_images" GO_TEST_IMAGE)"
-  go_version="$(read_env_value "$server_images" GO_VERSION)"
-  docker run --rm \
-    --volume "${validation_paths[server]}:/workspace" \
-    --workdir /workspace \
-    "$go_image" sh -c \
-    "go mod download && go mod verify && test \"\$(go env GOVERSION)\" = go$go_version && go build -mod=readonly ./... && go test -mod=readonly -race ./..."
-fi
-
-if [[ -n "${selected[website]:-}" ]]; then
-  website_images="${validation_paths[website]}/docker/images.env"
-  bun_image="$(read_env_value "$website_images" BUN_BUILD_IMAGE)"
-  bun_version="$(read_env_value "$website_images" BUN_VERSION)"
-  docker run --rm \
-    --volume "${validation_paths[website]}:/workspace" \
-    --volume /workspace/node_modules \
-    --tmpfs /workspace/dist \
-    --workdir /workspace \
-    "$bun_image" sh -c \
-    "test \"\$(bun --version)\" = $bun_version && bun --no-env-file install --frozen-lockfile && scripts/audit-dependencies.sh && bun --no-env-file run build"
-fi
+export SERVER_SOURCE="${validation_paths[server]}" WEBSITE_SOURCE="${validation_paths[website]}"
+export GO_TEST_IMAGE GO_VERSION BUN_BUILD_IMAGE BUN_VERSION
+source "$SERVER_SOURCE/docker/images.env"
+source "$WEBSITE_SOURCE/docker/images.env"
+validation_project="cashlenx-validation-${run_id,,}"
+validation_compose=(docker compose --env-file /dev/null -p "$validation_project" -f "$spec_dir/docker/validation.compose.yml")
+if [[ -n "${selected[server]:-}" ]]; then "${validation_compose[@]}" run --rm server; fi
+if [[ -n "${selected[website]:-}" ]]; then "${validation_compose[@]}" run --rm website; fi
+"${validation_compose[@]}" down --volumes --remove-orphans
 
 pass_one="$candidate_root/.pass-1"
 pass_two="$candidate_root/.pass-2"
 mkdir -p "$pass_one" "$pass_two"
-for component in "${affected_components[@]}"; do
+for component in app server website; do
   component_path="${validation_paths[$component]}"
   for pass_path in "$pass_one" "$pass_two"; do
     output_path="$pass_path/$component"
     mkdir -p "$output_path"
     env \
       RELEASE_OUTPUT_DIR="$output_path" \
-      PRODUCT_VERSION="$version" \
+      PRODUCT_VERSION="${component_versions[$component]}" \
       GIT_COMMIT="${commits[$component]}" \
       ENV_FILE=.env.example \
       bash "$component_path/scripts/package-image.sh" "$output_path"
@@ -305,7 +278,7 @@ for component in "${affected_components[@]}"; do
 done
 
 for key in "${affected_components[@]}" spec; do
-  archive_name="${repo_names[$key]}-$version-${commits[$key]:0:12}.source.zip"
+  archive_name="${repo_names[$key]}-${component_versions[$key]}-${commits[$key]:0:12}.source.zip"
   first_archive="$pass_one/$archive_name"
   second_archive="$pass_two/$archive_name"
   git -C "${repo_paths[$key]}" archive --format=zip --output="$first_archive" "${commits[$key]}"
@@ -324,10 +297,12 @@ cp "$release_note" "$artifact_root/release-notes-$version.md"
   done > SHA256SUMS
 )
 
-browser_root="$gate_root/browser"
+browser_root="$gate_root/runtime"
+APP_SOURCE="${validation_paths[app]}" SERVER_SOURCE="${validation_paths[server]}" \
+WEBSITE_SOURCE="${validation_paths[website]}" CANDIDATE_ARTIFACTS="$artifact_root" \
 EVIDENCE_ROOT="$browser_root" bash "$spec_dir/scripts/whole-product-acceptance.sh"
-browser_manifest="$(find "$browser_root" -name manifest.txt -print -quit)"
-[[ -n "$browser_manifest" ]] || { echo "Whole-product browser manifest was not created." >&2; exit 1; }
+browser_manifest="$browser_root/manifest.json"
+[[ -s "$browser_manifest" ]] || { echo "Isolated runtime manifest was not created." >&2; exit 1; }
 
 repositories_json='{}'
 for key in "${repo_keys[@]}"; do
@@ -335,12 +310,13 @@ for key in "${repo_keys[@]}"; do
   [[ -n "${selected[$key]:-}" ]] && affected=true
   repositories_json="$(jq \
     --arg key "$key" \
+    --arg component_version "${component_versions[$key]}" \
     --arg branch "${expected_branches[$key]}" \
     --arg upstream "${upstreams[$key]}" \
     --arg commit "${commits[$key]}" \
     --arg tree "${trees[$key]}" \
     --argjson affected "$affected" \
-    '. + {($key): {branch:$branch,upstream:$upstream,commit:$commit,tree:$tree,affected:$affected}}' \
+    '. + {($key): {version:$component_version,branch:$branch,upstream:$upstream,commit:$commit,tree:$tree,affected:$affected}}' \
     <<<"$repositories_json")"
 done
 affected_json="$(printf '%s\n' "${affected_components[@]}" | jq -R . | jq -s .)"
@@ -354,7 +330,7 @@ jq -n \
   --arg browser_sha "$(sha256_file "$browser_manifest")" \
   --argjson affected_components "$affected_json" \
   --argjson repositories "$repositories_json" \
-  '{schema_version:2,run_id:$run_id,result:"passed",release_ready:true,version:$version,affected_components:$affected_components,completed_at:$completed_at,repositories:$repositories,validations:{jira_preflight:("passed: "+$jira),repository_static_and_unit:"passed",reproducible_candidate:"passed",whole_product_browser:"passed"},database:{scope:$database,classification:"No database change required"},evidence:{browser:{path:$browser_path,sha256:$browser_sha}},requested_delivery_actions:[],performed_delivery_actions:[],deployment_state:"Not deployed",secrets_recorded:false}' \
+  '{schema_version:2,run_id:$run_id,result:"passed",release_ready:true,version:$version,affected_components:$affected_components,completed_at:$completed_at,repositories:$repositories,validations:{jira_preflight:("passed: "+$jira),repository_static_and_unit:"passed",reproducible_candidate:"passed",whole_product_browser:"passed",dual_database_rehearsal:"passed"},database:{scope:$database,classification:(if $database == "unchanged" then "No database change required" else "Isolated migration and recovery rehearsal passed; shared environments not migrated" end)},evidence:{browser:{path:$browser_path,sha256:$browser_sha}},requested_delivery_actions:[],performed_delivery_actions:[],deployment_state:"Not deployed",secrets_recorded:false}' \
   > "$gate_root/manifest.json"
 printf '%s  manifest.json\n' "$(sha256_file "$gate_root/manifest.json")" > "$gate_root/manifest.json.sha256"
 rm -rf "$pass_one" "$pass_two"

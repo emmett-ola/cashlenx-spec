@@ -1,0 +1,66 @@
+services:
+  mongodb:
+    image: ${MONGO_IMAGE:?}
+    profiles: [mongodb]
+    env_file: ${DATABASE_ENV:?}
+    volumes: [mongo-data:/data/db]
+  mysql:
+    image: ${MYSQL_IMAGE:?}
+    profiles: [mysql]
+    env_file: ${DATABASE_ENV:?}
+    volumes: [mysql-data:/var/lib/mysql]
+  restore-mongodb:
+    image: ${MONGO_IMAGE:?}
+    profiles: [restore]
+    network_mode: none
+    env_file: ${DATABASE_ENV:?}
+    volumes: [restore-mongo-data:/data/db]
+  restore-mysql:
+    image: ${MYSQL_IMAGE:?}
+    profiles: [restore]
+    network_mode: none
+    env_file: ${DATABASE_ENV:?}
+    volumes: [restore-mysql-data:/var/lib/mysql]
+  web:
+    image: ${APP_IMAGE:?}
+    ports:
+      - '127.0.0.1::8080'
+      - '127.0.0.1::10063'
+      - '127.0.0.1::8443'
+  api:
+    image: ${SERVER_IMAGE:?}
+    network_mode: service:web
+    env_file: ${SERVER_ENV:?}
+    command: ['-p', '10063']
+    stop_grace_period: 30s
+  website:
+    image: ${WEBSITE_IMAGE:?}
+    ports: ['127.0.0.1::8080']
+  ingress:
+    image: ${NGINX_IMAGE:?}
+    network_mode: service:web
+    volumes:
+      - ${TLS_DIR:?}:/etc/nginx/conf.d:ro
+  browser:
+    build:
+      context: ${APP_SOURCE:?}/test/browser
+    image: ${BROWSER_IMAGE:?}
+    network_mode: service:web
+    env_file: ${BROWSER_ENV:?}
+    volumes: ['${BROWSER_EVIDENCE:?}:/tests/artifacts']
+  integration:
+    image: ${GO_TEST_IMAGE:?}
+    working_dir: /workspace
+    volumes:
+      - ${SERVER_SOURCE:?}:/workspace
+      - go-modules:/go/pkg/mod
+      - go-build:/root/.cache/go-build
+    env_file: ${INTEGRATION_ENV:?}
+    command: ['go', 'test', '-mod=readonly', '-tags=integration', '-v', './migrations']
+volumes:
+  mongo-data:
+  mysql-data:
+  restore-mongo-data:
+  restore-mysql-data:
+  go-modules:
+  go-build:

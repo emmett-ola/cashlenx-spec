@@ -70,13 +70,14 @@ static runtime payload, public build metadata, OCI version/revision labels, and
 prohibited file absence.
 
 The App owns a containerized Playwright journey gate. The specification owns
-the complete local orchestration, including safe local environment
-configuration, exact current-source Server and App image builds, an isolated
-built App container, the selected database, disposable user/data setup,
+the complete local orchestration, including explicit candidate inputs, exact packaged Server and App images,
+isolated Compose resources, both databases, disposable user/data setup,
 cleanup, and checksummed evidence:
 
 ```bash
-bash scripts/whole-product-acceptance.sh
+APP_SOURCE=/candidate/app SERVER_SOURCE=/candidate/server \
+WEBSITE_SOURCE=/candidate/website CANDIDATE_ARTIFACTS=/candidate/artifacts \
+EVIDENCE_ROOT=/candidate/evidence bash scripts/whole-product-acceptance.sh
 ```
 
 The browser runs inside the App container network namespace and reaches the
@@ -88,10 +89,9 @@ editable Demo journey that is rejected if it calls authenticated APIs. Results
 are retained under ignored `.artifacts/browser/<run-id>/`; secrets and test
 accounts are not retained.
 
-The former PowerShell budget smoke harness is retained only as historical
-evidence. Before a Server or persistence release depends on those scenarios,
-port the authenticated profile/configuration and budget/ledger matrix for
-MongoDB and MySQL to Bash.
+`test/scripts/budget-acceptance.sh` covers authenticated extended profile and
+configuration persistence plus budget CRUD and cash-flow-derived spending for
+both disposable database profiles. The PowerShell harness is historical only.
 
 ### Build toolchain convergence
 
@@ -152,39 +152,48 @@ verifies effective image identity, observes a paused service and a stopped
 selected dependency without restarts, and confirms graceful and timeout-forced
 termination behavior.
 
-The MySQL migration, MongoDB migration, and dual-database data-protection
-PowerShell harnesses are retained as historical evidence only. A Server release
-with no database or persistence-boundary change may use `--database unchanged`;
-the Bash gate compares `origin/main` to the candidate and rejects the scope when
-a database-sensitive path changed. Any release that changes those boundaries
-must first provide Bash replacements with the same fresh, upgrade, repeat,
-checksum, dirty-state, encrypted-backup, corrupt-input, retention, restore,
-recovery, generated-secret, isolation, and teardown coverage.
+The Bash candidate gate runs tagged Go migration integration suites against
+isolated MongoDB and MySQL databases. Coverage includes fresh installation,
+existing data and the native migration handlers, repeat safety, checksum and
+history rejection, and dirty-state blocking/compensation. The integration
+MySQL database is separate from the API database.
 
-After the Jira preflight has been recorded, run the complete release gate with:
+After recording the Jira blocker scan, run:
 
 ```bash
 bash scripts/release-gate.sh \
-  --affected-components app \
-  --database unchanged \
-  --jira-preflight-reference "CLV-15 comment 10250"
+  --affected-components app,server,website \
+  --database all \
+  --jira-preflight-reference "CLX-104 comment 10323"
 ```
 
-The gate uses real Docker for local execution and aggregates affected-repository
-static and unit checks, reproducible candidate evidence, retained-contract
-compatibility, and the built-client browser journey into one checksummed
-manifest under ignored
-`.artifacts/release-gates/` storage. Repository checks run from detached clean
-worktrees, so owner-managed local environment files are absent from those
-static checks and packaging contexts. The current whole-product runtime entry
-point separately resolves the caller's workspace, configures `.env.local`, and
-uses that workspace's Server database. Detached static worktrees therefore do
-not establish runtime isolation. Invoke the complete runtime path only from an
-independently isolated disposable workspace with generated secrets and isolated
-container, project, network, and volume identities. Do not use an owner's
-persistent local database as a release rehearsal. The gate does not tag,
-publish, promote, or deploy a shared environment; database execution during a
-rehearsal still needs its own isolation and evidence.
+The gate uses detached clean worktrees and preserves each component's own
+version. It packages and replays all three retained compatibility images and
+uses the exact image IDs for runtime acceptance. Go/Bun checks and runtime
+services use Compose. `whole-product-acceptance.sh` requires explicit candidate
+source and artifact paths; it has no owner-workspace or environment fallback.
+Every run generates credentials in a private temporary directory and uses a
+unique Compose project, network and named volumes. No owner environment file
+or persistent database is read or changed.
+
+Both profiles exercise API smoke, budget/profile/configuration compatibility,
+the built-client browser journeys, TLS ingress, restart and repeat migration,
+dependency failure, named-volume persistence, encrypted repository-owned
+backups, corrupt checksum/wrong key rejection, three-tier retention and an
+unnetworked disposable restore. The backup adapter permits only inspection
+and Compose execution against the selected disposable database. Restore
+checks object counts and migration state against the source. Teardown removes
+only resources labeled with the run's project and verifies their absence.
+Only aggregate browser results are retained; raw browser/session and runtime
+output is removed with generated secrets. Runtime uses the test configuration
+to allow the release App's loopback HTTP public API configuration; TLS ingress
+is checked separately. This validates disposable compatibility, not shared
+environment migration or deployment.
+
+Results and hashes are retained under ignored `.artifacts/release-gates/`.
+The gate never tags, promotes or deploys. A passing manifest is evidence for
+the separate verified fast-forward operation; the historical failed attempt
+remains retained in the v1.1.3 reconciliation record.
 
 ### Website
 
