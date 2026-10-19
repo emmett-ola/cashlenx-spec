@@ -173,7 +173,7 @@ ENV
   export REHEARSAL_PROJECT="$project" REHEARSAL_PRIVATE="$private_dir"
   export REHEARSAL_SPEC="$spec_dir" REHEARSAL_PROFILE="$profile"
   stage="$profile: data protection"
-  bash "$spec_dir/scripts/rehearsal-data-protection.sh" >"$private_dir/protection.log" 2>&1
+  bash "$spec_dir/scripts/rehearsal-data-protection.sh" >"$private_dir/protection.log" 2>&1 || { grep '^rehearsal_protection_error_line=' "$private_dir/protection.log" >&2 || true; exit 1; }
   stage="$profile: dependency failure and persistence"
   rc stop "$profile" >/dev/null 2>&1
   if [[ "$profile" == mongodb ]]; then ! mongo 'quit(db.runCommand({ping:1}).ok ? 0 : 1)' >/dev/null 2>&1; else ! mysql_query 'SELECT 1' >/dev/null 2>&1; fi

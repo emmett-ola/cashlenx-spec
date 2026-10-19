@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 umask 077
+# Keep the format-one archive portable: macOS tar otherwise adds AppleDouble entries.
+export COPYFILE_DISABLE=1
+trap 'echo "rehearsal_protection_error_line=$LINENO" >&2' ERR
 : "${REHEARSAL_PROJECT:?}" "${REHEARSAL_PRIVATE:?}" "${REHEARSAL_SPEC:?}" "${REHEARSAL_PROFILE:?}" "${SERVER_SOURCE:?}"
 project="$REHEARSAL_PROJECT"
 private_dir="$REHEARSAL_PRIVATE"
@@ -62,7 +65,7 @@ archive,target,profile=sys.argv[1:]
 dump='database.archive.gz' if profile=='mongodb' else 'database.sql'
 with tarfile.open(archive) as tar:
     members=tar.getmembers()
-    assert {m.name for m in members}=={'metadata.env','manifest.sha256',dump}
+    assert {m.name for m in members}=={'metadata.env','manifest.sha256',dump}, [(m.name,m.type) for m in members]
     assert len(members)==3 and all(m.isfile() for m in members)
     for m in members:
         pathlib.Path(target,m.name).write_bytes(tar.extractfile(m).read())
@@ -82,6 +85,7 @@ openssl rand -hex 32 > "$private_dir/wrong-key"
 if openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -md sha256 -pass stdin -in "$backup" -out "$private_dir/wrong.tar.gz" < "$private_dir/wrong-key" 2>/dev/null; then exit 1; fi
 mv "$private_dir/key" "$private_dir/key.saved"
 if PATH="$private_dir/bin:$PATH" ENV_FILE="$operator_env" bash "$SERVER_SOURCE/scripts/data-protection/backup.sh" daily; then exit 1; fi
+jq -e '.result == "failed" and .exit_code != 0' "$backup_root/status/latest.json" >/dev/null
 mv "$private_dir/key.saved" "$private_dir/key"
 restore="restore-$profile"
 rc --profile restore up -d "$restore"
