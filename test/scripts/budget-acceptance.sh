@@ -12,6 +12,7 @@ def call(method,path,body=None,token=None,expected=None):
     try:
         with urllib.request.urlopen(req,timeout=30) as r:
             if expected: raise RuntimeError(f'{method} {path} unexpectedly succeeded')
+            if r.status == 204: return None
             return json.load(r).get('data')
     except urllib.error.HTTPError as e:
         if expected and e.code==expected: return None

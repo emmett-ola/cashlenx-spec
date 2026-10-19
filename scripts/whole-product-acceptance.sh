@@ -140,6 +140,7 @@ ENV
   grep -q '^--- PASS:' "$private_dir/integration.log"
   ! grep -q '^--- SKIP:' "$private_dir/integration.log"
   grep -E '^(=== RUN|--- PASS:|PASS|ok[[:space:]])' "$private_dir/integration.log" > "$EVIDENCE_ROOT/$profile-migrations.txt"
+  echo "$profile migration integration passed."
   stage="$profile: image startup and ingress"
   rc up -d api ingress >"$private_dir/api.log" 2>&1
   api_url="http://$(rc port web 10063)/api/v1"
@@ -152,6 +153,7 @@ ENV
   BASE_URL="$api_url" SMOKE_USERNAME="gate_${RANDOM}" SMOKE_PASSWORD="Smoke_$(openssl rand -hex 20)" SMOKE_NEW_PASSWORD="Smoke_$(openssl rand -hex 20)" bash "$SERVER_SOURCE/test/scripts/api-smoke.sh" >"$private_dir/api-smoke.log" 2>&1
   stage="$profile: budget/profile compatibility"
   BASE_URL="$api_url" bash "$spec_dir/test/scripts/budget-acceptance.sh" >"$private_dir/budget.log" 2>&1 || { cat "$private_dir/budget.log" >&2; exit 1; }
+  echo "$profile API and budget/profile/configuration acceptance passed."
   export BROWSER_EVIDENCE="$EVIDENCE_ROOT/$profile-browser"
   mkdir -p "$BROWSER_EVIDENCE"
   stage="$profile: browser journey"
@@ -161,6 +163,7 @@ ENV
   jq '{stats:{expected:.stats.expected,unexpected:.stats.unexpected,skipped:.stats.skipped},errors:(.errors|length)}' "$BROWSER_EVIDENCE/result.json" > "$EVIDENCE_ROOT/$profile-browser.json"
   jq -e '.stats.unexpected == 0 and .stats.expected > 0 and .stats.skipped == 0 and .errors == 0' "$EVIDENCE_ROOT/$profile-browser.json" >/dev/null
   rm -rf "$BROWSER_EVIDENCE"
+  echo "$profile browser acceptance passed."
   stage="$profile: restart and repeat"
   rc restart api >/dev/null 2>&1
   wait_for 90 health
