@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "record_type": "source_reconciliation_and_stopped_release_preflight",
+  "product_version": "1.1.3",
+  "recorded_at": "2026-10-19T03:40:32+00:00",
+  "result": "blocked",
+  "release_ready": false,
+  "authority": {
+    "jira": "CLV-21 comment 10321",
+    "scope": "Preserve Testing history in Develop, audit version records, then fast-forward Testing only after candidate acceptance."
+  },
+  "repositories": {
+    "app": {
+      "repository": "emmett-ola/cashlenx-app",
+      "version": "1.1.3+19",
+      "branch": "develop",
+      "commit": "e5f8d8ceeab3eeba2d3a4efc3ba56e3127b852d9",
+      "develop": "e5f8d8ceeab3eeba2d3a4efc3ba56e3127b852d9",
+      "testing": "5f24af0217f7e034102df7d71333bbbe2f727e98",
+      "worktree_clean": true,
+      "testing_is_ancestor_of_develop": true,
+      "original_implementation": "142cd57d077543afd5b6c1b8e98750d70fc35226",
+      "reconciliation_tree_unchanged": true
+    },
+    "server": {
+      "repository": "emmett-ola/cashlenx-server",
+      "version": "1.1.0",
+      "branch": "develop",
+      "commit": "584cd33c2bf4a1990b92cf2384ec03d0880f8c4a",
+      "develop": "584cd33c2bf4a1990b92cf2384ec03d0880f8c4a",
+      "testing": "584cd33c2bf4a1990b92cf2384ec03d0880f8c4a",
+      "worktree_clean": true,
+      "testing_is_ancestor_of_develop": true,
+      "recovered_testing_hotfix": "584cd33c2bf4a1990b92cf2384ec03d0880f8c4a",
+      "production_source_reference": "b799edc9288342de5b6d701d625aa01a6c41db05"
+    },
+    "website": {
+      "repository": "emmett-ola/cashlenx-website",
+      "version": "1.0.9",
+      "branch": "develop",
+      "commit": "0795f3c2f3660e5b7bf735508ccb7150886da463",
+      "develop": "0795f3c2f3660e5b7bf735508ccb7150886da463",
+      "testing": "e0673ec89e261efdd1c4447cf714ee902249dd70",
+      "worktree_clean": true,
+      "testing_is_ancestor_of_develop": true
+    }
+  },
+  "ci": [
+    {
+      "conclusion": "success",
+      "databaseId": 39194928115,
+      "headSha": "e5f8d8ceeab3eeba2d3a4efc3ba56e3127b852d9",
+      "jobs": [
+        {
+          "name": "Validate Flutter Web",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Validate deployable image",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Publish static web release",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Package untagged candidate",
+          "status": "completed",
+          "conclusion": "skipped"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/emmett-ola/cashlenx-app/actions/runs/39194928115",
+      "workflowName": "App CI"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 39194934349,
+      "headSha": "584cd33c2bf4a1990b92cf2384ec03d0880f8c4a",
+      "jobs": [
+        {
+          "name": "Build and Test",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Validate runtime image",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Package untagged candidate",
+          "status": "completed",
+          "conclusion": "skipped"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/emmett-ola/cashlenx-server/actions/runs/39194934349",
+      "workflowName": "Server CI"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 39194934368,
+      "headSha": "584cd33c2bf4a1990b92cf2384ec03d0880f8c4a",
+      "jobs": [
+        {
+          "name": "MongoDB API Smoke",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/emmett-ola/cashlenx-server/actions/runs/39194934368",
+      "workflowName": "API Smoke Test"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 38214852162,
+      "headSha": "0795f3c2f3660e5b7bf735508ccb7150886da463",
+      "jobs": [
+        {
+          "name": "Build",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Validate deployable image",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Package untagged candidate",
+          "status": "completed",
+          "conclusion": "skipped"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/emmett-ola/cashlenx-website/actions/runs/38214852162",
+      "workflowName": "Website CI"
+    }
+  ],
+  "database": {
+    "classification": "Existing MongoDB repair recovered from Testing; cumulative source changes persistence relative to origin/main.",
+    "migration": "018_omit_empty_verification_tokens.js",
+    "migration_sha256": "b8677b10fbe804596657b1bad7f2f8a0f705fdea346d0bf393a8c4272a6fe930",
+    "ordered_mongodb_versions": [
+      1,
+      10,
+      16,
+      17,
+      18
+    ],
+    "mysql_migration_assets_unchanged": true,
+    "environment_execution": "not_performed_or_inferred"
+  },
+  "candidate_gate": {
+    "entry_point": "scripts/release-gate.sh",
+    "arguments": [
+      "--affected-components",
+      "app,server,website",
+      "--database",
+      "mongodb",
+      "--jira-preflight-reference",
+      "CLV-21 comment 10321"
+    ],
+    "exit_code": 1,
+    "blocker": "The Bash dual-database rehearsal has not yet replaced the legacy PowerShell harness.",
+    "phase": "database_scope_preflight",
+    "artifacts_created": false,
+    "full_candidate_validation": "not_passed",
+    "whole_product_rehearsal": "not_run_against_owner_local_workspace",
+    "additional_requirements": [
+      "Validate the retained independent component-version matrix.",
+      "Use a disposable isolated workspace and generated secrets for the complete rehearsal."
+    ]
+  },
+  "performed_delivery_actions": [
+    "App Develop merge and push",
+    "Server Develop fast-forward and push"
+  ],
+  "testing_promoted": false,
+  "main_promoted": false,
+  "tags_created": false,
+  "shared_server_runtime_deployed": false,
+  "app_develop_static_publication": "success",
+  "shared_database_executed": false,
+  "owner_managed_testing_or_production_configuration_read": false,
+  "secrets_recorded": false,
+  "limits": [
+    "Native Android build and device acceptance not performed.",
+    "Historical deployment evidence was read from Jira and was not freshly probed.",
+    "Prepared CLX-102 and CLV-20 work was not started."
+  ]
+}

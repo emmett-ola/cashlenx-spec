@@ -18,6 +18,24 @@ state and the evidence manifest owns exact candidate identities.
   the short local checkout layout while remaining compatible with full
   remote-style checkout names.
 
+## [1.1.3] - 2026-10-19
+
+### Fixed
+
+- Made native Flutter runs use the selected repository-local environment
+  profile and the same five public settings as container builds, preserving
+  explicitly empty API ports and configured device addresses.
+- Limited Android cleartext traffic to debug builds while retaining the
+  application Internet permission.
+
+### Changed
+
+- Recorded the owner-selected Testing-to-develop history reconciliation,
+  including the existing Server MongoDB verification-token repair and migration
+  `018`, with candidate acceptance and database execution still separate.
+- Added a complete stable-version catalog pointing to the authoritative CLV
+  records and corrected the dated Server `1.1.0` deployment evidence.
+
 ## [1.1.1] - 2026-10-13
 
 ### Added

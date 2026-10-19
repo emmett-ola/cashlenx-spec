@@ -175,9 +175,16 @@ static and unit checks, reproducible candidate evidence, retained-contract
 compatibility, and the built-client browser journey into one checksummed
 manifest under ignored
 `.artifacts/release-gates/` storage. Repository checks run from detached clean
-worktrees, so owner-managed local environment files are absent rather than
-merely hidden by a command-line option. The gate does not tag, publish, promote,
-deploy, or mutate persistent product data.
+worktrees, so owner-managed local environment files are absent from those
+static checks and packaging contexts. The current whole-product runtime entry
+point separately resolves the caller's workspace, configures `.env.local`, and
+uses that workspace's Server database. Detached static worktrees therefore do
+not establish runtime isolation. Invoke the complete runtime path only from an
+independently isolated disposable workspace with generated secrets and isolated
+container, project, network, and volume identities. Do not use an owner's
+persistent local database as a release rehearsal. The gate does not tag,
+publish, promote, or deploy a shared environment; database execution during a
+rehearsal still needs its own isolation and evidence.
 
 ### Website
 

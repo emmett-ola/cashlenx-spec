@@ -4,9 +4,12 @@ This directory preserves completed repository-local delivery evidence and provid
 
 Current behavior belongs in `../system/`. Deferred candidates belong in `../backlog/`. A closed version is delivery evidence, not the current source of truth.
 
-## Current State
+## Version Index And Retained Evidence
 
-- The spec is pre-baseline and the online-design parity series is active.
+- The complete stable-version identity index is
+  [release/version-catalog.md](../release/version-catalog.md). Jira owns current
+  version state; the entries below retain delivery observations and historical
+  context rather than an independently maintained live status catalog.
 - `v0.2.0` through `v0.8.0` are closed. The online-design parity series and the
   deployment-script lifecycle consolidation are complete.
 - `v0.8.1-env-example-and-selection` is closed.
@@ -31,9 +34,9 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
 - Product implementation remains pre-release while the accepted stable contract is now canonical at `/api/v1`; `/api/v0` remains a frozen previous-client alias.
 - Stable-release and delivery-workflow decisions are recorded in `../decisions/0001-stable-release-api-auth-and-capability-policy.md`, `../decisions/0002-jira-controlled-delivery-with-project-local-advancement.md`, and `../decisions/0004-agent-led-jira-intake-and-version-archives.md`.
 - [CLV-7](https://macacloud.atlassian.net/browse/CLV-7) is the authoritative
-  `v1.0.0` version record. It remains visible on the Roadmap because the
-  accepted candidate is release-ready but has not been tagged, published,
-  promoted, deployed, migrated, or accepted in production.
+  `v1.0.0` version record. Its retained candidate evidence is historical;
+  subsequent implementation and delivery must be read from their exact CLV
+  records rather than inferred from this baseline.
 - [CLV-8](https://macacloud.atlassian.net/browse/CLV-8) is the authoritative
   `v1.0.1` version record for compatible follow-up maintenance.
 - [CLV-10](https://macacloud.atlassian.net/browse/CLV-10) is the authoritative
@@ -79,20 +82,26 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
   `v1.1.1` boundary for the App accessibility, URL coherence, semantic dark
   surfaces, Budget precision and localization, responsive transaction entry,
   reduced motion, and focused UI regression coverage. Server and Website are
-  unchanged. Testing promotion, release tags, publication, deployment,
-  database execution, and production acceptance remain separate states.
+  unchanged by that version. CLV-19 records successful App Testing promotion
+  and static publication for `a74effd` on 2026-10-13; subsequent source history
+  is recorded separately. CLX-102 is later prepared inventory in `Ready (App)`
+  and is not selected or completed by the current reconciliation. Release
+  tags, runtime deployment, database execution, and production acceptance
+  remain separate states.
 - CLX items use matching exact-version labels and
   Product Discovery delivery links. CLV owns version identity; labels support
   queries and do not form a second authority.
 - [CLV-21](https://macacloud.atlassian.net/browse/CLV-21) owns the selected
-  `v1.1.3` App environment-configuration patch in CLX-103. This request covers
-  `develop` synchronization only; Testing promotion and release-candidate
-  acceptance remain separate. CLV-20 retains the independently prepared
+  `v1.1.3` App environment-configuration patch in CLX-103. The owner later
+  selected preservation of existing Testing history in `develop` before a
+  verified forward promotion. The [release note](../release/notes/1.1.3.md)
+  records exact source identities, the retained Server migration, and the
+  incomplete candidate gate. CLV-20 retains the independently prepared
   `v1.1.2` API performance scope.
 
 Do not create a version directory for active planning, routine Jira work, or an audit. Create a repository-local snapshot only when durable closeout evidence explicitly needs to live with the specification.
 
-## Active Online-Design Parity Series
+## Historical Online-Design Parity Series
 
 The series uses the live Figma Make file as the visual reference and treats the
 local React/Vite export as a validated cache only when its relevant files match

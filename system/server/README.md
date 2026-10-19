@@ -94,6 +94,11 @@ cashlenx-server/
 - MySQL migration tracking and startup migration application.
 - Ordered migration `017` adds/backfills category presentation defaults in
   MySQL and MongoDB without replacing existing non-empty values.
+- Pending MongoDB verification codes omit an unset `verification_token`, so
+  the sparse unique index admits multiple pending codes. Migration `018`
+  removes legacy empty-string token fields; its native Go handler and ordered
+  checksum-tracked asset were recovered from the existing Testing source into
+  `develop`. This source fact does not establish environment migration state.
 - MongoDB startup migration tracking through immutable ordered JavaScript
   identities, SHA-256 checksums, native Go handlers, and durable
   `schema_migrations` records. Unknown, reordered, renamed, modified, or dirty

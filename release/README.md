@@ -4,6 +4,10 @@ This directory owns the coordinated product-version input and release-note
 source used by the specification-owned release-candidate builder. Runtime
 repositories remain independently buildable and do not read this directory.
 
+The [product version catalog](version-catalog.md) indexes every exact stable
+version registered in Jira and links retained local release notes. It separates
+version identity from implementation, candidate acceptance, and deployment.
+
 ## Candidate flow
 
 1. Update `VERSION`, the matching release note, and the version source,
