@@ -10,7 +10,9 @@ def call(method,path,body=None,token=None,expected=None):
     if token: headers['Authorization']='Bearer '+token
     req=urllib.request.Request(base+path, None if body is None else json.dumps(body).encode(),headers,method=method)
     try:
-        with urllib.request.urlopen(req,timeout=30) as r: return json.load(r).get('data')
+        with urllib.request.urlopen(req,timeout=30) as r:
+            if expected: raise RuntimeError(f'{method} {path} unexpectedly succeeded')
+            return json.load(r).get('data')
     except urllib.error.HTTPError as e:
         if expected and e.code==expected: return None
         raise RuntimeError(f'{method} {path} failed with status {e.code}') from None
@@ -28,7 +30,7 @@ category=call('POST','/category',{'name':'Budget Smoke','type':'expense','remark
 cid=category.get('id',category.get('Id'))
 budget={'category_id':cid,'period':'2026-08','limit_amount':500}
 bid=call('POST','/budget',budget,token)['id']
-call('POST','/cash/expense',{'belongs_date':'20260821','category_name':'Budget Smoke','amount':125.5,'description':'Budget smoke expense'},token)
+call('POST','/cash/expense',{'belongs_date':'2026-08-21','category_name':'Budget Smoke','amount':125.5,'description':'Budget smoke expense'},token)
 def items():
     data=call('GET','/budget?period=2026-08',token=token)
     if isinstance(data,dict): data=data.get('data',data)

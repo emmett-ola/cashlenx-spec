@@ -85,8 +85,8 @@ if PATH="$private_dir/bin:$PATH" ENV_FILE="$operator_env" bash "$SERVER_SOURCE/s
 mv "$private_dir/key.saved" "$private_dir/key"
 restore="restore-$profile"
 rc --profile restore up -d "$restore"
-mongo() { rc exec -T "$1" sh -ec 'exec mongosh --quiet --username root --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --eval "$1" cashlenx' sh "$2"; }
-mysql() { rc exec -T "$1" sh -ec 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysql -uroot --batch --skip-column-names cashlenx -e "$1"' sh "$2"; }
+mongo() { rc exec -T "$1" sh -ec 'test "$(cat /proc/1/comm)" = mongod; exec mongosh --quiet --username root --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --eval "$1" cashlenx' sh "$2"; }
+mysql() { rc exec -T "$1" sh -ec 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysql --host=127.0.0.1 -uroot --batch --skip-column-names cashlenx -e "$1"' sh "$2"; }
 ready=false
 for ((i=0;i<120;i++)); do
   if [[ "$profile" == mongodb ]]; then

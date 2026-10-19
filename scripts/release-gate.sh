@@ -300,7 +300,7 @@ cp "$release_note" "$artifact_root/release-notes-$version.md"
 browser_root="$gate_root/runtime"
 APP_SOURCE="${validation_paths[app]}" SERVER_SOURCE="${validation_paths[server]}" \
 WEBSITE_SOURCE="${validation_paths[website]}" CANDIDATE_ARTIFACTS="$artifact_root" \
-EVIDENCE_ROOT="$browser_root" bash "$spec_dir/scripts/whole-product-acceptance.sh"
+EVIDENCE_ROOT="$browser_root" bash "${validation_paths[spec]}/scripts/whole-product-acceptance.sh"
 browser_manifest="$browser_root/manifest.json"
 [[ -s "$browser_manifest" ]] || { echo "Isolated runtime manifest was not created." >&2; exit 1; }
 

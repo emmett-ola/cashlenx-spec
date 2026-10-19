@@ -31,6 +31,7 @@ for component in app server website; do
   [[ "$artifact" == "$(basename "$artifact")" ]] || exit 1
   [[ "$(sha256sum "$CANDIDATE_ARTIFACTS/$artifact" | awk '{print $1}')" == "$(jq -r .artifact_sha256 "$metadata")" ]] || exit 1
   image_id="$(jq -r .image_id "$metadata")"
+  [[ "$image_id" =~ ^sha256:[0-9a-f]{64}$ ]] || exit 1
   [[ "$(docker image inspect --format '{{.Id}}' "$image_id")" == "$image_id" ]] || exit 1
   printf -v "${component^^}_IMAGE" '%s' "$image_id"
   export "${component^^}_IMAGE"
@@ -45,7 +46,7 @@ touch "$DATABASE_ENV" "$SERVER_ENV" "$BROWSER_ENV" "$INTEGRATION_ENV" "$private_
 rc() { docker compose --env-file "$private_dir/compose.env" -p "$project" -f "$spec_dir/docker/rehearsal.compose.yml" "$@"; }
 cleaned=false
 cleanup() {
-  rc down --volumes --remove-orphans >/dev/null 2>&1 || return 1
+  rc --profile '*' down --volumes --remove-orphans >/dev/null 2>&1 || return 1
   [[ -z "$(docker ps -aq --filter "label=com.docker.compose.project=$project")" ]] || return 1
   [[ -z "$(docker volume ls -q --filter "label=com.docker.compose.project=$project")" ]] || return 1
   [[ -z "$(docker network ls -q --filter "label=com.docker.compose.project=$project")" ]] || return 1
@@ -55,6 +56,7 @@ finish() {
   result=$?
   if ((result != 0)); then echo "Failed rehearsal stage: ${stage:-preflight}" >&2; fi
   cleanup || result=1
+  [[ -z "${BROWSER_EVIDENCE:-}" ]] || rm -rf "$BROWSER_EVIDENCE"
   rm -rf "$private_dir"
   if ((result != 0)); then echo 'Isolated rehearsal failed; raw runtime output and disposable secrets were removed.' >&2; fi
   exit "$result"
@@ -70,8 +72,8 @@ wait_for() {
   done
   echo 'Disposable service readiness timed out.' >&2; return 1
 }
-mongo() { rc exec -T "$db_service" sh -ec 'exec mongosh --quiet --username root --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --eval "$1" cashlenx' sh "$1"; }
-mysql_query() { rc exec -T "$db_service" sh -ec 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysql -uroot --batch --skip-column-names cashlenx -e "$1"' sh "$1"; }
+mongo() { rc exec -T "$db_service" sh -ec 'test "$(cat /proc/1/comm)" = mongod; exec mongosh --quiet --username root --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --eval "$1" cashlenx' sh "$1"; }
+mysql_query() { rc exec -T "$db_service" sh -ec 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysql --host=127.0.0.1 -uroot --batch --skip-column-names cashlenx -e "$1"' sh "$1"; }
 ledger() {
   if [[ "$profile" == mongodb ]]; then mongo 'printjson(db.schema_migrations.find({}, {_id:1,name:1,checksum:1,dirty:1}).sort({_id:1}).toArray())';
   else mysql_query 'SELECT version, dirty FROM schema_migrations ORDER BY version'; fi
@@ -149,7 +151,7 @@ ENV
   stage="$profile: API smoke"
   BASE_URL="$api_url" SMOKE_USERNAME="gate_${RANDOM}" SMOKE_PASSWORD="Smoke_$(openssl rand -hex 20)" SMOKE_NEW_PASSWORD="Smoke_$(openssl rand -hex 20)" bash "$SERVER_SOURCE/test/scripts/api-smoke.sh" >"$private_dir/api-smoke.log" 2>&1
   stage="$profile: budget/profile compatibility"
-  BASE_URL="$api_url" bash "$spec_dir/test/scripts/budget-acceptance.sh" >"$private_dir/budget.log" 2>&1
+  BASE_URL="$api_url" bash "$spec_dir/test/scripts/budget-acceptance.sh" >"$private_dir/budget.log" 2>&1 || { cat "$private_dir/budget.log" >&2; exit 1; }
   export BROWSER_EVIDENCE="$EVIDENCE_ROOT/$profile-browser"
   mkdir -p "$BROWSER_EVIDENCE"
   stage="$profile: browser journey"

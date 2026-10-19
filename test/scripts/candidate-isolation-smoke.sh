@@ -23,4 +23,10 @@ for key in app server website; do
 done
 if APP_SOURCE="$fixture/app" SERVER_SOURCE="$fixture/server" WEBSITE_SOURCE="$fixture/website" CANDIDATE_ARTIFACTS="$fixture/artifacts" EVIDENCE_ROOT="$fixture/evidence" PATH="$fixture/bin:$PATH" bash "$spec_dir/scripts/whole-product-acceptance.sh" > "$fixture/tamper.log" 2>&1; then exit 1; fi
 [[ ! -e "$DOCKER_CALLS" ]]
-echo 'Explicit candidate inputs and source-tamper rejection passed before container mutation.'
+# A matching source identity with a corrupted archive must also fail before Docker.
+revision="$(git -C "$fixture/app" rev-parse HEAD)"
+printf 'corrupted archive' > "$fixture/artifacts/tampered.image.tar"
+printf '{"revision":"%s","artifact":"tampered.image.tar","artifact_sha256":"incorrect"}\n' "$revision" > "$fixture/artifacts/cashlenx-app-test.image.tar.json"
+if APP_SOURCE="$fixture/app" SERVER_SOURCE="$fixture/server" WEBSITE_SOURCE="$fixture/website" CANDIDATE_ARTIFACTS="$fixture/artifacts" EVIDENCE_ROOT="$fixture/evidence" PATH="$fixture/bin:$PATH" bash "$spec_dir/scripts/whole-product-acceptance.sh" > "$fixture/archive-tamper.log" 2>&1; then exit 1; fi
+[[ ! -e "$DOCKER_CALLS" ]]
+echo 'Explicit candidate inputs, source identity and archive-tamper rejection passed before container mutation.'
