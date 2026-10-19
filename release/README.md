@@ -16,10 +16,9 @@ version identity from implementation, candidate acceptance, and deployment.
    component at its retained version.
 2. Run `scripts/release-gate.sh` with the exact affected-component set. The
    script fails before packaging when a repository is dirty or unsynchronized,
-   an affected version or changelog conflicts, the OpenAPI copies differ, or an
-   affected repository already has the target tag.
-3. The Bash gate packages exact clean affected commits twice, compares image
-   identities and artifact hashes, and retains one checksummed set plus a
+   a component version or changelog conflicts, or the OpenAPI copies differ.
+3. The Bash gate packages all three exact clean compatibility images twice,
+   compares image identities and artifact hashes, and retains one checksummed set plus a
    secret-free manifest under `.artifacts/release-gates/`.
    App candidates include the selected public configuration profile and a
    normalized fingerprint in both their immutable tag and manifest identity.
@@ -42,20 +41,24 @@ retained repositories, and whole-product browser acceptance. A release with no
 database or persistence-boundary change uses `--database unchanged`. When the
 Server is selected, the gate compares the delivered `origin/main` commit to the
 candidate and rejects that scope if a database-sensitive path changed. A
-persistence-changing release must use a Bash-owned database rehearsal before it
-is eligible. The gate writes a checksummed aggregate manifest under
+persistence-changing release selects `--database mongodb`, `mysql`, or `all`.
+The Bash runtime acceptance exercises both supported database profiles with
+generated secrets, isolated Compose resources and unnetworked restores. The
+gate writes a checksummed aggregate manifest under
 `.artifacts/release-gates/` and performs no delivery action.
 
 Pass every implementation repository changed by the product version through
-`--affected-components`. The gate validates, packages, and checks target-tag
-availability only for those components while retaining every repository commit
-and unaffected runtime version in the release note and evidence.
+`--affected-components`. The gate runs static and unit checks for those
+components and packages all three compatibility images at their independent component versions. It records
+every repository commit and retained runtime version in the evidence. Existing
+release tags do not prevent untagged source validation or Testing promotion;
+separately authorized tag creation must still reject an existing identity.
 
 ## Authorized release flow
 
-After the complete release gate passes for the same commits and artifact
-digests, create an annotated `vX.Y.Z` tag in each affected implementation
-repository. A release tag is immutable: never move, replace, or delete it. Push
+Only after separate tag/publication authorization and a complete release gate
+for the same commits and artifact digests, create an annotated `vX.Y.Z` tag in
+each affected implementation repository. A release tag is immutable: never move, replace, or delete it. Push
 the already validated commits and tags, then publish the prebuilt artifacts by
 their recorded SHA-256 digests. Do not rebuild between acceptance and
 publication. Publication failure leaves source and tags unchanged; retry the

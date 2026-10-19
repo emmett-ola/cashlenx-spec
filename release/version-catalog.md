@@ -39,9 +39,10 @@ evidence, which must be assessed in the linked record.
   The 2026-10-19 reconciliation additionally preserves a historical Server
   Testing hotfix with MongoDB migration `018`. It must not be represented as
   a database-unchanged cumulative candidate.
-- The `1.1.3` complete release-candidate gate has not passed. The Bash gate
-  currently rejects database-changing rehearsal scopes. No new Testing
-  promotion or database execution is established by this audit.
+- The later `1.1.3` exact-candidate gate passed static checks, image replay and
+  full isolated MongoDB/MySQL acceptance. The release note links its checksummed
+  manifest and separate Testing delivery evidence. Shared database execution
+  and production acceptance are not inferred from that result.
 - The `1.1.0` note now includes the later Server deployment evidence recorded
   in CLV-18 on 2026-10-13, while preserving the earlier incomplete-delivery
   observation as dated history.

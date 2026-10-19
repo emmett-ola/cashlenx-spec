@@ -1,0 +1,276 @@
+{
+  "schema_version": 3,
+  "record_type": "composite_exact_candidate_acceptance",
+  "version": "1.1.3",
+  "result": "passed",
+  "release_ready": true,
+  "completed_at": "2026-10-19T04:41:19.888971+00:00",
+  "jira_preflight": "CLX-104 comment 10325; CLV-21 and linked CLX-103/104 native blocker scan clear",
+  "repositories": {
+    "app": {
+      "version": "1.1.3+19",
+      "branch": "develop",
+      "commit": "e5f8d8ceeab3eeba2d3a4efc3ba56e3127b852d9",
+      "tree": "e340f06b6bc918b4bbbfd7688f78f5f12e669520",
+      "upstream": "origin/develop",
+      "worktree_clean": true,
+      "testing_is_ancestor": true,
+      "testing_before": "5f24af0217f7e034102df7d71333bbbe2f727e98"
+    },
+    "server": {
+      "version": "1.1.0",
+      "branch": "develop",
+      "commit": "584cd33c2bf4a1990b92cf2384ec03d0880f8c4a",
+      "tree": "69fc8af9cfca9b2f986283987f2caba8c0fc2e4d",
+      "upstream": "origin/develop",
+      "worktree_clean": true,
+      "testing_is_ancestor": true,
+      "testing_before": "584cd33c2bf4a1990b92cf2384ec03d0880f8c4a"
+    },
+    "website": {
+      "version": "1.0.9",
+      "branch": "develop",
+      "commit": "0795f3c2f3660e5b7bf735508ccb7150886da463",
+      "tree": "ac9801131a872b336e17b8ba9a53129fbbd42434",
+      "upstream": "origin/develop",
+      "worktree_clean": true,
+      "testing_is_ancestor": true,
+      "testing_before": "e0673ec89e261efdd1c4447cf714ee902249dd70"
+    }
+  },
+  "validation_runs": {
+    "static_and_replay_run": "20261019T042247Z-0b32eb84",
+    "static_spec_commit": "3a7d49875d3e3fd9448b5d2b24a0140048d809a8",
+    "runtime_spec_commit": "7a45d66cbf95d7b7f8a1199de113e37a721305b2",
+    "reason": "Only Spec-owned rehearsal fixes changed since successful static/unit/build and two-pass packaging checks: HTTP 204 handling and macOS archive portability. Implementation source and candidate image/archive hashes are identical. Runtime acceptance is rerun in full.",
+    "started_at": "2026-10-19T04:35:03.224155+00:00",
+    "repositories": {
+      "app": "e5f8d8ceeab3eeba2d3a4efc3ba56e3127b852d9",
+      "server": "584cd33c2bf4a1990b92cf2384ec03d0880f8c4a",
+      "website": "0795f3c2f3660e5b7bf735508ccb7150886da463",
+      "spec": "7a45d66cbf95d7b7f8a1199de113e37a721305b2"
+    }
+  },
+  "validations": {
+    "app_analysis": "passed",
+    "app_flutter_tests": 164,
+    "server_module_build_and_race_tests": "passed",
+    "website_locked_install_audit_and_build": "passed (69 packages; no vulnerabilities)",
+    "two_pass_image_and_archive_replay": "passed",
+    "source_archive_replay": "passed",
+    "candidate_input_and_tamper_rejection": "passed",
+    "environment_profile_and_lifecycle_contracts": "passed in Compose GNU userspace",
+    "runtime": {
+      "result": "passed",
+      "profiles": [
+        {
+          "database": "mongodb",
+          "result": "passed",
+          "migration_integration": "passed",
+          "api_smoke": "passed",
+          "budget_profile_configuration": "passed",
+          "browser": "passed",
+          "tls_ingress": "passed",
+          "restart_repeat_persistence": "passed",
+          "encrypted_backup_restore_corruption_retention": "passed",
+          "dependency_failure": "passed",
+          "graceful_shutdown": "passed",
+          "isolated_teardown": "passed"
+        },
+        {
+          "database": "mysql",
+          "result": "passed",
+          "migration_integration": "passed",
+          "api_smoke": "passed",
+          "budget_profile_configuration": "passed",
+          "browser": "passed",
+          "tls_ingress": "passed",
+          "restart_repeat_persistence": "passed",
+          "encrypted_backup_restore_corruption_retention": "passed",
+          "dependency_failure": "passed",
+          "graceful_shutdown": "passed",
+          "isolated_teardown": "passed"
+        }
+      ],
+      "secrets_recorded": false,
+      "deployment_state": "Disposable rehearsal only"
+    }
+  },
+  "candidate_images": [
+    {
+      "schema_version": 2,
+      "component": "app",
+      "artifact": "cashlenx-app-1.1.3-e5f8d8ceeab3-dev-5d2c1b8afabb.image.tar",
+      "artifact_sha256": "e5278e041a03cb3d7928dae29e35f201158a179c7482146c91522fce05baeb1b",
+      "image_id": "sha256:97a80261ba24a65407bf981c002eb675016a157065cfd081e9f81adc81e8a612",
+      "image_ref": "cashlenx-app-candidate:1.1.3-e5f8d8ceeab3-dev-5d2c1b8afabb",
+      "input_set_sha256": "80b68cef584cd0f519aa82aa64a66f0608bb395262a9270065e2400257c845eb",
+      "revision": "e5f8d8ceeab3eeba2d3a4efc3ba56e3127b852d9",
+      "version": "1.1.3",
+      "build_date": "2026-10-19",
+      "configuration_profile": "dev",
+      "public_configuration_sha256": "5d2c1b8afabbd441323393faad8062ed6f05c29d3615925b19d9e08eaeb15e46"
+    },
+    {
+      "schema_version": 2,
+      "component": "server",
+      "artifact": "cashlenx-server-1.1.0-584cd33c2bf4.image.tar",
+      "artifact_sha256": "3cbb0296a2384947c2859d6b2a3e1e342e8a79ea2b04f6a81b866cf1854f1ede",
+      "image_id": "sha256:fd9553eff2a65708a37f248f6114613a948fe9cfd09b9376a02ff474cc8c04ea",
+      "image_ref": "cashlenx-server-candidate:1.1.0-584cd33c2bf4",
+      "input_set_sha256": "4ffc92b4959c7dbe551bb4c8b2a185f6d828a67137aa18bd47d10d2d68da0239",
+      "revision": "584cd33c2bf4a1990b92cf2384ec03d0880f8c4a",
+      "version": "1.1.0"
+    },
+    {
+      "schema_version": 2,
+      "component": "website",
+      "artifact": "cashlenx-website-1.0.9-0795f3c2f366.image.tar",
+      "artifact_sha256": "5795fae50c0ab239afbe9cd3999d04a95d012021445563bd3ebdbe68896340ac",
+      "image_id": "sha256:4c3a03dab8253f60290a8129eef501645e8f8d9cf871de695d8c4e2dad39afa8",
+      "image_ref": "cashlenx-website-candidate:1.0.9-0795f3c2f366",
+      "input_set_sha256": "25560eb3717c8f4f6c4bafcb88003d443585ce3e26865c384b6b97c450c7af05",
+      "revision": "0795f3c2f3660e5b7bf735508ccb7150886da463",
+      "version": "1.0.9"
+    }
+  ],
+  "database": {
+    "classification": "Cumulative MongoDB forward repair 018 relative to Server origin/main; MySQL migrations retained",
+    "server_origin_main": "b799edc9288342de5b6d701d625aa01a6c41db05",
+    "ordered_migration_assets": [
+      {
+        "path": "migrations/001_add_indexes.js",
+        "sha256": "e9923bfbbc8bd72ba9c921b8056f637cf182d6e900d53a21dc9ade0d2b1d31d3"
+      },
+      {
+        "path": "migrations/002_create_database.sql",
+        "sha256": "54001aa811930fcd18881db2de962290691634883c9e4b64231db8fc419ed481"
+      },
+      {
+        "path": "migrations/003_create_table_users.sql",
+        "sha256": "2f399bbda0a432468e77c0530bd8aa5e94db2ae13448e1c4491300c8527be280"
+      },
+      {
+        "path": "migrations/004_create_table_categories.sql",
+        "sha256": "6ca543d48c783edfd34160d4cb48b9c5e0b154f64794930c9b95fe5b57f82371"
+      },
+      {
+        "path": "migrations/005_create_table_cash_flows.sql",
+        "sha256": "afa3bafba71e0fe7351db594186804be38437caf2b1f261ba796ab55e553d057"
+      },
+      {
+        "path": "migrations/006_create_table_operation_confirm_codes.sql",
+        "sha256": "c4c2157619f22025a00c12d296b6c29a38333330a68b83cdd831e5316f2f2833"
+      },
+      {
+        "path": "migrations/007_create_table_refresh_tokens.sql",
+        "sha256": "f3244c91bbf0ab5f334f277f67fcb7db4935f299bf857dbc5a156f65552cd1ff"
+      },
+      {
+        "path": "migrations/008_create_refresh_tokens.sql",
+        "sha256": "1fd059893ae7dff5bc5d587b29a3a2684cf5135ed1889b0d65b74b9dc6c40820"
+      },
+      {
+        "path": "migrations/009_create_operation_confirm_codes.sql",
+        "sha256": "19fe53f94ce3b5dc0e1598a56fa309084fc619241f179848ca7c7741bfa09b3d"
+      },
+      {
+        "path": "migrations/010_update_operation_confirm_codes_indexes.js",
+        "sha256": "878bede08c9c86cc8ed2a3e6ae77ca9fd5d4bcbf3d3a2b14ee2f705ed5ba1c3d"
+      },
+      {
+        "path": "migrations/010_update_operation_confirm_codes_verification_token.sql",
+        "sha256": "02c5f693832f2e9f0a8a9c8c8a6bf3b7267d115a859495217290bad0ee8b7fb4"
+      },
+      {
+        "path": "migrations/011_create_user_configurations.sql",
+        "sha256": "167216ff31511ec431be4e7015ddeb0a18daa1b19ca9ce1b7697f67069710665"
+      },
+      {
+        "path": "migrations/012_reconcile_category_uniqueness.down.sql",
+        "sha256": "2171af217839b88796dc63abc57ef31c855b70d0f1ef00d0033f0ce342e961f4"
+      },
+      {
+        "path": "migrations/012_reconcile_category_uniqueness.sql",
+        "sha256": "b9c4c1e6913538bb5618fc3fde9a3b2d62a57ee4d543256f72ae94426d63a8a3"
+      },
+      {
+        "path": "migrations/013_create_table_budgets.down.sql",
+        "sha256": "355a6733238cf299b6a29904a3d736b3486e896ad0e1ecfc8275b31385a80b39"
+      },
+      {
+        "path": "migrations/013_create_table_budgets.sql",
+        "sha256": "ce659b64c512443e5af914c95f5212ccbfe684f2d6eac110f64e39075bedd536"
+      },
+      {
+        "path": "migrations/014_preserve_cash_flow_cents.down.sql",
+        "sha256": "83f1cd3957d485907d9032ab68f1faac1272909203a8c5535efbb7f0b408d44f"
+      },
+      {
+        "path": "migrations/014_preserve_cash_flow_cents.sql",
+        "sha256": "d72984932c3a312dd865f36f408b8cabc2e2cb4ac4b6f157d4b541b1b2dce0ce"
+      },
+      {
+        "path": "migrations/015_add_extended_profile_fields.down.sql",
+        "sha256": "da0bcf83b363ff789d08613eadd0d2ffe05f2f09bcb22f2fe2c7d4f2b87d38a1"
+      },
+      {
+        "path": "migrations/015_add_extended_profile_fields.sql",
+        "sha256": "ce5b3815ef9f52f1f340d812cb0737d71a2b94bfc10f6710487a303029615cba"
+      },
+      {
+        "path": "migrations/016_create_budget_indexes.js",
+        "sha256": "3bc7d4d50db8098098295c0cad04b4b6efb82c6903760025b5cd618345051fb6"
+      },
+      {
+        "path": "migrations/017_add_category_presentation.down.sql",
+        "sha256": "23119274d5f35f44d29239513b55f4ef75c44e15b17131077354b0200b51cbaa"
+      },
+      {
+        "path": "migrations/017_add_category_presentation.js",
+        "sha256": "1db674fd44f4ed3275531b45254c4800e843a8413a242a97bfa6ef863794ecd4"
+      },
+      {
+        "path": "migrations/017_add_category_presentation.sql",
+        "sha256": "4ded66fee3a3e79fcc447ca6bb8f2795c41ca38b2c7e7f40b957a2a569d82ddb"
+      },
+      {
+        "path": "migrations/018_omit_empty_verification_tokens.js",
+        "sha256": "b8677b10fbe804596657b1bad7f2f8a0f705fdea346d0bf393a8c4272a6fe930"
+      }
+    ],
+    "execution": "Passed against generated disposable MongoDB and MySQL databases only",
+    "shared_testing_or_production_execution": "Not established; no shared database was used"
+  },
+  "evidence_sha256": {
+    "runtime/manifest.json": "9d447ff78ba7dd96701e9fbf0667f8b0e7aa3bd8571b55ff089a2cf57f293da9",
+    "runtime/mongodb-browser.json": "f88dcb7fe80d841c3ae86a656107c5002e954d137a488d97129d4c0da69675ad",
+    "runtime/mongodb-ledger-after.txt": "1c1a37ec83f3b63350f044af2c0408f91ac3b07a46db2a65010fea8d51fd6c89",
+    "runtime/mongodb-ledger-before.txt": "1c1a37ec83f3b63350f044af2c0408f91ac3b07a46db2a65010fea8d51fd6c89",
+    "runtime/mongodb-migrations.txt": "bd8cf52ba6206a4e4ca0a6cbe3d7329757e3406cf97564a905b30abfb3be25ba",
+    "runtime/mongodb.json": "755a6bf63fa4fbbd12a1315aceb2ea773e3480e72655638edb412a2ff19026af",
+    "runtime/mysql-browser.json": "f88dcb7fe80d841c3ae86a656107c5002e954d137a488d97129d4c0da69675ad",
+    "runtime/mysql-ledger-after.txt": "e24a9c5992eb1ed456a1415f12a13f2f76176ce12e27064686e5b28b3ff52fd6",
+    "runtime/mysql-ledger-before.txt": "e24a9c5992eb1ed456a1415f12a13f2f76176ce12e27064686e5b28b3ff52fd6",
+    "runtime/mysql-migrations.txt": "729749a11e51951c4967fba07060db361e05f6e9c498392d70cf2482663c1a55",
+    "runtime/mysql.json": "25ba4bb324836acabc6543970e67c46d108feb9e7d67b998ead1103f2e1adff4",
+    "static-validation.txt": "c97fbaf8bd260b5f8b0fecdb2254834b45388141c1f0b3fda5c3248c6b7a053e"
+  },
+  "failed_attempts_preserved": [
+    "1.1.3-source-reconciliation.json: legacy Bash prerequisite rejection",
+    "20261019T041246Z-05308b69: legacy compact budget date; all static/replay checks had passed",
+    "20261019T042247Z-0b32eb84: budget HTTP 204 parsing; all static/replay checks had passed",
+    "20261019-final-runtime: strict archive allowlist rejected macOS AppleDouble metadata; MongoDB browser/API/migrations had passed"
+  ],
+  "known_limits": [
+    "Runtime release App uses the dev loopback public configuration and test Server configuration; self-signed TLS ingress is checked separately.",
+    "Native Android builds and physical-device acceptance were not performed.",
+    "Shared Server deployment, shared database migration and production acceptance were not performed.",
+    "Confluence Developer Guide draft read failed with HTTP 503 twice; no page write was attempted."
+  ],
+  "requested_delivery_actions": [
+    "Verified develop to testing fast-forward and configured Testing CI/static publication"
+  ],
+  "performed_delivery_actions": [],
+  "secrets_recorded": false
+}

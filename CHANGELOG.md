@@ -35,6 +35,9 @@ state and the evidence manifest owns exact candidate identities.
   `018`, with candidate acceptance and database execution still separate.
 - Added a complete stable-version catalog pointing to the authoritative CLV
   records and corrected the dated Server `1.1.0` deployment evidence.
+- Replaced owner-local runtime acceptance with exact-image isolated Bash/Compose
+  MongoDB/MySQL migration, browser, backup and recovery validation, retaining
+  each component version and checksummed candidate evidence.
 
 ## [1.1.1] - 2026-10-13
 
