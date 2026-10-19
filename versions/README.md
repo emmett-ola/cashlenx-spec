@@ -95,8 +95,10 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
   `v1.1.3` App environment-configuration patch in CLX-103. The owner later
   selected preservation of existing Testing history in `develop` before a
   verified forward promotion. The [release note](../release/notes/1.1.3.md)
-  records exact source identities, the retained Server migration, and the
-  incomplete candidate gate. CLV-20 retains the independently prepared
+  records exact source identities, the retained Server migration, the initial
+  failed prerequisite, the later accepted isolated MongoDB/MySQL gate and the
+  verified Testing fast-forward/CI/static-publication evidence. CLV-20 retains
+  the independently prepared
   `v1.1.2` API performance scope.
 
 Do not create a version directory for active planning, routine Jira work, or an audit. Create a repository-local snapshot only when durable closeout evidence explicitly needs to live with the specification.

@@ -1,0 +1,195 @@
+{
+  "schema_version": 1,
+  "version": "1.1.3",
+  "result": "Testing delivery verified",
+  "verified_at": "2026-10-19T04:53:14.529557+00:00",
+  "accepted_gate": {
+    "path": "1.1.3-candidate-gate.json",
+    "sha256": "9b2bbb63e516d06dd349b4e61734460708a5f17487063b8c4c28a24b54f3ec58"
+  },
+  "jira": [
+    "CLV-21 comment 10327",
+    "CLX-104 Done",
+    "CLX-103 Done"
+  ],
+  "remote_refs": {
+    "app": {
+      "develop": "e5f8d8ceeab3eeba2d3a4efc3ba56e3127b852d9",
+      "testing": "e5f8d8ceeab3eeba2d3a4efc3ba56e3127b852d9",
+      "previous_testing": "5f24af0217f7e034102df7d71333bbbe2f727e98",
+      "operation": "git push origin develop:testing; fast-forward"
+    },
+    "server": {
+      "develop": "584cd33c2bf4a1990b92cf2384ec03d0880f8c4a",
+      "testing": "584cd33c2bf4a1990b92cf2384ec03d0880f8c4a",
+      "previous_testing": "584cd33c2bf4a1990b92cf2384ec03d0880f8c4a",
+      "operation": "already equal; no push"
+    },
+    "website": {
+      "develop": "0795f3c2f3660e5b7bf735508ccb7150886da463",
+      "testing": "0795f3c2f3660e5b7bf735508ccb7150886da463",
+      "previous_testing": "e0673ec89e261efdd1c4447cf714ee902249dd70",
+      "operation": "git push origin develop:testing; fast-forward"
+    }
+  },
+  "testing_ci": [
+    {
+      "conclusion": "success",
+      "headBranch": "testing",
+      "headSha": "e5f8d8ceeab3eeba2d3a4efc3ba56e3127b852d9",
+      "jobs": [
+        {
+          "name": "Validate Flutter Web",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/emmett-ola/cashlenx-app/actions/runs/39200799289/job/117893171022"
+        },
+        {
+          "name": "Validate deployable image",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/emmett-ola/cashlenx-app/actions/runs/39200799289/job/117894124125"
+        },
+        {
+          "name": "Publish static web release",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/emmett-ola/cashlenx-app/actions/runs/39200799289/job/117894896567"
+        },
+        {
+          "name": "Package untagged candidate",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/emmett-ola/cashlenx-app/actions/runs/39200799289/job/117894897540"
+        }
+      ],
+      "name": "App CI",
+      "status": "completed",
+      "updatedAt": "2026-10-19T04:51:47Z",
+      "url": "https://github.com/emmett-ola/cashlenx-app/actions/runs/39200799289",
+      "component": "app",
+      "run_id": "39200799289",
+      "newly_triggered": true
+    },
+    {
+      "conclusion": "success",
+      "headBranch": "testing",
+      "headSha": "0795f3c2f3660e5b7bf735508ccb7150886da463",
+      "jobs": [
+        {
+          "name": "Build",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/emmett-ola/cashlenx-website/actions/runs/39200807095/job/117893192840"
+        },
+        {
+          "name": "Validate deployable image",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/emmett-ola/cashlenx-website/actions/runs/39200807095/job/117893245717"
+        },
+        {
+          "name": "Package untagged candidate",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/emmett-ola/cashlenx-website/actions/runs/39200807095/job/117893313113"
+        }
+      ],
+      "name": "Website CI",
+      "status": "completed",
+      "updatedAt": "2026-10-19T04:42:48Z",
+      "url": "https://github.com/emmett-ola/cashlenx-website/actions/runs/39200807095",
+      "component": "website",
+      "run_id": "39200807095",
+      "newly_triggered": true
+    },
+    {
+      "conclusion": "success",
+      "headBranch": "testing",
+      "headSha": "584cd33c2bf4a1990b92cf2384ec03d0880f8c4a",
+      "jobs": [
+        {
+          "name": "Build and Test",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/emmett-ola/cashlenx-server/actions/runs/38427056083/job/115399072905"
+        },
+        {
+          "name": "Validate runtime image",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/emmett-ola/cashlenx-server/actions/runs/38427056083/job/115400120937"
+        },
+        {
+          "name": "Package untagged candidate",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/emmett-ola/cashlenx-server/actions/runs/38427056083/job/115400619111"
+        }
+      ],
+      "name": "Server CI",
+      "status": "completed",
+      "updatedAt": "2026-10-13T16:04:38Z",
+      "url": "https://github.com/emmett-ola/cashlenx-server/actions/runs/38427056083",
+      "component": "server",
+      "run_id": "38427056083",
+      "newly_triggered": false
+    },
+    {
+      "conclusion": "success",
+      "headBranch": "testing",
+      "headSha": "584cd33c2bf4a1990b92cf2384ec03d0880f8c4a",
+      "jobs": [
+        {
+          "name": "MongoDB API Smoke",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/emmett-ola/cashlenx-server/actions/runs/38427056215/job/115399073336"
+        }
+      ],
+      "name": "API Smoke Test",
+      "status": "completed",
+      "updatedAt": "2026-10-13T16:02:15Z",
+      "url": "https://github.com/emmett-ola/cashlenx-server/actions/runs/38427056215",
+      "component": "server",
+      "run_id": "38427056215",
+      "newly_triggered": false
+    }
+  ],
+  "app_static_publication": {
+    "repository": "emmett-ola/cashlenx-app-release",
+    "branch": "testing",
+    "commit": "47aefccda2f517ec79fd4a0c71bc18340d9e48b0",
+    "url": "https://github.com/emmett-ola/cashlenx-app-release/commit/47aefccda2f517ec79fd4a0c71bc18340d9e48b0",
+    "author": {
+      "name": "emmett-ola",
+      "email": "emmett-ola@users.noreply.github.com",
+      "date": "2026-10-19T04:51:43Z"
+    },
+    "committer": {
+      "name": "emmett-ola",
+      "email": "emmett-ola@users.noreply.github.com",
+      "date": "2026-10-19T04:51:43Z"
+    },
+    "github_author": "emmett-ola",
+    "github_committer": "emmett-ola",
+    "build_metadata": {
+      "version": "1.1.3",
+      "revision": "e5f8d8ceeab3eeba2d3a4efc3ba56e3127b852d9",
+      "build_date": "2026-10-19"
+    },
+    "compiled_client_sha256": "39d39bb0140934df0f53ce685fb4cde708372b432eb0e7d256fc14d36f75926a",
+    "staging_api_domain_present": true
+  },
+  "performed_delivery_actions": [
+    "App Develop-to-Testing fast-forward",
+    "Website Develop-to-Testing fast-forward",
+    "Verified Server Develop/Testing equality (no-op)",
+    "App configured Testing static publication"
+  ],
+  "shared_server_runtime_deployment": "Not performed",
+  "shared_database_execution": "Not performed",
+  "production_acceptance": "Not performed",
+  "confluence_sync": "Pending: Developer Guide draft read returned HTTP 503 twice",
+  "secrets_recorded": false
+}

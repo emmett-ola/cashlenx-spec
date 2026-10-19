@@ -38,6 +38,9 @@ state and the evidence manifest owns exact candidate identities.
 - Replaced owner-local runtime acceptance with exact-image isolated Bash/Compose
   MongoDB/MySQL migration, browser, backup and recovery validation, retaining
   each component version and checksummed candidate evidence.
+- Recorded verified App/Website Testing fast-forwards, retained Server equality,
+  successful exact-commit Testing CI and App static publication attributed to
+  `emmett-ola`.
 
 ## [1.1.1] - 2026-10-13
 
