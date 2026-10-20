@@ -241,11 +241,16 @@ Domain code should remain pure Dart and avoid Flutter dependencies.
   `DOCKER_NETWORK_NAME`, and nginx route fallback.
 - GitHub Actions validation for analyze, tests, and the canonical `/api/v1` web
   build, plus a manual secret-free candidate-image artifact job. Successful
-  push validation on `develop`, `testing`, and `main` publishes the
-  branch-configured static client to the matching branch in
-  `emmett-ola/cashlenx-app-release`. The publication step fixes the Git author
+  push and pull-request validation covers every branch. Only successful
+  pushes to `main` and `testing` publish the branch-configured static client:
+  `main` targets `emmett-ola/cashlenx-app-release-main`, while `testing` targets
+  `emmett-ola/cashlenx-app-release-test`. Both destination branches are `main`;
+  other branches, pull requests and manual dispatches do not publish to a
+  release repository. The publication step fixes the Git author
   and committer to `emmett-ola <emmett-ola@users.noreply.github.com>` regardless
-  of the workflow actor; push authentication still uses `RELEASE_REPO_TOKEN`.
+  of the workflow actor; push authentication still uses `RELEASE_REPO_TOKEN`,
+  which requires Contents read/write access to both destinations. Both release
+  repositories must be provisioned before their first publication.
   Source validation, static publication, and runtime deployment remain separate
   evidenced states.
 
