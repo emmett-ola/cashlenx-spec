@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "record_type": "ci_only_testing_publication_verification",
+  "verified_at": "2026-10-20T08:03:25.539726+00:00",
+  "version": "1.1.3",
+  "app_version": "1.1.3+19",
+  "result": "Testing CI and new repository publication verified",
+  "scope": "App CI and documentation only; runtime inputs unchanged",
+  "jira_preflight": "CLV-21 comment 10334",
+  "remote_source_refs": {
+    "develop": "8e6e511a174c439d9f5bed9d3e67e584461781fd",
+    "testing": "8e6e511a174c439d9f5bed9d3e67e584461781fd",
+    "main": "a74effdd1d4be826e8158e22820458611bce9d05"
+  },
+  "testing_before": "e5f8d8ceeab3eeba2d3a4efc3ba56e3127b852d9",
+  "operation": "git push origin develop:testing; fast-forward",
+  "testing_ci": {
+    "status": "completed",
+    "conclusion": "success",
+    "headSha": "8e6e511a174c439d9f5bed9d3e67e584461781fd",
+    "url": "https://github.com/emmett-ola/cashlenx-app/actions/runs/39389395321"
+  },
+  "jobs": [
+    {
+      "name": "Validate Flutter Web",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/emmett-ola/cashlenx-app/actions/runs/39389395321/job/118516977037"
+    },
+    {
+      "name": "Validate deployable image",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/emmett-ola/cashlenx-app/actions/runs/39389395321/job/118518264447"
+    },
+    {
+      "name": "Publish static web release",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/emmett-ola/cashlenx-app/actions/runs/39389395321/job/118519319515"
+    },
+    {
+      "name": "Package untagged candidate",
+      "status": "completed",
+      "conclusion": "skipped",
+      "url": "https://github.com/emmett-ola/cashlenx-app/actions/runs/39389395321/job/118519321647"
+    }
+  ],
+  "publication": {
+    "repository": "emmett-ola/cashlenx-app-release-test",
+    "branch": "main",
+    "previous_state": "empty repository (HTTP 409 before CI publication)",
+    "commit": "8c92d28095fc7fe780e3635960b94338407ae25d",
+    "url": "https://github.com/emmett-ola/cashlenx-app-release-test/commit/8c92d28095fc7fe780e3635960b94338407ae25d",
+    "git_author": {
+      "name": "emmett-ola",
+      "email": "emmett-ola@users.noreply.github.com",
+      "date": "2026-10-20T08:01:06Z"
+    },
+    "git_committer": {
+      "name": "emmett-ola",
+      "email": "emmett-ola@users.noreply.github.com",
+      "date": "2026-10-20T08:01:06Z"
+    },
+    "github_author": "emmett-ola",
+    "github_committer": "emmett-ola",
+    "build_metadata": {
+      "version": "1.1.3",
+      "revision": "8e6e511a174c439d9f5bed9d3e67e584461781fd",
+      "build_date": "2026-10-20"
+    },
+    "compiled_client_sha256": "548d942d7e842a6b3bbc1b05bf44e953d1277b8bf747ffdf2cde9591f715b9e8",
+    "staging_api_domain_present": true,
+    "index_html_present": true
+  },
+  "retained_runtime_evidence": {
+    "path": "1.1.3-candidate-gate.json",
+    "sha256": "9b2bbb63e516d06dd349b4e61734460708a5f17487063b8c4c28a24b54f3ec58",
+    "new_full_runtime_rehearsal": false
+  },
+  "runtime_tracked_inputs": {
+    "excluded_paths": [
+      ".github/workflows/ci.yml",
+      "AGENTS.md",
+      "CHANGELOG.md",
+      "README.md"
+    ],
+    "baseline_and_candidate_sha256": "50b68632fc6e64a1d925c7955497d03913ff6e332a34f761cf844cb2d9e628e9"
+  },
+  "database_classification": "No database change required",
+  "source_main_promotion": "Not performed",
+  "server_or_website_promotion": "Not performed",
+  "shared_server_runtime_deployment": "Not performed",
+  "shared_database_execution": "Not performed",
+  "secrets_recorded": false
+}
