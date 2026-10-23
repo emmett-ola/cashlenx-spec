@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "record_type": "production_public_recovery_verification",
+  "verified_at": "2026-10-23T07:47:45.185464+00:00",
+  "version": "1.1.3",
+  "app_version": "1.1.3+19",
+  "result": "App public Production publication and entry rendering verified; prior hosting blocker resolved",
+  "owner_report": "Owner reported that the online environment had recovered on 2026-10-23",
+  "source_commit": "8e6e511a174c439d9f5bed9d3e67e584461781fd",
+  "release_repository": "emmett-ola/cashlenx-app-release-main",
+  "release_commit": "dad69d4646ab9c4f18c2e3347b8e094b252198fb",
+  "prior_observation": {
+    "path": "1.1.3-main-delivery.json",
+    "sha256": "c90f94340ca896f1946a7e6e47726d71fa88ebc1fa468f231bf4f8a59d176c8c",
+    "result_preserved": "Initial HTTP 404 DEPLOYMENT_NOT_FOUND observations remain historical evidence"
+  },
+  "public_app": {
+    "unauthenticated_observer": true,
+    "checks": [
+      {
+        "url": "https://app.cashlenx.com/",
+        "status": 200,
+        "sha256": "e0cf24658e881d8c292b874bee729458d9b838c2a43c36062317c28b5eeff553"
+      },
+      {
+        "url": "https://app.cashlenx.com/build-metadata.json",
+        "status": 200,
+        "sha256": "e4638f6f39d0037c28669eb765c0737f86c21ddfc90ed7f3a77bff2374231b56",
+        "json": {
+          "version": "1.1.3",
+          "revision": "8e6e511a174c439d9f5bed9d3e67e584461781fd",
+          "build_date": "2026-10-23"
+        }
+      },
+      {
+        "url": "https://app.cashlenx.com/version.json",
+        "status": 200,
+        "sha256": "7fec8f5541955a4b35cdab44f68a59831cf8e1185d27a436f4809d7c2aac7ba7",
+        "json": {
+          "app_name": "cashlenx",
+          "version": "1.1.3",
+          "build_number": "19",
+          "package_name": "cashlenx"
+        }
+      },
+      {
+        "url": "https://app.cashlenx.com/main.dart.js",
+        "status": 200,
+        "sha256": "02f7f137f4012c3a0d8c42e8e0ee67a03ecb3da03b659a299fe4f0ece458622a",
+        "production_api_domain_present": true,
+        "testing_api_domain_absent": true
+      }
+    ],
+    "matches_immutable_release": {
+      "index_html": true,
+      "build_metadata": true,
+      "version_json": true,
+      "main_dart_js": true
+    },
+    "browser_entry": {
+      "url": "https://app.cashlenx.com/#/onboarding",
+      "result": "Rendered Chinese onboarding page with image, heading, Skip and Next controls; observed in a fresh in-app browser tab",
+      "authenticated_journey_performed": false
+    }
+  },
+  "public_api": {
+    "verified_at": "2026-10-23T07:47:45.185464+00:00",
+    "user_agent": "Mozilla/5.0",
+    "origin": "https://app.cashlenx.com",
+    "checks": [
+      {
+        "url": "https://api.cashlenx.com/api/v1/open/health",
+        "status": 200,
+        "code": "OK",
+        "data": {}
+      },
+      {
+        "url": "https://api.cashlenx.com/api/v1/open/version",
+        "status": 200,
+        "code": "OK",
+        "data": {
+          "api_version": "v1",
+          "canonical_api_version": "v1",
+          "name": "CashLenX API",
+          "supported_api_versions": [
+            "v1",
+            "v0"
+          ],
+          "version": "1.1.0"
+        }
+      }
+    ]
+  },
+  "observer_limits": {
+    "initial_python_urllib_requests": "Edge returned HTTP 403 with error code 1010; normal Mozilla/5.0 User-Agent requests to canonical public API routes succeeded",
+    "unversioned_health_probe": "/health returned application HTTP 401; canonical unauthenticated health is /api/v1/open/health",
+    "server_revision": "Not exposed by the public version response; no exact deployed revision or migration state inferred"
+  },
+  "hosting_blocker": "Resolved for this App publication",
+  "server_deployment_or_database_execution": "Not performed by this verification",
+  "whole_product_production_acceptance": "Not performed; scope is public App identity and entry rendering plus API health/version",
+  "confluence_sync": "Previously blocked by native draft HTTP 503; no unchanged retry or page write in this verification",
+  "secrets_recorded": false
+}
