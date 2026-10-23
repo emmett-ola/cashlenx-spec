@@ -28,7 +28,7 @@ evidence, which must be assessed in the linked record.
 | `1.1.0` | [CLV-18](https://macacloud.atlassian.net/browse/CLV-18): Polished verification journey | [Release note](notes/1.1.0.md) |
 | `1.1.1` | [CLV-19](https://macacloud.atlassian.net/browse/CLV-19): Accessible and coherent app experience | [Release note](notes/1.1.1.md) |
 | `1.1.2` | [CLV-20](https://macacloud.atlassian.net/browse/CLV-20): Fast and observable API experience | Jira only; prepared work is not selected by this reconciliation |
-| `1.1.3` | [CLV-21](https://macacloud.atlassian.net/browse/CLV-21): Consistent environment-driven App configuration | [Release note, acceptance and Testing delivery](notes/1.1.3.md) |
+| `1.1.3` | [CLV-21](https://macacloud.atlassian.net/browse/CLV-21): Consistent environment-driven App configuration | [Release note, acceptance, Testing and App Main delivery](notes/1.1.3.md); public Vercel rollout pending |
 
 ## Audit Boundaries
 

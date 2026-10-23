@@ -100,6 +100,11 @@ Current behavior belongs in `../system/`. Deferred candidates belong in `../back
   verified Testing fast-forward/CI/static-publication evidence. CLV-20 retains
   the independently prepared
   `v1.1.2` API performance scope.
+  On 2026-10-23, the owner-authorized App-only follow-up fast-forwarded Main to
+  `8e6e511` and successfully published to `cashlenx-app-release-main/main` with
+  the fixed `emmett-ola` identity. The public App origin still returned Vercel
+  `DEPLOYMENT_NOT_FOUND`; final public rollout remains incomplete pending
+  hosting configuration. Server and Website Main refs and runtimes were unchanged.
 
 Do not create a version directory for active planning, routine Jira work, or an audit. Create a repository-local snapshot only when durable closeout evidence explicitly needs to live with the specification.
 

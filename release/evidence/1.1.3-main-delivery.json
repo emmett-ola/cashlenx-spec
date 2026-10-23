@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "record_type": "app_main_promotion_and_production_publication",
+  "verified_at": "2026-10-23T02:51:58.766613+00:00",
+  "version": "1.1.3",
+  "app_version": "1.1.3+19",
+  "scope": "App follow-up; Server and Website source refs and runtimes unchanged",
+  "jira_preflight": "CLV-21 comment 10336",
+  "human_authorization": "Owner requested Main fast-forward and final rollout on 2026-10-23 after Testing verification",
+  "result": "Main and Production repository publication verified; public rollout incomplete",
+  "source_main_before": "a74effdd1d4be826e8158e22820458611bce9d05",
+  "remote_source_refs": {
+    "develop": "8e6e511a174c439d9f5bed9d3e67e584461781fd",
+    "testing": "8e6e511a174c439d9f5bed9d3e67e584461781fd",
+    "main": "8e6e511a174c439d9f5bed9d3e67e584461781fd"
+  },
+  "operation": "Normal fast-forward push of exact accepted Testing SHA to refs/heads/main",
+  "main_ci": {
+    "id": 39890803904,
+    "html_url": "https://github.com/emmett-ola/cashlenx-app/actions/runs/39890803904",
+    "head_sha": "8e6e511a174c439d9f5bed9d3e67e584461781fd",
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "jobs": [
+    {
+      "name": "Validate Flutter Web",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/emmett-ola/cashlenx-app/actions/runs/39890803904/job/120209840737"
+    },
+    {
+      "name": "Validate deployable image",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/emmett-ola/cashlenx-app/actions/runs/39890803904/job/120211357122"
+    },
+    {
+      "name": "Publish static web release",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/emmett-ola/cashlenx-app/actions/runs/39890803904/job/120212180520"
+    },
+    {
+      "name": "Package untagged candidate",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/emmett-ola/cashlenx-app/actions/runs/39890803904/job/120212182148"
+    }
+  ],
+  "publication": {
+    "repository": "emmett-ola/cashlenx-app-release-main",
+    "branch": "main",
+    "commit": "dad69d4646ab9c4f18c2e3347b8e094b252198fb",
+    "url": "https://github.com/emmett-ola/cashlenx-app-release-main/commit/dad69d4646ab9c4f18c2e3347b8e094b252198fb",
+    "git_author": {
+      "name": "emmett-ola",
+      "email": "emmett-ola@users.noreply.github.com",
+      "date": "2026-10-23T02:50:24Z"
+    },
+    "git_committer": {
+      "name": "emmett-ola",
+      "email": "emmett-ola@users.noreply.github.com",
+      "date": "2026-10-23T02:50:24Z"
+    },
+    "github_author": "emmett-ola",
+    "github_committer": "emmett-ola",
+    "build_metadata": {
+      "version": "1.1.3",
+      "revision": "8e6e511a174c439d9f5bed9d3e67e584461781fd",
+      "build_date": "2026-10-23"
+    },
+    "version_json": {
+      "app_name": "cashlenx",
+      "version": "1.1.3",
+      "build_number": "19",
+      "package_name": "cashlenx"
+    },
+    "compiled_client_sha256": "02f7f137f4012c3a0d8c42e8e0ee67a03ecb3da03b659a299fe4f0ece458622a",
+    "production_api_domain_present": true,
+    "testing_api_domain_absent": true,
+    "index_html_present": true
+  },
+  "public_runtime": {
+    "source_identity_verified": false,
+    "checks": [
+      {
+        "url": "https://app.cashlenx.com/",
+        "status": 404,
+        "vercel_deployment_not_found": true
+      },
+      {
+        "url": "https://app.cashlenx.com/build-metadata.json",
+        "status": 404,
+        "vercel_deployment_not_found": true
+      },
+      {
+        "url": "https://app.cashlenx.com/version.json",
+        "status": 404,
+        "vercel_deployment_not_found": true
+      },
+      {
+        "url": "https://app.cashlenx.com/main.dart.js",
+        "status": 404,
+        "vercel_deployment_not_found": true
+      }
+    ]
+  },
+  "retained_runtime_evidence": {
+    "path": "1.1.3-candidate-gate.json",
+    "sha256": "9b2bbb63e516d06dd349b4e61734460708a5f17487063b8c4c28a24b54f3ec58",
+    "new_full_runtime_rehearsal": false,
+    "runtime_input_fingerprint": "50b68632fc6e64a1d925c7955497d03913ff6e332a34f761cf844cb2d9e628e9",
+    "excluded_paths": [
+      ".github/workflows/ci.yml",
+      "AGENTS.md",
+      "CHANGELOG.md",
+      "README.md"
+    ]
+  },
+  "database_classification": "No database change required for the App-only promotion",
+  "untouched_components": {
+    "server": {
+      "version": "1.1.0",
+      "main": "b799edc9288342de5b6d701d625aa01a6c41db05",
+      "testing": "584cd33c2bf4a1990b92cf2384ec03d0880f8c4a",
+      "limit": "Retained MongoDB migration 018 is outside this App follow-up; no shared migration or Server rollout performed"
+    },
+    "website": {
+      "version": "1.0.9",
+      "main": "e0673ec89e261efdd1c4447cf714ee902249dd70",
+      "testing": "0795f3c2f3660e5b7bf735508ccb7150886da463"
+    }
+  },
+  "confluence_sync": {
+    "page_id": "52166658",
+    "result": "Pending: required native draft read returned HTTP 503",
+    "trace_id": "0a0f237a504446818292423f41593648",
+    "page_write_performed": false
+  },
+  "release_tags": "Not created",
+  "shared_server_runtime_deployment": "Not performed",
+  "shared_database_execution": "Not performed",
+  "whole_product_production_acceptance": "Not performed",
+  "native_device_acceptance": "Not performed",
+  "secrets_recorded": false
+}
