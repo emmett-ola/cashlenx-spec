@@ -11,7 +11,7 @@ All routine Jira and Confluence operations are performed through the authorized 
 | Surface | Primary responsibility |
 | --- | --- |
 | Jira project `CLX` | Raw requirement intake, executable work, priority, dependencies, ownership, acceptance criteria, validation summaries, Human decision tasks, and delivery state. |
-| Jira Product Discovery project `CLV` | Product-version record for people and queries: roadmap position, version outcome, lifecycle state, delivery links. It must match the repository ladder and never becomes a second version authority. |
+| Jira Product Discovery project `CLV` | Archived on 2026-11-20. Its Ideas are historical version records only; the project is not maintained and new versions are not created there. |
 | Confluence | Maintained instructions and shared context for users and developers, including product orientation, architecture navigation, workflow guidance, and decision summaries. |
 | `cashlenx-spec/facts/` | Verified current product, architecture, API, operations, delivery, testing, quality, and collaboration facts. |
 | `cashlenx-spec/versions/` | The version ladder and one record per version: exact commits, decisions, evidence, acceptance, deployment identity. |
@@ -49,16 +49,15 @@ English is the default working language for code, documentation, Jira, Confluenc
 - The version ladder in `../versions/README.md` and the `version/X.Y.Z` tag on a
   commit of `develop` are the identity of a product version. A checkout resolves
   it; no external surface does.
-- `CLV` carries the same version for people and queries: one Idea per exact
-  version, named `vX.Y.Z — outcome`, holding the goal, scope, non-goals,
-  affected areas, exit criteria, and separate implementation, release,
-  deployment, migration and production-acceptance states.
+- Versions are recorded in `versions/` only. The CLV project was archived on
+  2026-11-20 by the owner so the project stops maintaining two version lines;
+  its Ideas stay readable as historical records and a ladder row that has no
+  repository record points at the archived Idea.
 - CLX owns execution. A selected item names its target version and carries the
   matching `version-vX-Y-Z` and `release-line-vX-Y` labels as query aids.
-- When a label, fix version or CLV Idea disagrees with the ladder, verify the
+- When a label or fix version disagrees with the ladder, verify the
   implementation, correct the ladder, then repair the Jira metadata.
-- Keep one active release line by default. Keep planned and active version Ideas
-  visible through the CLV Roadmap.
+- Keep one active release line by default.
 - Use patch versions for compatible fixes, refactors, maintenance and
   operational improvements; minor versions for compatible capabilities; major
   versions for breaking or reset boundaries. Effort changes task decomposition,
@@ -66,8 +65,8 @@ English is the default working language for code, documentation, Jira, Confluenc
 - Keep unselected ideas in `backlog/`; do not fill Jira with speculative work.
 - Use issue links for cross-version or cross-area dependencies.
 - When a version close gate passes and the next delivery boundary opens, record
-  the final evidence and set the CLV Idea's native `Idea archived` field. Leave
-  completed CLX items in place with their history and labels.
+  the final evidence in the version record. Leave completed CLX items in place
+  with their history and labels; no CLV Idea is created or archived.
 - Treat release publication, tags, branch promotion and deployment as separate
   evidenced actions. A complete version may be fast-forwarded from `develop` to
   `testing` under standing authority after every applicable gate passes.

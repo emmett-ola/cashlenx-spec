@@ -1,24 +1,33 @@
 # Engineering baseline debt
 
-Status: open, measured on 2026-11-20 with ASIDE's
-`tools/check-baseline.py`, one run per implementing repository. These are real
-gaps, not declared exemptions: none has a version scheduled to close it, and the
-repository does not claim otherwise.
+Status: one open item, measured on 2026-11-20 with ASIDE's
+`tools/check-baseline.py`, one run per implementing repository.
 
-| Repository | Result | Unmet item |
+| Repository | Result | State |
 | --- | --- | --- |
-| `app/` | 5/7 | `scripts/test.sh` missing, although test sources exist — the gate has no single test entry point |
-| `server/` | 4/7 | `scripts/test.sh` missing; two different migrations share the numeric prefix `010` |
-| `website/` | 5/7 | `scripts/test.sh` missing; no unit or contract test sources |
+| `app/` | 7/7 | closed in `1.1.4` — `scripts/test.sh` added (`flutter test`, 164 tests passed) |
+| `server/` | 6/7 | closed in `1.1.4` — `scripts/test.sh` added (`go test ./...`, every package ok); the remaining item is a declared divergence, below |
+| `website/` | 5/7 | open — no `scripts/test.sh` and no unit or contract test sources |
 
-What the pass rows already show: `.env.example` is tracked and every
-per-environment file is ignored in all three, container definitions exist with
-digest-pinned images, and dependency directories are self-closed.
+## The server item is a declared divergence, not debt
 
-Closing this needs a version that adds a single `scripts/test.sh` entry point per
-repository, an ordered unique prefix for the duplicated migration, and website
-test sources. The migration collision is the item with real delivery risk: an
-ordered, immutable migration identity is what the database preflight relies on.
+`migrations: prefix shared by different migrations: 010` comes from the checker
+reading one migration sequence. The Server keeps two: MongoDB orders `*.js`
+under its own ledger, MySQL orders `*.sql` under its own `schema_migrations`
+table. A shared number across engines is not a collision, and renaming an
+applied migration would change checksum identity and break existing
+installations. Recorded in `../facts/operations.md` §Migration identity.
 
-`app/` and `website/` keep no database, so the migration item does not apply to
-them; `facts/README.md` records the archived prototype instead.
+## What closes the website item
+
+`website/` is a Vite/React/TypeScript site with `bun` as its build tool and no
+test sources. Closing the item needs two owner decisions, not an agent guess:
+
+1. Which runner: `bun test` (no new dependency, no DOM by default) or `vitest` +
+   `@testing-library/react` (adds dev dependencies to a shipped repository).
+2. What the first suite must cover. Recommended minimum: the build-time type
+   check, rendering of the documented routes, and one assertion that the page
+   does not claim data it does not own.
+
+Until both are answered, a `scripts/test.sh` here would run nothing and the
+`tests:` item would stay failed — a script that lies is worse than a missing one.

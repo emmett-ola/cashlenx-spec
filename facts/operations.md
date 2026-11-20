@@ -514,3 +514,24 @@ Application JSON backup/restore intentionally preserves rather than replaces
 schema history. Recover a dirty or incompatible installation from a verified
 database backup, or use an explicitly reviewed data/index repair plan; do not
 treat manual ledger edits as routine recovery.
+
+## Migration identity
+
+Migration identity is per database engine, and the two sequences are
+independent:
+
+| Engine | Assets | Ledger | Ordering |
+| --- | --- | --- | --- |
+| MongoDB | `migrations/*.js` | `schema_migrations` collection | ordered `.js` assets, immutable checksum per file |
+| MySQL | `migrations/*.sql` (with `*.down.sql` pairs) | MySQL `schema_migrations` table | numbered `*.sql` sequence |
+
+A numeric prefix shared by a `.js` and a `.sql` file is therefore not a
+collision: `010` names a MongoDB index change in one sequence and a MySQL column
+change in the other. Renaming an applied migration to separate the numbers would
+change checksum identity and break existing installations, so the shared number
+is kept.
+
+`check-baseline.py` reads one sequence and reports `migrations: prefix shared by
+different migrations: 010` for this repository. That is a declared divergence
+from the checker's assumption, not an unmet requirement, and it is recorded here
+rather than renamed away.

@@ -21,12 +21,12 @@ make work High-impact.
 - `CLX` (`CashLenX — Active Delivery`) owns executable work: contract fields,
   priority, size, dependencies, acceptance criteria, Human decision tasks and
   delivery state.
-- `CLV` (`CashLenX Versions`) records the product-version outcome, roadmap
-  position, lifecycle and links, so that a version is queryable from Jira.
+- `CLV` (`CashLenX Versions`) is archived as of 2026-11-20. It is not a version
+  surface any more; its Ideas remain readable as historical records.
 - A version's identity is the ladder row in `../versions/README.md` plus its
-  `version/X.Y.Z` tag. A CLV Idea, a `version-vX-Y-Z` label or a fix-version
-  field is a query aid that must match the ladder; when they disagree the
-  implementation is verified and the ladder is repaired first, then Jira.
+  `version/X.Y.Z` tag. A `version-vX-Y-Z` label or a fix-version field is a query
+  aid that must match the ladder; when they disagree the implementation is
+  verified and the ladder is repaired first, then Jira.
 - CLX physical states: `Intake`, `Ready (Server)`, `Ready (App)`,
   `In Progress`, `Awaiting Confirmation`, `Done`.
 - `Intake`, `Ready (Server)` and `Ready (App)` map to Jira's To Do category;

@@ -40,7 +40,7 @@ Read delivery history only when the task changes or investigates that scope.
 | `backlog/` | Deferred work, unselected candidates, open questions — with the reason. |
 | `sources/` | Imported snapshots. Historical input; never authority. |
 | Jira `CLX` | Executable work, priorities, dependencies, acceptance criteria, owner decisions, delivery state. |
-| Jira `CLV` | The product version for people and queries; it must match the ladder (see `facts/collaboration.md`). |
+| Jira `CLV` | Archived on 2026-11-20. Historical version records only; not a maintained surface, and new versions are not created there. |
 | Confluence | Maintained English guidance for users and developers, linked to repository facts. |
 | Implementation repositories | Exact runtime truth: routes, fields, artifacts, behaviour. |
 
