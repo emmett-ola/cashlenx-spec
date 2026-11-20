@@ -55,7 +55,7 @@ Columns:
 | 1.1.1 | — | App Testing promotion and static publication | pre-standard | Accessibility, URL coherence, semantic dark surfaces, Budget precision, responsive entry, reduced motion | [1.1.1](1.1.1.md) |
 | 1.1.2 | — | not recorded | pre-standard (Jira only) | Fast and observable API experience; prepared, not selected | Jira CLV-20 |
 | 1.1.3 | — | App `8e6e511a174c439d9f5bed9d3e67e584461781fd` on `main` and published `cashlenx-app-release-main/main`; Server and Website unchanged | pre-standard | Environment-driven App configuration patch, isolated dual-database candidate gate, verified Testing and Main delivery | [1.1.3](1.1.3.md) |
-| 1.1.4 | — | none | specification only | Convert the specification repository to the ASIDE shape: `facts/`, one ladder, one record per version | [1.1.4](1.1.4.md) |
+| 1.1.4 | `eaa59c9c925caeec433c236f4418e6d46083f70c` | none | specification only | Convert the specification repository to the ASIDE shape: `facts/`, one ladder, one record per version | [1.1.4](1.1.4.md) |
 
 ## Rules
 
