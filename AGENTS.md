@@ -1,127 +1,143 @@
-# CashLenX Spec Agent Guide
+# CashLenX Spec — operating guide
 
-This file is for agent behavior and operating rules only. Delivery workflow belongs in `WORKFLOW.md`, reusable engineering principles in `GUIDELINE.md`, current facts in `system/`, active delivery in Jira, retained delivery evidence in `versions/`, deferred work in `backlog/`, durable decisions in `decisions/`, and copied source material in `sources/`.
+This repository is the specification and version-record repository for CashLenX,
+the multi-repository project in the parent workspace. It holds current facts, the
+version ladder and one record per version, and the deferred backlog. It holds no
+runtime code and deploys nothing.
 
-## Startup Rules
+This project follows the ASIDE standard; run
+`python3 /Users/emmett/workspace/macacloud/maca-project-aside/tools/check-aside.py .`
+from this directory to compare the stamp below with the framework checkout.
 
-- Start by reading `README.md`, then `WORKFLOW.md`, then `GUIDELINE.md`, then `system/README.md`, then `versions/README.md`.
-- Before any task work, identify every active repository relevant to the request, fetch its remote refs, and confirm that its worktree is clean, on the expected branch, and synchronized with its upstream. Fast-forward a clean local branch that is only behind; stop on uncommitted changes, divergence, an unexpected branch, or a missing upstream instead of resetting, stashing, switching, or overwriting work.
-- Before changing or investigating a sibling project, read that project's nearest `AGENTS.md` when one exists. Treat it as repository-local operating guidance and reconcile its durable content with this spec's canonical document owners.
-- Use `sources/` as imported source material, not as current truth.
-- If specs conflict with implementation, inspect the implementation first and then update the affected spec.
-- Do not assume the outer workspace is a Git root.
-- Keep edits scoped to `cashlenx-spec` unless the user explicitly asks to update sibling projects.
-- Use paths relative to `cashlenx-spec` or the logical workspace root in repository documents. Do not record host-specific drive-letter paths.
-- Inspect repository evidence before acting. Separate verified facts, reasonable inferences, and unresolved questions.
-- Read delivery history only when the task changes or investigates that scope; Lightweight work does not require unrelated version history.
+aside: df7ad7a3485c232a229aab88d12715bdb26c3787
 
-## Language Rules
+## Reading order
 
-- All repository artifacts in `cashlenx-spec` must be written in English.
-- User conversation may be in Chinese, but engineering files and spec files must remain English-only unless the user explicitly requests a translation deliverable.
-- English is the default working language for code, documentation, Jira, Confluence, commit messages, and engineering artifacts across the CashLenX workspace. Use another language only when the selected work explicitly requires localized or i18n content.
-- Preserve exact API route names, field names, enum values, command names, package names, and file paths.
+1. `README.md` — what CashLenX is and how the workspace is laid out.
+2. `facts/README.md` — the fact index and the rules for this directory.
+3. The fact module the task touches, starting with `facts/delivery.md` when the
+   task concerns work selection, promotion, release or evidence.
+4. `versions/README.md` — the ladder; then the record of the version in scope.
+5. `backlog/README.md` — deferred work and open questions.
+6. `sources/` — imported sibling-project snapshots, historical inputs only.
 
-## Collaboration System
+Read delivery history only when the task changes or investigates that scope.
 
-- Use the authorized Atlassian Rovo integration for Jira and Confluence reads, searches, creation, updates, comments, links, and workflow transitions. Do not manage Atlassian content through a browser session unless the user explicitly requests browser-based administration.
-- Standing authorization covers routine in-scope Jira and Confluence reads, creation, edits, links, comments, workflow transitions, and targeted deletion through Atlassian Rovo. A bulk clear, complete project or space reset, or equivalent removal of an entire collaboration surface requires fresh explicit user authorization for that operation.
-- Jira project `CLX` is the primary system for executable work, priorities, dependencies, ownership, acceptance criteria, and delivery state. Jira Product Discovery project `CLV` is the authoritative exact product-version catalog and roadmap.
-- Represent each exact product version with one CLV Idea. Connect its selected CLX work through Product Discovery delivery links, and apply the matching `version-vX-Y-Z` plus `release-line-vX-Y` labels to executable items.
-- Treat `Intake` as Human-authored raw demand. When the user requests triage, preserve the original intent, inspect evidence, rewrite or split the request into executable task contracts, assign priority, size, dependencies, and one authoritative CLV version Idea, then move the work to its owning Ready lane: `Ready (Server)` for API and Server-owned implementation, optimization, maintenance, or operations; `Ready (App)` for App-owned user-interface, interaction, design, accessibility, localization-presentation, client-state, or other user-facing implementation.
-- Treat both Ready lanes as prepared inventory, not authorization to start. Do not move a Ready item to `In Progress`, implement it, or include it in a delivery batch until the user explicitly selects that item or batch. Triage and execution are separate requests. Split independently deliverable cross-area demand into linked Server and App items before either enters Ready; route an irreducible cross-area item by its primary next implementation owner and name every affected repository in its contract.
-- Use CLV's native Idea archive for completed and superseded versions. Do not move or copy executable CLX work into CLV, and do not treat a CLV archive action as proof of tag creation, publication, deployment, migration, or production acceptance.
-- Represent a required Human decision as a separate `Decision: ...` Jira task in `Awaiting Confirmation`. Link it as blocking the affected work, apply `human-decision` and `human-action-required`, remove `agent-ready` while either `human-action-required` or `blocked` is present, and state the exact request and blocked transition. After the Human records the answer and returns the decision task to `Intake`, triage records the decision, resolves the decision task, and unblocks the affected work.
-- Before moving a Jira item from either Ready lane to `In Progress`, and again before moving it to `Done`, scan its issue links, version state, unresolved Human gates, and `blocked` or `human-action-required` labels. Do not cross a blocked transition. Record a Jira blocker-scan comment when a blocker is found or its state changes, and alert the user in the active conversation with the issue key, required action, and consequence.
-- Confluence is the maintained instruction and context layer for users and developers. Keep it concise, English-only, and linked to authoritative repository facts instead of copying large technical specifications.
-- `system/` remains authoritative for verified current behavior, `decisions/` for durable decisions, and implementation repositories and active contracts for exact runtime truth.
-- Existing records under `versions/` preserve completed delivery evidence. Do not create a new active version directory when Jira already owns that delivery boundary unless a repository snapshot is explicitly required for durable release evidence.
-- When Jira or Confluence conflicts with implementation or the canonical spec, verify the implementation, correct the spec, and then synchronize Atlassian content.
+## Language
 
-## Repository Boundaries
+- Every artifact in `cashlenx-spec` is written in English.
+- Conversation with the owner may be in Chinese; do not translate engineering
+  files unless a translation is the requested deliverable.
+- Preserve exact route names, field names, enum values, command names, package
+  names and paths.
 
-- Treat `cashlenx-spec`, `cashlenx-app`, `cashlenx-server`, and `cashlenx-website` as active project areas. Treat `cashlenx-design` as a separate archived historical prototype.
-- Keep local checkout names and remote repository identities separate. The
-  workspace always uses `app/`, `server/`, `website/`, and `spec/`; Git remotes,
-  repository links, images, and artifacts use `cashlenx-app`, `cashlenx-server`,
-  `cashlenx-website`, and `cashlenx-spec`. Automation must map these identities
-  explicitly and must not derive one naming scheme from the other. Shared path
-  resolution prefers the short local names and accepts full remote-style
-  checkout names as a compatibility fallback.
-- In `cashlenx-app`, `cashlenx-server`, and `cashlenx-website`, perform implementation work on `develop`, use `testing` only as the verified fast-forward target for a complete version, and use `main` only after explicit manual Human confirmation of that production release promotion. Do not retain or create the legacy code branch name `test`. Keep `cashlenx-spec` on its sole `main` branch. Inspect branch and worktree state before switching; do not create, replace, or switch branches when doing so would displace unrelated user work.
-- `cashlenx-spec` is the specification workspace and should not contain runtime code.
-- `cashlenx-app` owns current UI behavior and presentation. Do not maintain parity with `cashlenx-design`, use it as a current design authority, or modify it for new UI work. Consult it only when historical prototype evidence is relevant.
-- Sibling repositories are source-of-truth inputs for implementation facts.
-- Sibling implementation repositories must not import, read, link to, build from, test against, or otherwise depend on `cashlenx-spec`.
-- Do not put spec workflow rules, spec paths, or AI/Codex attribution into implementation code, configuration, scripts, CI, product copy, or commit messages.
-- Do not overwrite unrelated local changes.
+## Where a fact lives
 
-## Spec Layering
+| Area | Owns |
+| --- | --- |
+| `facts/` | Current truth: product, domain, API, operations, delivery, testing, principles, quality, per-area facts. Rewritten in place. |
+| `versions/` | The ladder and one record per version: scope, decisions, full commit SHAs, verification, acceptance, deployment identity. |
+| `backlog/` | Deferred work, unselected candidates, open questions — with the reason. |
+| `sources/` | Imported snapshots. Historical input; never authority. |
+| Jira `CLX` | Executable work, priorities, dependencies, acceptance criteria, owner decisions, delivery state. |
+| Jira `CLV` | The product version for people and queries; it must match the ladder (see `facts/collaboration.md`). |
+| Confluence | Maintained English guidance for users and developers, linked to repository facts. |
+| Implementation repositories | Exact runtime truth: routes, fields, artifacts, behaviour. |
 
-- `system/` contains durable current facts.
-- Jira contains active delivery boundaries, product versions, executable work, acceptance criteria, and workflow state.
-- `versions/` contains completed repository-local delivery evidence and retained version-specific records.
-- `backlog/` contains deferred candidates, readiness work without a selected delivery boundary, and open product questions.
-- `decisions/` contains ADR-style durable product or architecture decisions.
-- `sources/` contains copied Markdown source documents from sibling projects.
-- `WORKFLOW.md` owns work levels, Human gates, evidence triggers, state semantics, and closeout flow.
-- `GUIDELINE.md` owns reusable engineering and product principles.
+One fact, one place. A second document that restates a rule is a defect. Proposals
+never live in `facts/`: what a version will do belongs in its record, what is
+deferred belongs in `backlog/`.
 
-## Version Workflow Rules
+## Repository boundaries
 
-- Open a concrete product version as an outcome-based CLV Idea, connect selected CLX work through Product Discovery delivery links, and apply its exact-version and release-line labels to those items.
-- Keep one active release line by default. Apply `release-line-vX-Y` and exactly one `version-vX-Y-Z` label to every selected CLX item. Archive the CLV Idea only after the version close gate passes and the next delivery boundary opens.
-- Use semantic scope to select versions: patch for compatible fixes and internal or operational improvements, minor for compatible capabilities, and major for breaking or reset boundaries. Effort affects decomposition and `size-s`, `size-m`, or `size-l`; it does not determine the version number.
-- Use Jira for task contracts, acceptance criteria, delivery state, dependencies, and validation summaries.
-- Move durable implemented behavior into `system/` before closing and archiving a CLV version Idea.
-- Move deferred or rejected ideas into `backlog/` and keep Jira limited to selected or actionable work.
-- Add ADRs under `decisions/` only for choices that should remain discoverable after a version closes.
-- Use `versions/_template/` only when an explicit repository-local closeout snapshot is required; Jira remains the active control surface.
-- Do not treat Jira or a version record as the current implementation source of truth after delivery; `system/` is the current-facts layer.
-- Before any release tag, artifact publication, `testing` or `main` promotion, or deployment, execute the release-candidate gate in `WORKFLOW.md`. Stop on unresolved Jira blockers, version drift, migration uncertainty, missing validation, dirty or divergent source, unsafe environment handling, or absent authority for a controlled delivery action. A complete version has standing authority for its verified `develop` to `testing` fast-forward; `main` always requires explicit manual Human confirmation.
-- Treat an explicitly authorized production promotion as one ordered release
-  operation for the affected repositories. Wait for the App `main` workflow to
-  publish and verify the Production static client, then deploy and verify the
-  exact Server `main` candidate when Server is affected. Record branch
-  promotion, App publication, Server runtime deployment, database execution,
-  and production acceptance separately even though the normal non-destructive
-  Server deployment is covered by the same promotion instruction. Stop and
-  record an incomplete release when the approved Bash deployment entry point,
-  access profile, rollback identity, or health verification is unavailable.
-- Never infer database migration, runtime deployment, or production acceptance from a commit, branch, tag, image, or Jira status. Record each state and its evidence separately.
-- Use Bash as the portable automation contract and Zsh for interactive local
-  execution when useful. Do not invoke, add, or require PowerShell or `pwsh` in
-  active delivery, validation, release, or deployment workflows. Retained
-  PowerShell scripts are legacy evidence only until a Bash replacement exists.
-- Product versions remain coordinated through one CLV Idea, but implementation
-  repository versions advance independently after v1.0.0. Change version
-  metadata, changelogs, tags, artifacts, and promotion branches only for
-  repositories affected by the selected version; record untouched component
-  versions explicitly in the release note and evidence manifest.
+- Active areas: `spec/`, `app/`, `server/`, `website/` — each its own Git
+  repository. `design/` is archived historical evidence, declared
+  `archived-repo: design` in `facts/README.md`.
+- The parent workspace is not a Git repository. Never assume otherwise.
+- Local directories are `app/`, `server/`, `website/`, `spec/`; remotes and
+  artifacts are `cashlenx-app`, `cashlenx-server`, `cashlenx-website`,
+  `cashlenx-spec`. Automation maps the two explicitly and never derives one from
+  the other.
+- Implementation repositories must not import, read, link to, build from or test
+  against this repository, and must not carry its workflow rules, paths or agent
+  attribution.
+- Before touching a sibling repository, read its nearest `AGENTS.md`, check its
+  branch and clean state, and keep edits inside the repository the task named.
+- Paths in documents are relative to `cashlenx-spec` or the logical workspace
+  root, never host-specific absolute paths.
 
-## Editing Practices
+## Branches and versions
 
-- Prefer small, stable documents over large mixed notes.
-- After completing a request or coherent change set, create a repository-local commit by default unless the user explicitly asks not to commit. Implementation commits use `develop`; spec-only commits use the spec repository's sole `main` branch. Stage only intended files. A commit or working-branch push alone does not make a version eligible for `testing`; the complete version and its release-candidate gate do. Promotion to `main`, tag creation, publication, and production deployment remain separately controlled actions.
-- For a user-selected batch, implement items sequentially unless the user explicitly requests parallel execution. Give each completed issue or coherent change its own focused commit and push the affected implementation repository's `develop` branch after validation.
-- Keep product requirements separate from implementation notes.
-- At the spec root, keep conventional governance entry points uppercase (`AGENTS.md`, `README.md`, `WORKFLOW.md`, and `GUIDELINE.md`). Below the root, reserve uppercase `README.md` for directory indexes and use lowercase names for other project-authored documents.
-- Keep tracked text files on LF line endings through `.gitattributes`, and end files with exactly one newline.
-- Keep copied source documents intact unless the user asks for a cleanup pass.
-- When importing a sibling `AGENTS.md`, keep an exact snapshot under `sources/<project>/AGENTS.md`, then deduplicate its durable facts, principles, workflow rules, decisions, and deferred work into their canonical spec layers. Do not promote branch names, session narration, or stale implementation claims without verification.
-- When importing facts from sources, deduplicate and rewrite them into the current spec structure instead of editing copied source files in place.
-- Before finishing a documentation task, check edited files for accidental non-English content.
-- Do not keep empty placeholder documentation directories. Create a new information area only when a concrete artifact and authority boundary exist.
-- Never copy credentials supplied in chat, tickets, screenshots, examples, `.env`, or logs into tracked files.
-- Treat sibling `.env.testing` and `.env.production` files as owner-managed sensitive configuration. Do not read, print, diff, parse, synchronize, or expose their contents unless the project owner explicitly authorizes that exact access. Existence and Git-ignore checks are allowed without reading contents.
-- Treat local `.env` structural synchronization as spec-owned workspace coordination. After editing any sibling `.env.example`, run `scripts/sync-env.sh` from this spec area; do not add spec-workflow scripts to implementation repositories.
+- `app/`, `server/`, `website/`: work on `develop`; `testing` is the verified
+  fast-forward target for a complete version; `main` moves only after explicit
+  owner confirmation of that production release. The legacy branch name `test`
+  is not used.
+- `spec/`: a single `main` branch. Specification commits never represent a
+  release or a deployment.
+- Promotion is fast-forward only, `develop` → `testing` → `main`, and never
+  while an earlier version is unaccepted. A `dev/*` branch merges back into
+  `develop` and is then deleted, locally and on the remote.
+- Every change belongs to a version. The ladder row plus the `version/X.Y.Z` tag
+  on a `develop` commit is that version's identity; `versions/X.Y.Z.md` is its
+  record. A change that alters no artifact bytes rides the version it serves and
+  is listed in that version's record.
+- Records and ladder rows carry full 40-character SHAs; a short form is display
+  only. A version whose commit cannot be resolved stays untagged, and the row says
+  so.
+- Acceptance is recorded against an exact commit by someone who did not implement
+  it. Accepted is not deployed.
 
-## Validation Habits
+## Working on a task
 
-- Use Docker Compose for all local and production-like container execution and
-  acceptance. Treat nerdctl 2.2+ as a compatibility target verified by fake
-  frontend contract tests; do not require a real local nerdctl runtime.
-- For spec-only work, inspect the resulting file tree and run text checks for non-English/CJK content where practical.
-- If the spec repository is under Git, run `git diff --check` when write access and Git metadata are available.
-- Do not run app/server/design/website builds for spec-only edits unless the documentation change depends on fresh implementation validation.
-- Validate in proportion to changed behavior and risk. Use `WORKFLOW.md` to decide the required Jira record and whether an explicit repository-local closeout snapshot is needed.
+- Preflight: fetch remote refs, confirm a clean worktree on the expected branch,
+  equal to its upstream. Fast-forward a branch that is only behind; stop on
+  dirty, divergent, unexpected-branch or missing-upstream state instead of
+  resetting, stashing or overwriting unrelated work.
+- Investigate before acting: inspect the implementation and active contracts
+  first, then correct the fact. Separate verified facts, inferences and open
+  questions.
+- Selected work only. A prepared Ready item authorizes nothing; the owner selects
+  the item or batch. Jira state, a commit, a green workflow or a merged branch
+  proves no promotion, tag, publication, deployment, migration or acceptance.
+- Check the spec against reality rather than trusting it: an inherited sentence
+  that reads like a plan is often a stale fact.
+- Never record credentials, tokens, raw conversations, owner-managed environment
+  contents, logs or databases in tracked files. `.env.testing` and
+  `.env.production` are owner-managed: do not read, print, diff or synchronize
+  them without explicit authorization for that exact access.
+- After editing a sibling `.env.example`, run `scripts/sync-env.sh` from this
+  directory. Do not add spec-workflow scripts to implementation repositories.
+
+## Editing and committing
+
+- Keep edits scoped to `cashlenx-spec` unless the owner asks for sibling changes.
+- Prefer small, stable documents over large mixed notes; delete what a version
+  made obsolete instead of narrating it.
+- Commit the completed change set by default unless the owner opts out. Spec
+  commits use `main`; implementation commits use `develop`. Stage only intended
+  files, keep LF line endings through `.gitattributes`, and end files with one
+  newline.
+- Report honestly: what changed, what is proven and how, what is not, and what
+  needs a decision.
+
+## Verification
+
+- Spec-only work: check structure, links and moved paths, unintended non-English
+  content, and `git diff --check`.
+- Framework conformance:
+  `python3 <aside>/tools/check-project.py <workspace-root>` for the layout and
+  `python3 <aside>/tools/check-baseline.py <code-repository>` for each
+  implementing repository.
+- Use Docker Compose for local and production-like container execution, with
+  nerdctl 2.2+ as a compatibility target verified by fake frontend contract
+  tests; a real local nerdctl runtime is never required.
+- Do not run app, server or website builds for a spec-only change unless the
+  documentation claim depends on fresh evidence.
+- Validate in proportion to the behaviour and risk the change touches.
+
+## Security reports
+
+Report a vulnerability through the repository's private reporting or security
+advisory feature, never a public issue containing exploit details, credentials,
+personal data, private URLs or production logs. See `facts/collaboration.md` for
+the reporting shape.
