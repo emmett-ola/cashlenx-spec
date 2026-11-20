@@ -8,8 +8,26 @@ coupling the independently buildable runtime repositories.
 
 | Profile | Intended use | Database | Status |
 | --- | --- | --- | --- |
-| Single-node MongoDB | Personal self-hosting or a shared service for multiple isolated users | MongoDB 7 | Primary production profile |
-| Single-node MySQL | The same application topology where MySQL compatibility is required | MySQL 8 | Required compatibility profile |
+| Single-node MongoDB | Personal self-hosting or a shared service for multiple isolated users | MongoDB 7 | The only supported profile |
+| Single-node MySQL | The same application topology where MySQL compatibility is required | MySQL 8 | Expired on 2026-11-20 — see below |
+
+## MySQL is expired
+
+MySQL support is expired as of 2026-11-20 by owner decision: only MongoDB is
+supported, and new work targets MongoDB alone. The concrete consequences:
+
+- No new MySQL migration, handler, mapper behaviour or compatibility test is
+  written. Existing MySQL code, `DB_TYPE=mysql`, the `*.sql` migration sequence
+  and the MySQL dependency project stay in the repositories as legacy so an
+  existing installation can still start, but they are not maintained and a
+  regression there is not a release blocker.
+- MySQL 8 is no longer part of release-candidate acceptance. The database
+  preflight treats a persistence-changing release as MongoDB-only.
+- Reinstating MySQL needs an owner decision and a version that restores the
+  compatibility suite; it does not happen by drift.
+
+`../facts/operations.md` §Migration identity explains why the two migration
+sequences may share a numeric prefix.
 
 Both profiles use one node and exactly one API application instance. The same
 API is multi-user capable in both cases. A private installation with one intended
@@ -32,7 +50,7 @@ explicit external bridge network:
 | Host ingress | Production only | TLS termination, public routing, request-size policy, and any stricter public rate limits |
 | Flutter Web app | Yes | Certified user client; published to loopback for the host ingress |
 | API server | Yes | Authentication, authorization, business rules, migrations, and operational endpoints |
-| MongoDB or MySQL | Yes | Exactly one selected persistent database project |
+| MongoDB (MySQL legacy) | Yes | Exactly one selected persistent database project; MySQL only for an existing installation |
 | Product website | Optional | Public information surface; it has no runtime dependency on the app or API |
 | SMTP service | Capability-dependent | External vendor-neutral SMTP in deployed environments; disposable mail capture in local rehearsal |
 
@@ -50,7 +68,7 @@ ports. Direct public publication of the database ports is unsupported.
 Build each selected image before starting any service. For a project-managed
 database, use this order:
 
-1. Build and start the selected MongoDB or MySQL dependency from the Server
+1. Build and start the MongoDB dependency from the Server (the MySQL path is legacy)
    repository.
 2. Build and start the API server.
 3. Build and start the Flutter Web app.
@@ -85,7 +103,7 @@ layer is not part of the contract.
 - Treat dirty, missing, reordered, renamed, or checksum-modified migration
   history as a failed deployment rather than editing the ledger manually.
 
-### MySQL Compatibility
+### MySQL Compatibility (legacy)
 
 - Set `DB_TYPE=mysql` for the API.
 - Start only the MySQL dependency project.

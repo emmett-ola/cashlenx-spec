@@ -1,6 +1,6 @@
 # Retire CLV and reconcile the Jira version surfaces
 
-Status: open — the decision is made, the Jira action is outstanding.
+Status: Jira done 2026-11-20; Confluence blocked by a tool failure.
 
 ## Decision (owner, 2026-11-20)
 
@@ -11,14 +11,36 @@ supersedes decision `0005` (CLV authoritative version catalog) and the CLV parts
 of `0002`/`0004`, which are folded into `../facts/collaboration.md`
 §Version Model.
 
-## What is left to do in Atlassian
+## Done
 
-1. Archive the CLV Ideas `CLV-7` … `CLV-21` (native `Idea archived`), or archive
-   the project where the surface allows it. Their content stays readable.
-2. Correct the Confluence delivery page where it still calls CLV the version
-   authority; point it at the ladder and keep the page short.
-3. Stop applying new `version-vX-Y-Z` / `release-line-vX-Y` labels to CLX items.
-   Existing labels stay as history; they are query aids only.
+- All 21 CLV Ideas were archived through `twg` by setting the native
+  `customfield_10106` (`想法已归档` / Idea archived) to `Yes`. `CLV-7` was set
+  first and read back before the rest ran; the full run finished with 21
+  archived and no failures. Nothing was deleted or re-summarised.
+- New `version-vX-Y-Z` / `release-line-vX-Y` labels are not applied any more.
+  Existing labels stay as history.
+
+## Blocked: the Confluence page
+
+`Delivery and Jira Workflow` (page 52166678) still says CLV "owns the
+authoritative exact-version catalog" and keeps a `CLV version catalog` section.
+Three update attempts through `twg` — one full-body replacement and two targeted
+`--edits` runs, all validated by `--dry-run` — returned `internal_error` while
+leaving the page unchanged (`version 10`, 2026-10-13). The page also contains
+corrupted paragraphs from an earlier edit (duplicated words in at least three
+nodes), which may be what the collaborative update chokes on.
+
+The replacement text is prepared and only needs a working surface:
+
+| Element | New text |
+| --- | --- |
+| Ownership bullet | CLV "was archived on 2026-11-20 and is no longer maintained; its Ideas stay readable as historical version records. The version ladder in `cashlenx-spec/versions/README.md` owns version identity." |
+| Section heading | `CLV version catalog` → `Version identity` |
+| Identity paragraph | the ladder plus the `version/X.Y.Z` tag on a develop commit; `versions/X.Y.Z.md` carries scope, decisions, full SHAs and evidence |
+| Authority paragraph | the repository ladder is authoritative; CLX labels are query aids that must match it |
+| Archive section | `Completed-version archive` → `Closing a version`: record outcome, commits and evidence in `versions/X.Y.Z.md`; no CLV archive step |
+| Ownership paths | `cashlenx-spec/system/` → `cashlenx-spec/facts/`; the `decisions/` bullet → `cashlenx-spec/versions/` |
+| Tooling line | "the authorized Atlassian CLI (`twg`)" instead of Rovo |
 
 ## Why it is not done here
 

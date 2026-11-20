@@ -122,8 +122,11 @@ persistence behavior, rollback rules, and explicit exclusions are defined in
 configuration facts used by those profiles.
 
 The approved `v1.0.0` production profile is a single node with one application
-instance serving isolated users, MongoDB as the primary production database,
-and MySQL as a required compatibility profile. Flutter Web is the certified
+instance serving isolated users, with MongoDB as the supported production
+database. MySQL support expired on 2026-11-20: its code, `DB_TYPE=mysql` path and
+`*.sql` migration sequence remain as legacy, but no new MySQL work or
+compatibility acceptance is expected (`deployment-profiles.md` §MySQL is
+expired). Flutter Web is the certified
 client distribution. Multi-instance orchestration, Kubernetes, Helm, shared
 cache, and organization-level multi-tenancy are outside the stable boundary.
 Local rehearsal, self-hosted production, and a cloud VM or container host must

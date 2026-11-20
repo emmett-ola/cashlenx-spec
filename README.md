@@ -40,7 +40,6 @@ versions/README.md    the version ladder
 versions/X.Y.Z.md     the delivery record for that version
 versions/evidence/    machine-readable release evidence, per version
 backlog/              deferred work and open questions, with the reason
-sources/              imported sibling-project snapshots, historical only
 scripts/  docker/  test/   specification-side release and validation tooling
 ```
 

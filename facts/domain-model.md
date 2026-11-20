@@ -134,7 +134,9 @@ A user-owned monthly spending limit for one expense category.
 - Spent, remaining, and progress values are derived from cash flows in the same
   user/category/month scope.
 - Normal deletion is soft deletion with audit metadata.
-- MongoDB and MySQL are both supported persistence backends.
+- MongoDB is the supported persistence backend. MySQL support expired on
+  2026-11-20 and survives only as legacy code, left in place so an existing
+  installation can still start.
 
 ### Import, Export, Backup, And Restore
 

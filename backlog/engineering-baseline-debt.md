@@ -1,33 +1,21 @@
-# Engineering baseline debt
+# Engineering baseline
 
-Status: one open item, measured on 2026-11-20 with ASIDE's
-`tools/check-baseline.py`, one run per implementing repository.
+Status: closed on 2026-11-20 by version `1.1.4` (app, server) and `1.1.5`
+(website). Measured with ASIDE's `tools/check-baseline.py`, one run per
+implementing repository.
 
-| Repository | Result | State |
+| Repository | Result | Closing change |
 | --- | --- | --- |
-| `app/` | 7/7 | closed in `1.1.4` — `scripts/test.sh` added (`flutter test`, 164 tests passed) |
-| `server/` | 6/7 | closed in `1.1.4` — `scripts/test.sh` added (`go test ./...`, every package ok); the remaining item is a declared divergence, below |
-| `website/` | 5/7 | open — no `scripts/test.sh` and no unit or contract test sources |
+| `app/` | 7/7 | `scripts/test.sh` → `flutter test`, 164 tests |
+| `server/` | 6/7 | `scripts/test.sh` → `go test ./...`; the remaining item is the declared per-engine migration divergence in `../facts/operations.md` |
+| `website/` | 7/7 | `scripts/test.sh` → `tsc -b` + `bun test`, five render tests |
 
-## The server item is a declared divergence, not debt
-
-`migrations: prefix shared by different migrations: 010` comes from the checker
-reading one migration sequence. The Server keeps two: MongoDB orders `*.js`
-under its own ledger, MySQL orders `*.sql` under its own `schema_migrations`
-table. A shared number across engines is not a collision, and renaming an
+The Server row is not debt. `migrations: prefix shared by different migrations:
+010` comes from the checker reading a single sequence, while the Server keeps
+MongoDB `*.js` and MySQL `*.sql` sequences with separate ledgers. Renaming an
 applied migration would change checksum identity and break existing
-installations. Recorded in `../facts/operations.md` §Migration identity.
+installations, so the shared number is kept and declared.
 
-## What closes the website item
-
-`website/` is a Vite/React/TypeScript site with `bun` as its build tool and no
-test sources. Closing the item needs two owner decisions, not an agent guess:
-
-1. Which runner: `bun test` (no new dependency, no DOM by default) or `vitest` +
-   `@testing-library/react` (adds dev dependencies to a shipped repository).
-2. What the first suite must cover. Recommended minimum: the build-time type
-   check, rendering of the documented routes, and one assertion that the page
-   does not claim data it does not own.
-
-Until both are answered, a `scripts/test.sh` here would run nothing and the
-`tests:` item would stay failed — a script that lies is worse than a missing one.
+Keep this file while it explains a checker result a reader would otherwise
+re-read as a regression. Once the checker learns per-engine sequences, it is
+deleted rather than maintained.

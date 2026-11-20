@@ -19,7 +19,6 @@ aside: df7ad7a3485c232a229aab88d12715bdb26c3787
    task concerns work selection, promotion, release or evidence.
 4. `versions/README.md` — the ladder; then the record of the version in scope.
 5. `backlog/README.md` — deferred work and open questions.
-6. `sources/` — imported sibling-project snapshots, historical inputs only.
 
 Read delivery history only when the task changes or investigates that scope.
 
@@ -38,7 +37,6 @@ Read delivery history only when the task changes or investigates that scope.
 | `facts/` | Current truth: product, domain, API, operations, delivery, testing, principles, quality, per-area facts. Rewritten in place. |
 | `versions/` | The ladder and one record per version: scope, decisions, full commit SHAs, verification, acceptance, deployment identity. |
 | `backlog/` | Deferred work, unselected candidates, open questions — with the reason. |
-| `sources/` | Imported snapshots. Historical input; never authority. |
 | Jira `CLX` | Executable work, priorities, dependencies, acceptance criteria, owner decisions, delivery state. |
 | Jira `CLV` | Archived on 2026-11-20. Historical version records only; not a maintained surface, and new versions are not created there. |
 | Confluence | Maintained English guidance for users and developers, linked to repository facts. |

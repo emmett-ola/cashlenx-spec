@@ -67,7 +67,3 @@ describe the archived prototype and do not constrain current app work.
 - `src/app/components/shared/`
 - `src/app/constants/colors.ts`
 - `src/app/constants/sharedStyles.ts`
-
-## Design Documentation Sources
-
-Copied source documents under `../../sources/cashlenx-design/` include attribution, code organization, data architecture, logo, storage design, changelog, and TODO notes.

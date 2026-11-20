@@ -45,8 +45,7 @@ current fact cites it as its sole authority. See `design/README.md`.
 1. Implementation code and active contracts.
 2. Accepted product and design decisions, as recorded in these facts or in a
    version record.
-3. Imported sibling-project snapshots under `../sources/` and archived prototype
-   evidence.
+3. The archived prototype under `../design/`, understood as historical evidence.
 
 Do not promote archived prototype behavior into current facts unless the app or
 server implements it or the owner accepted it as a current requirement.
@@ -62,7 +61,9 @@ server implements it or the owner accepted it as a current requirement.
   facts file.
 - A fact written as a plan is believed by the next session. Write the present
   tense; keep targets in `../backlog/`.
-- `../sources/` holds imported snapshots of sibling-project documents. They are
-  historical inputs, not current truth, and they do not override a fact here.
+
+- Sibling repositories are the authority for their own behaviour; this spec holds
+  no imported copies of them. When a sibling `AGENTS.md` or README matters, read
+  it in that repository.
 - Real local state stays untracked. No credentials, tokens, raw conversations,
   owner-managed environment contents, logs or databases are recorded here.
