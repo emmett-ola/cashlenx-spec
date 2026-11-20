@@ -23,7 +23,7 @@ container/project identity collisions, and value-redacted diagnostics:
 bash test/scripts/environment-lifecycle-smoke.sh
 ```
 
-This document owns current validation commands, evidence boundaries, and testing strategy. Select only the checks triggered by the change through `../facts/delivery.md` and `quality-attributes.md`.
+This document owns current validation commands, evidence boundaries, and testing strategy. Select only the checks triggered by the change through `delivery.md` and `quality-attributes.md`.
 
 ## Evidence Boundaries
 

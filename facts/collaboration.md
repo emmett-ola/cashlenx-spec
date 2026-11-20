@@ -133,7 +133,7 @@ Confluence pages link to repository documents for detailed contracts and impleme
 When work changes behavior or instructions:
 
 1. Update implementation and active contracts.
-2. Update the canonical fact in `../facts/`, or the version record when the
+2. Update the canonical fact in `facts/`, or the version record when the
    change belongs to a delivery.
 3. Update the Jira item with validation and implementation references.
 4. Update Confluence when user or developer guidance changed.
