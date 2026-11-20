@@ -1,85 +1,56 @@
 # CashLenX Spec
 
-This directory is the specification and delivery-control workspace for CashLenX. It consolidates current product rules, architecture facts, API summaries, delivery scope, validation evidence, durable decisions, and historical source material for the CashLenX app, server, website, and archived design prototype.
+The specification and version-record repository for CashLenX, a personal-finance
+product for recording income and expenses, organizing cash flows by category,
+viewing summaries and reports, and managing account preferences.
 
-CashLenX is a personal-finance product for recording income and expenses, organizing cash flows by category, viewing summaries and reports, and managing account preferences.
-
-## CashLenX Project
-
-CashLenX is developed as a set of independently buildable repositories with
-explicit ownership boundaries:
+CashLenX is developed as independently buildable repositories with explicit
+ownership boundaries:
 
 | Repository | Responsibility |
 | --- | --- |
-| [cashlenx-app](https://github.com/emmett-ola/cashlenx-app) | Cross-platform Flutter client and user experience. |
-| [cashlenx-server](https://github.com/emmett-ola/cashlenx-server) | Go REST API, Cobra CLI, authentication, finance services, and MongoDB/MySQL persistence. |
-| [cashlenx-design](https://github.com/emmett-ola/cashlenx-design) | Archived early product prototype retained as historical evidence. |
+| [cashlenx-app](https://github.com/emmett-ola/cashlenx-app) | Flutter client and user experience. Owns current UI behaviour and presentation. |
+| [cashlenx-server](https://github.com/emmett-ola/cashlenx-server) | Go REST API, Cobra CLI, authentication, finance services, MongoDB/MySQL persistence, OpenAPI. |
 | [cashlenx-website](https://github.com/emmett-ola/cashlenx-website) | Public product and developer-information website. |
-| [cashlenx-spec](https://github.com/emmett-ola/cashlenx-spec) | Product and system facts, delivery workflow, decisions, and retained evidence. |
+| [cashlenx-design](https://github.com/emmett-ola/cashlenx-design) | Archived early React/Vite prototype, retained as historical evidence. |
+| cashlenx-spec | This repository: current facts, the version ladder and records, deferred work. |
 
-This repository owns the canonical specification and delivery-control layer.
-Cross-repository contracts are coordinated through OpenAPI and the workflow in
-this repository. Runtime repositories remain independently buildable and do
-not depend on the spec or archived prototype at build time or runtime. The outer
-local workspace is not assumed to be a Git repository.
+Cross-repository contracts are coordinated through OpenAPI and the version
+records here. Runtime repositories never depend on this repository at build time
+or run time, and the parent workspace is not a Git repository.
 
-The code repositories (`cashlenx-app`, `cashlenx-server`, and `cashlenx-website`) use `develop` as the default working branch, `testing` as the shared test-environment branch, and `main` as the production release branch. Changes are promoted in the direction `develop` -> `testing` -> `main`; the legacy branch name `test` is not retained. `cashlenx-spec` uses `main` as its only branch. Repository-local commits and branch pushes do not by themselves authorize promotion, publication, or deployment.
+## Where to start
 
-## Current Map
-
-| Area | Purpose |
+| If you want | Read |
 | --- | --- |
-| `WORKFLOW.md` | Risk-proportionate delivery workflow, evidence rules, Human gates, state semantics, and closeout rules. |
-| `GUIDELINE.md` | Reusable engineering and product principles. |
-| `system/` | Durable current facts: product flows, domain model, API contract, app, server, UI authority, website, operations, and testing. |
-| `versions/` | Completed repository-local delivery records, validation evidence, and templates for explicit snapshots. |
-| `backlog/` | Deferred candidates, known gaps, and open product questions. |
-| `decisions/` | ADR-style durable decisions. |
-| `release/` | Coordinated product-version input, release notes, immutable tag rules, and artifact-publication contract. |
-| `sources/` | Copied Markdown source material and import inventory from sibling projects, excluding their `README.md` files. |
-| Jira `CLX` | Executable work, acceptance criteria, priorities, dependencies, and workflow state. |
-| Jira Product Discovery `CLV` | Authoritative exact product-version catalog and roadmap. |
-| Confluence | Maintained English instructions and collaboration context for users and developers. |
+| The operating rules for agents and contributors | [`AGENTS.md`](AGENTS.md) |
+| What is true now | [`facts/README.md`](facts/README.md) and the module you need |
+| How work is selected, promoted and released | [`facts/delivery.md`](facts/delivery.md) |
+| What a version delivered, and its evidence | [`versions/README.md`](versions/README.md) |
+| What is deferred, and why | [`backlog/README.md`](backlog/README.md) |
+| How to build, run and test each area | [`facts/operations.md`](facts/operations.md), [`facts/testing.md`](facts/testing.md), and each area's `README.md` under `facts/` |
 
-## Reading Order
+## Layout
 
-1. `AGENTS.md`: agent operating rules and repository boundaries.
-2. `WORKFLOW.md`: work levels, evidence triggers, Human gates, version states, and closeout rules.
-3. `GOVERNANCE.md`: maintainer authority, repository ownership, Codex-assisted maintenance, and community participation.
-4. `GUIDELINE.md`: reusable product and engineering principles.
-5. `system/README.md`: stable current system facts.
-6. `system/collaboration.md`: Jira, Confluence, and repository ownership rules.
-7. `versions/README.md`: retained delivery evidence and optional snapshot policy.
-8. `backlog/README.md`: deferred work and open questions.
-9. `decisions/README.md`: durable decisions.
+```text
+AGENTS.md             operating guide; the ASIDE revision stamp lives here
+README.md             this file
+facts/                current truth, one module per area, rewritten in place
+versions/README.md    the version ladder
+versions/X.Y.Z.md     the delivery record for that version
+versions/evidence/    machine-readable release evidence, per version
+backlog/              deferred work and open questions, with the reason
+sources/              imported sibling-project snapshots, historical only
+scripts/  docker/  test/   specification-side release and validation tooling
+```
 
-Community contributions follow [CONTRIBUTING.md](CONTRIBUTING.md). Report
-vulnerabilities according to [SECURITY.md](SECURITY.md).
+## Working language
 
-## Source Of Truth Rules
+Every artifact in this repository is English. Conversation with the owner may be
+in Chinese; translated content is only produced when it is the requested
+deliverable.
 
-- `system/` is the canonical current-facts layer.
-- Jira `CLX` owns executable task delivery control; Jira Product Discovery `CLV` owns exact product-version identity and lifecycle.
-- `versions/` preserves completed repository-local delivery evidence and explicit closeout snapshots.
-- `backlog/` owns deferred scope and unresolved questions.
-- `decisions/` owns durable decisions that should remain discoverable after a version closes.
-- `sources/` and the archived design prototype are historical evidence inputs, not current authority or proof of implementation.
-- For server routes and behavior, inspect `../cashlenx-server/controller/server.go` and `../cashlenx-server/docs/openapi.yaml` first.
-- For client API usage and user-facing app behavior, inspect `../cashlenx-app/lib/network/cashlenx_api.dart` and active feature files.
-- For current UI behavior and presentation, inspect `../cashlenx-app/` and its shared theme, token, and component sources. Consult `../cashlenx-design/` only when historical prototype context is relevant.
-- For website documentation structure, inspect `../cashlenx-website/src/App.tsx` and `../cashlenx-website/docs/`.
-- When this spec conflicts with implementation, implementation wins until the spec is corrected.
+## Licence
 
-Current implementation maturity belongs in `system/`; unopened delivery candidates and readiness work belong in `backlog/`; selected versions and delivery work belong in Jira; completed durable facts return to `system/` and `decisions/`.
-
-A Jira item in `Ready (Server)` or `Ready (App)` is prepared for execution but does not start automatically. The lane identifies the primary implementation owner: Server for API and backend service work, and App for user-facing interface and client implementation. The product owner selects the item or batch before any transition to `In Progress` or implementation work.
-
-## Working Rule
-
-Keep all files in this spec workspace in English. English is also the default for code, Jira, Confluence, commits, and engineering artifacts unless selected i18n work requires localized content. Agent-specific rules belong in `AGENTS.md`; workflow rules belong in `WORKFLOW.md`; reusable principles belong in `GUIDELINE.md`; current facts belong in `system/`; active delivery belongs in Jira; retained closeout evidence belongs in `versions/`; deferred work belongs in `backlog/`; durable choices belong in `decisions/`.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE). Commercial use,
-modification, and redistribution are permitted when the copyright and license
-notices are retained.
+MIT. Commercial use, modification and redistribution are permitted when the
+copyright and licence notices are retained.

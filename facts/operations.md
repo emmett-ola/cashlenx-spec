@@ -1,0 +1,516 @@
+# Operations
+
+This document owns current runtime, container, configuration-synchronization, and deployment-mechanics facts. Dated validation and deployment evidence belong in an opened version record or, before a version is opened, in the relevant backlog readiness record.
+
+## Local Runtime
+
+### Server
+
+From `../cashlenx-server`:
+
+```bash
+cp .env.example .env
+scripts/dependencies/mongodb/build.sh
+scripts/dependencies/mongodb/start.sh
+go run main.go open start -p 10063
+```
+
+Use MySQL 8 instead of MongoDB with:
+
+```bash
+scripts/dependencies/mysql/build.sh
+scripts/dependencies/mysql/start.sh
+```
+
+For the project-owned server container flow:
+
+```bash
+scripts/build.sh
+scripts/start.sh
+scripts/stop.sh
+```
+
+The root scripts manage the server container only. `start.sh` uses the existing
+image, ensures the shared external network exists, and waits for the Compose
+healthcheck. `stop.sh` removes the API container but preserves the image,
+bind-mounted logs, database dependency projects, and their named volumes. It
+removes the shared network only when no containers remain attached. Database
+dependency lifecycle remains explicit and independent.
+
+MongoDB owns `docker/dependencies/mongodb/` and
+`scripts/dependencies/mongodb/`; MySQL owns matching `mysql/` directories. Each
+dependency exposes `build.sh`, `start.sh`, and `stop.sh`. Build pulls the
+configured upstream image, start launches only that dependency on the shared
+network and waits on an in-container readiness probe, and stop removes its
+container while preserving its image and persistent storage. Each dependency
+keeps its existing named volume by default. An empty `*_DATA_PATH` uses the
+configurable `*_DATA_VOLUME_NAME`; an absolute data path selects a host bind mount. Root
+Server scripts never select a dependency from `DB_TYPE` or manage dependency
+lifecycle.
+
+### App
+
+From `../cashlenx-app`:
+
+```bash
+flutter pub get
+ENV_FILE=.env scripts/run.sh
+```
+
+`AppConfig` consumes `APP_ENV`, `API_SCHEME`, `API_DOMAIN`, `API_PORT`, and
+`API_VERSION` through compile-time definitions. The container build script
+reads only those public settings from the selected repository-local environment
+file. It does not send or copy that file into the build context or runtime
+image. `scripts/run.sh` uses the same public-setting parser for native Flutter
+runs and accepts `ENV_FILE=.env.local` plus normal device arguments. Explicit
+shell settings override the selected file, and an explicitly empty `API_PORT`
+omits the URL port. The client uses `API_DOMAIN` unchanged on every platform;
+select the address reachable from the device in the ignored local profile.
+Raw `flutter run` does not load environment files and instead accepts explicit
+`--dart-define` values or uses the local development defaults. Restart or
+rebuild the client after configuration changes. Android HTTP access is limited
+to debug builds; profile and release builds use HTTPS.
+
+Hosted App releases receive those five public settings from the CI branch map,
+not from a VM environment file. Local `.env.testing` and `.env.production`
+should match the `testing` and `main` branch inputs respectively; HTTPS targets
+use an empty `API_PORT` so the client uses the scheme default.
+
+## Environment Endpoints
+
+| Environment | App | API |
+| --- | --- | --- |
+| Development | `http://127.0.0.1:10064` | `http://127.0.0.1:10063/api/v1` |
+| Testing | `https://test.app.cashlenx.com` | `https://test-api.cashlenx.com/api/v1` |
+| Production | `https://app.cashlenx.com` | `https://api.cashlenx.com/api/v1` |
+
+Testing and production public endpoints are terminated and routed by their host
+reverse proxy. Their project-local container ports remain independently
+configurable and are not implied by the public HTTPS URLs.
+
+### Runtime Identity And Observer Context
+
+- Verify a deployed App from `<app-origin>/version.json?cachebuster=<unique>`.
+  Record `version` and `build_number` together. Do not infer the deployed App
+  identity from a Git branch, CI result, browser shell, or Server response.
+- Verify a deployed Server from `<api-origin>/api/v1/open/version`. App and
+  Server versions are independent runtime identities and may temporarily
+  differ while their deployments proceed separately.
+- The Testing App is protected by Vercel authentication. An authorized owner
+  session can read its runtime identity, while an unauthenticated operator may
+  receive a redirect to Vercel SSO. That redirect proves only the observer's
+  missing session; it is not evidence of DNS failure, App downtime, version
+  drift, or a release blocker. Accept an exact owner-provided `version.json`
+  response as runtime evidence when the operator cannot obtain that session.
+- Treat source commits, branch promotion, App publication, Server deployment,
+  database execution, and runtime acceptance as separate states. A successful
+  fast-forward or App publication neither deploys nor identifies the Server.
+- Record the exact URL, response identity, observation time, and whether the
+  observer was authenticated whenever runtime evidence is used for delivery.
+
+`test-api.cashlenx.com` is the only supported Testing API hostname. The former
+`api.test.cashlenx.com` documentation value and the certificate-incompatible
+`test.api.cashlenx.com` hostname are legacy cleanup candidates and must not be
+used by clients or acceptance tooling. DNS or certificate removal remains a
+separate external operation and does not block the canonical Testing service.
+
+## Runtime Project Boundaries
+
+The selected topology, database-profile trade-offs, isolation boundary,
+persistence behavior, rollback rules, and explicit exclusions are defined in
+`deployment-profiles.md`. This document owns the concrete runtime mechanics and
+configuration facts used by those profiles.
+
+The approved `v1.0.0` production profile is a single node with one application
+instance serving isolated users, MongoDB as the primary production database,
+and MySQL as a required compatibility profile. Flutter Web is the certified
+client distribution. Multi-instance orchestration, Kubernetes, Helm, shared
+cache, and organization-level multi-tenancy are outside the stable boundary.
+Local rehearsal, self-hosted production, and a cloud VM or container host must
+use the same container contract. These are accepted targets; implementation and
+acceptance evidence remain tracked in Jira until delivered.
+
+- Every Dockerfile and Compose definition lives under its owning repository's
+  `docker/` tree. Dependency definitions remain under
+  `docker/dependencies/<name>/`; root `.dockerignore` files remain beside their
+  build contexts.
+- The app has Docker-based Flutter web deployment through `docker/Dockerfile`, `docker/compose.yml`, nginx route fallback, and `scripts/build.sh`, `scripts/start.sh`, and `scripts/stop.sh`.
+- The app GitHub Actions workflow analyzes, tests, and builds the canonical web
+  client. Its manual candidate job packages a verified image artifact without
+  external publication or deployment.
+- The server provides the same lifecycle script contract and owns only the API container. MongoDB and MySQL are independent optional Compose projects under `docker/dependencies/`.
+- MongoDB and MySQL each provide their own explicit lifecycle scripts
+  under `scripts/dependencies/`. They accept the same repository-local
+  `ENV_FILE` selection and do not invoke the API lifecycle.
+- The product-introduction website has a multi-stage Bun/nginx Docker image, Compose service, and the same lifecycle script contract.
+- In every runtime project, `build.sh` compiles the program inside its image
+  build, `start.sh` starts or updates containers from an existing image with
+  `--no-build` and then runs the service's readiness command inside the target
+  container, and `stop.sh` uses Compose `down --remove-orphans` without
+  `--volumes` or image removal. Start scripts do not require Compose `up --wait`
+  or Compose-managed health status.
+- App, Server, and Website each own a repository-local
+  `scripts/lib/container_lifecycle.sh`; no runtime repository depends on another
+  repository's helper. Docker Compose v2 is the required local and
+  production-like execution frontend. nerdctl 2.2+ is a compatibility target,
+  not a required local runtime. The helper preserves that portable command
+  contract and identifies the actual implementation from version output,
+  including when a command named `docker` wraps nerdctl. `CONTAINER_FRONTEND`
+  selects `auto`, `docker`, or `nerdctl`; a shell-only `CONTAINER_CLI` may select
+  a nonstandard executable path. Runtime availability and Compose configuration
+  are checked before build, pull, network creation, start, or stop.
+- Start mutations suppress Compose command traces. This prevents nerdctl's
+  informational output from printing environment values, including configured
+  credentials; failures return a value-free lifecycle error before readiness
+  diagnostics continue.
+- Image references are derived from the validated repository and tag settings
+  (`IMAGE_*`, `SERVER_IMAGE_*`, or `WEBSITE_IMAGE_*`). Lifecycle and packaging
+  scripts do not use the unsupported nerdctl `compose config --images` flag.
+  Readiness uses portable inspect/exec/logs calls and a configurable
+  `CONTAINER_READY_TIMEOUT_SECONDS` that defaults to 600 seconds so a cold,
+  resource-constrained database initialization can complete.
+- Every App, API, Website, MongoDB, and MySQL lifecycle provides `status.sh`,
+  `doctor.sh`, and `logs.sh`. Status and doctor emit machine-readable,
+  non-secret capability, requested/effective image identity, network,
+  container-state, and live exec-probe health facts; API diagnostics also emit
+  the selected database container state. Either command exits nonzero when any
+  required fact is degraded. Logs are explicitly bounded from 1 to 99999 lines.
+- Stop converts the service's Compose grace duration into an engine stop timeout
+  and observes the final state and exit code before project removal. It reports
+  `graceful`, `already-stopped`, `forced`, `failed`, or `failed-running`; forced
+  and failed outcomes return nonzero while cleanup still proceeds. Repeated stop
+  is an accepted idempotent operation.
+- Compose project, container, and shared-network identities are explicit
+  environment values with defaults. App, Server, Website, MongoDB, and MySQL
+  each have an owning `*_PROJECT_NAME` and container-name key; all repositories
+  use the same absolute `DOCKER_NETWORK_NAME`. Separate project identities
+  preserve independent lifecycle and prevent `--remove-orphans` from treating
+  sibling services as part of the same Compose project. Every start script
+  creates the network idempotently. Every stop script asks the selected engine
+  to remove the network only after its own Compose project is down; both
+  supported engines refuse removal while another container remains attached.
+- Default development host ports are `10063` for the server API and `10064` for
+  the Flutter app web build. The product-introduction website defaults to
+  `11065`. Environment files may override them.
+- Default container names are `cashlenx-server`, `cashlenx-app`, and `cashlenx-website`.
+- Project Compose files bind published ports to `127.0.0.1` by default for a host reverse proxy and expose configurable CPU, memory, PID, graceful-stop, and health settings.
+- App, Server, and Website image build contexts use explicit allowlists. Local
+  environment files, credentials, Git state, logs, local data, caches, build
+  outputs, and unrelated workspace content do not enter their contexts.
+- Each runtime repository owns digest-pinned build and runtime base-image
+  references in `docker/images.env`. Updating a pin is an isolated change that
+  must pass the repository build and image verification before delivery; a
+  revert restores the previous inputs.
+- The same files own exact compiler/package-manager identities: Flutter 3.47.5
+  at an exact framework revision with Dart 3.13.4, Go 1.27.1, and Bun 1.4.2.
+  Dockerfiles fail before dependency resolution when the selected toolchain
+  reports a different identity. Normal CI uses those same versions and invokes
+  each repository's canonical `scripts/build.sh` deployable-image validation.
+- App dependency resolution enforces `pubspec.lock`; Server uses a read-only,
+  verified Go module graph; Website uses Bun and the sole `bun.lock` file.
+  npm and `package-lock.json` are not part of the Website build contract.
+- Runtime images record the full source commit and normalized product version
+  through the OCI `org.opencontainers.image.revision` and
+  `org.opencontainers.image.version` labels. App and Website also expose a
+  public `build-metadata.json`; App metadata additionally records the UTC
+  artifact Build Date in `YYYY-MM-DD` form and embeds that same immutable value
+  in the client. Server embeds version, commit, and deterministic commit time in
+  its executable.
+- Each repository `scripts/build.sh` validates version and image inputs, builds
+  from its lockfile, and then verifies required runtime assets, provenance
+  metadata, and the absence of environment, credential, and Git files from the
+  application payload. Invalid or missing inputs fail closed.
+- Each runtime repository also owns `scripts/package-image.sh`. It requires a
+  clean exact checkout whose source version matches `PRODUCT_VERSION`, invokes
+  the verified image build, and emits an image archive, deterministic metadata,
+  and a SHA-256 sidecar. Manual CI candidate jobs use these same secret-free
+  entry points; they do not publish or deploy.
+- Candidate metadata schema 2 records the component and exact immutable image
+  reference in addition to its image ID. The App tag and metadata include its
+  public configuration profile plus the normalized SHA-256 fingerprint of the
+  five compile-time public settings. App, Server, and Website start entry
+  points use `--pull never` so deployment cannot silently substitute a missing
+  image from a registry.
+- Candidate packaging disables BuildKit's automatically generated default
+  attestation because its run-specific metadata changes the manifest-list
+  identity. Version, revision, input-set digest, image identity, and artifact
+  checksum remain in deterministic metadata and the release manifest. Future
+  CI may attach a signed external attestation to the accepted artifact digest
+  without rebuilding or changing the artifact.
+- The Server runtime image includes `docs/openapi.yaml` and
+  `config/default_categories.json` alongside the executable. The App and
+  Website runtime images contain only their nginx configuration and compiled
+  static output.
+- The Server image build performs no Alpine package installation. Go embeds the
+  IANA timezone database, and the API healthcheck uses BusyBox `wget` already
+  present in the selected Alpine runtime image, so Alpine package-index
+  availability is not a Server image-build dependency.
+
+## Configuration Synchronization
+
+- Each runtime repository ignores `.env*` and tracks only `.env.example` as its
+  explicit configuration catalog. Existing local variants remain untracked.
+- Each `.env.example` documents accepted values, formats, units, and operational
+  meaning where a key is not self-explanatory. Every assignment is active;
+  operators change values directly rather than enabling configuration by
+  uncommenting lines.
+- Optional Server capabilities use explicit lowercase boolean settings such as
+  `SMTP_ENABLED`. Disabled capability values remain present but are ignored by
+  API startup validation. MongoDB/MySQL lifecycle has no enable flag: the
+  selected dependency script determines which container project is managed.
+- Server database URIs may reuse earlier atomic values with `${NAME}` so each
+  username, password, and database name has one definition. Docker Compose and
+  the Server dotenv loader expand this form; shell default expressions such as
+  `${NAME:-default}` are not portable across both loaders.
+- Direct local and Docker-specific MongoDB/MySQL URIs both derive credentials,
+  ports, and database names from the same earlier atomic keys. Direct runtime
+  routes use the published host ports; Docker routes use configured container
+  names and internal ports on the shared network. Compose injects the Docker URI
+  variables directly and does not rebuild them with credential, port, or
+  database fallback constants.
+- `../scripts/sync-env.sh` owns workspace environment-template synchronization.
+  Without arguments it preserves the legacy `.env` behavior. `--profile local`,
+  `--profile testing`, and `--profile production` target the corresponding
+  ignored named profile. Missing files are created from `.env.example`; missing
+  keys are appended without overwriting configured values. `--check` is a
+  read-only, value-free structural check that also rejects duplicate keys.
+- Run synchronization after changing any implementation `.env.example`.
+- `../scripts/configure-local-env.sh` creates or updates `.env.local` and selects the standard loopback ports,
+  shared network, and Docker frontend for all local runtime projects. It creates
+  strong local-only secrets only when a required value is empty or still a
+  placeholder, preserves existing configured secrets, and never reads Testing
+  or Production environment files or prints secret values. Operators may select
+  a profile with `ENV_FILE=.env.<profile>` or with a safe repository-local
+  `.env` symbolic link.
+- Each runtime project may keep ignored `.env.local`, `.env.testing`, and
+  `.env.production` files for owner-managed sensitive deployment values. The
+  synchronization workflow must not inspect or maintain their contents without
+  explicit owner authorization.
+- When the owner authorizes Testing or Production reconciliation, use the latest
+  tracked `.env.example` as the structural authority and the corresponding
+  deployed environment file as the authority for environment-specific secrets.
+  Compare key sets, duplicate keys, file modes, and value fingerprints without
+  printing values. Keep the local and deployed files for the same environment
+  byte-identical after reconciliation, but never copy secrets between Testing
+  and Production.
+- Runtime lifecycle scripts use `.env` by default and accept a repository-local
+  override through `ENV_FILE`. `.env` and an explicit `ENV_FILE` may be symbolic
+  links when their fully resolved targets remain regular files inside the owning
+  repository; broken links and links resolving outside the repository are
+  rejected. Build permits placeholders; start rejects relevant `CHANGE_ME`,
+  invalid booleans, and known legacy weak values without printing their contents.
+  Server start validates only its selected database and enabled capabilities.
+  Stop requires the selected file but does not validate values.
+- After changing a deployed environment file, compare selected parsed file
+  values with the running container through non-reversible fingerprints. If the
+  runtime still has old values, explicitly recreate the stateless application
+  container while preserving databases and volumes. Reload the host reverse
+  proxy when it resolves container addresses at configuration-load time, then
+  verify internal readiness and the public health, version, and affected
+  capability endpoints.
+
+## Coordinated environment lifecycle
+
+`../scripts/environment-lifecycle.sh` is the Spec-owned coordination entry
+point for a selected `local`, `testing`, or `production` profile and a selected
+`mongodb` or `mysql` dependency. It exposes explicit `preflight`, `build`,
+`start`, `status`, `doctor`, `logs`, and `stop` phases. Preflight verifies the
+three repository catalogs, selected database, shared network and container
+frontend, published-port uniqueness, container and Compose project identities,
+required secrets, and lifecycle entry points without printing configured values.
+
+Build and start follow dependency → Server → App → Website order. Start uses
+each repository's health gate before continuing. Stop follows reverse order and
+only manages components recorded as started by the current coordinator run;
+pre-existing healthy components are left outside coordinator state. A partial
+start or health-gate failure emits the selected repository's value-free status
+and doctor evidence, then rolls back only recorded components. An existing
+degraded container is never claimed or mutated. Repository stop scripts preserve
+images, named volumes, and bind-mounted data.
+
+Example:
+
+```bash
+bash scripts/environment-lifecycle.sh preflight --profile local --database mongodb
+bash scripts/environment-lifecycle.sh build --profile local --database mongodb
+bash scripts/environment-lifecycle.sh start --profile local --database mongodb
+bash scripts/environment-lifecycle.sh status --profile local --database mongodb
+bash scripts/environment-lifecycle.sh stop --profile local --database mongodb
+```
+- Server dependency lifecycle scripts use the same file-selection boundary.
+  Their starts validate only credentials owned by the selected dependency;
+  their builds permit incomplete credentials and their stops remain available
+  without credential validation.
+- MongoDB and MySQL storage defaults remain the named volumes
+  `cashlenx-mongodb-data` and `cashlenx-mysql-data`. Operators may change the
+  matching `*_DATA_VOLUME_NAME`, or set an absolute `*_DATA_PATH` to use a host
+  bind mount. Relative paths, filesystem roots, and parent traversal are
+  rejected by dependency start. Changing the selected source does not copy,
+  migrate, or delete data, and dependency stop preserves both storage forms.
+- `cashlenx-server/docker/dependencies/images.env` owns the readable database
+  tags, exact patch versions, and immutable digests. Lifecycle scripts give
+  these tracked pins precedence over owner environment files and verify the
+  image-reported version before use.
+- MongoDB start mounts the selected data source read-only in the pinned image
+  and inspects the container-visible filesystem before initialization. Approved
+  native filesystems include ext4 and XFS; 9p/v9fs, DrvFS, CIFS/SMB, NFS,
+  FUSE, virtiofs, and unknown types fail closed with non-destructive
+  remediation. Readiness requires the final PID 1 `mongod` plus an
+  authenticated ping.
+- `TIMEZONE` is the only operator-facing Server timezone setting. Compose maps
+  it to the API, MongoDB, and MySQL containers' standard `TZ` environment value.
+  The supported contract is `UTC` or a region-based IANA name such as
+  `Asia/Shanghai`. Every start entry point rejects fixed offsets, ambiguous
+  abbreviations, and POSIX-sign `Etc/GMT` forms by key name before creating its
+  container. API startup also verifies the name against the Go timezone
+  database; Compose itself only passes the selected string through.
+
+## Operational Endpoints
+
+- `METRICS_ENABLED` controls the unversioned Prometheus `/metrics` endpoint. It defaults to enabled outside production and disabled in production when omitted.
+- Production may enable metrics only with a non-placeholder `METRICS_BEARER_TOKEN` of at least 32 characters. Monitoring callers send it as a Bearer token; network or reverse-proxy restrictions remain defense in depth.
+- Pprof endpoints are registered only when `ENV=dev`.
+
+## Production Request Security
+
+- API startup validates configuration before database initialization. Production rejects weak or placeholder JWT/bootstrap credentials, non-HTTPS or wildcard CORS origins, invalid rate-limit values, and an enabled metrics endpoint without a strong token. Validation messages name keys without printing values.
+- Production CORS is an exact HTTPS allowlist. Requests carrying a disallowed origin fail with `403 Forbidden`; development and test retain dynamic loopback-port support.
+- `API_RATE_LIMIT_REQUESTS_PER_MINUTE` and `API_RATE_LIMIT_BURST` configure the in-process token bucket. Buckets use the direct TCP peer, so a host reverse proxy is treated as one aggregate peer. The ingress may enforce stricter public per-client limits but must not weaken the server guard.
+- Request access logs omit query strings and record the escaped path only.
+
+## UAT Deployment Mechanics
+
+The current Testing host uses `/workspace/macacloud/cashlenx` as its logical
+CashLenX workspace root. Its Server worktree is
+`/workspace/macacloud/cashlenx/server`, which corresponds to the local
+`server/` project in the outer workspace. Run Testing Server lifecycle commands
+from that remote worktree and keep its owner-managed `.env.testing` file
+untracked with mode `0600`.
+
+Build every affected image before starting services. In each affected project directory:
+
+```bash
+scripts/build.sh
+scripts/start.sh
+```
+
+If the UAT database is project-managed, explicitly prepare and start the selected
+dependency before the Server by running its dependency `build.sh` and
+`start.sh`. Start the Server next, then the Flutter web app, then the
+product-introduction website. Each `start.sh` waits for its project Compose
+healthcheck. To remove a project's runtime container while retaining its image
+and persistent data, run `scripts/stop.sh` in that project. The final stop also
+removes the now-unused shared network.
+Reverse-proxy routing and TLS remain owned by the UAT host and are outside the
+project-local scripts.
+
+The Testing Nginx ingress resolves the `cashlenx-server:10063` upstream on the
+shared `cashlenx-network`. After recreating the Server container, validate and
+reload Nginx so it drops any cached address for the former container, then
+verify the public Testing health endpoint. A healthy Server container or host
+port alone does not prove that the public ingress route is healthy.
+
+This sequence describes mechanics only. Deployment requires an explicit current
+instruction after every applicable gate passes and the external target and
+credentials are configured. Target, implementation refs, results, migration
+state, and current deployment state still require separate evidence outside
+`facts/`.
+
+Deployment authorization and deployment access are different facts. Standing
+or explicit authority permits the operation, but the executing machine must
+also have the approved non-echoing remote-access profile and host connectivity.
+Do not reinterpret a missing credential profile as missing Human authority,
+and do not ask the operator to place credentials in chat, Jira, logs, command
+arguments, or Git. Owner-managed remote-access profiles remain mode `0600` and
+outside the repositories. Bash is the portable automation contract and Zsh may
+invoke the same entry points interactively. PowerShell and `pwsh` are not active
+release or deployment dependencies; retained PowerShell scripts are legacy
+evidence only.
+
+For an accepted Production release, an explicit `main` promotion instruction
+covers one ordered operation across the affected repositories. The App's
+branch-triggered Production publication must finish and its public runtime
+identity must be verified first. When Server is affected, the exact Server
+`main` revision must then be deployed through the approved Bash entry point and
+verified through container-local health, public ingress, runtime identity,
+selected-database connectivity and migration state, absence of unintended host
+ports, and rollback readiness. These are separate evidence records even though
+they share one release instruction. Missing access or Bash deployment tooling
+leaves the release incomplete and must not be hidden by a successful branch
+push.
+
+After recording the Jira blocker scan, validate an App-only candidate with no
+Server or persistence change by running:
+
+```bash
+bash scripts/release-gate.sh \
+  --affected-components app \
+  --database unchanged \
+  --jira-preflight-reference "CLV-15 comment 10250"
+```
+
+The Bash gate creates detached clean worktrees, validates only affected
+repository versions and tests, verifies the retained App/Server OpenAPI copy,
+packages affected images and source archives twice, compares identities and
+checksums, runs the built-client browser journey, and writes a checksummed
+secret-free manifest under `.artifacts/release-gates/`. It reads tracked release
+inputs and local development configuration only; it never reads Testing or
+Production environment files and performs no tag, promotion, publication,
+deployment, migration, or production-acceptance action.
+
+Server releases with no database or persistence-boundary change may pass the
+candidate gate with `--database unchanged`; the gate compares the delivered
+`origin/main` commit to the candidate and fails when a database-sensitive path
+changed. Persistence-changing releases and controlled Server deployment remain
+fail-closed until the legacy dual-database rehearsal and deployment capabilities
+have Bash replacements. The retained PowerShell scripts are not accepted entry
+points.
+
+## Database-Level Data Protection
+
+The Server owns `scripts/data-protection/backup.sh` and
+`scripts/data-protection/restore-drill.sh`. These protect the complete selected
+MongoDB or MySQL database, including migration state. They complement rather
+than replace application JSON export/import.
+
+The backup entry point accepts `daily`, `weekly`, or `monthly`, requires a
+separate one-line passphrase file, checks destination safety and free capacity,
+creates a consistent logical dump, writes metadata and internal checksums,
+encrypts the package, and publishes an external SHA-256 sidecar atomically. It
+prunes only matching completed artifacts inside the selected tier after a new
+artifact succeeds. Defaults retain 7 daily, 4 weekly, and 12 monthly artifacts.
+
+The deployment scheduler runs the daily tier every day, weekly and monthly tiers
+in their selected windows, serializes runs, and alerts on a non-zero exit or a
+stale secret-free `status/latest.json`. Backup storage, passphrase custody, and
+notification delivery use failure domains separate from the application node.
+The intended recovery point is 24 hours and the intended recovery time is 4
+hours.
+
+The restore-drill entry point verifies both checksum layers, decrypts into a
+restricted temporary directory, rejects unsafe archive paths, restores into an
+unnetworked disposable database container, verifies database objects and
+migration state, emits secret-free JSON evidence, and removes the container and
+plaintext on exit. Run it quarterly and after database, migration, encryption,
+or backup-tool changes.
+
+Capacity failure occurs before dumping. Dump, encryption, checksum, or publish
+failure cannot prune prior completed backups. Missing or mismatched checksums,
+wrong keys, corrupt input, missing migration state, and empty restores fail the
+drill. A real production restore is intentionally not automated: it requires a
+compatible recovery plan, verified artifact, rollback readiness, and explicit
+authorization before production data is touched.
+
+## MongoDB Migration State
+
+MongoDB records ordered migration filename, SHA-256 checksum, dirty state, and
+timestamps in the application database's `schema_migrations` collection. The
+first tracked startup safely runs the idempotent sequence against either a fresh
+or compatible existing installation. Dirty, unknown, reordered, renamed, or
+modified history blocks API startup.
+
+Deployment-level database or volume backups must include this collection.
+Application JSON backup/restore intentionally preserves rather than replaces
+schema history. Recover a dirty or incompatible installation from a verified
+database backup, or use an explicitly reviewed data/index repair plan; do not
+treat manual ledger edits as routine recovery.

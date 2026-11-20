@@ -14,7 +14,7 @@ This record preserves the 2026-07-30 readiness audit that preceded the consolida
 - [ ] Confirm the develop branches and implementation refs that define the baseline.
 - [x] Consolidate the former server `v0.10.0` hardening boundary into the Jira `v1.0.0` delivery record.
 - [ ] Record fresh app analyze/tests, server tests, MongoDB smoke, MySQL smoke, and website build evidence when those project areas are included.
-- [ ] Promote verified durable facts into `../system/` and retain deferred scope in this backlog.
+- [ ] Promote verified durable facts into `../facts/` and retain deferred scope in this backlog.
 - [x] Retire the former beta boundary without opening a standalone snapshot; current delivery is controlled in Jira.
 
 ## Latest Readiness Audit

@@ -1,231 +1,79 @@
-# Versions
+# Version ladder
 
-This directory preserves completed repository-local delivery evidence and provides templates for explicit closeout snapshots. Jira Product Discovery project `CLV` owns the authoritative exact-version catalog; Jira project `CLX` owns task contracts, validation summaries, implementation refs, and delivery state.
+One row per product version. The row and the `version/X.Y.Z` tag on a `develop`
+commit are the identity of the version; `X.Y.Z.md` in this directory is its
+record. Current behaviour is in `../facts/`; deferred work is in `../backlog/`.
 
-Current behavior belongs in `../system/`. Deferred candidates belong in `../backlog/`. A closed version is delivery evidence, not the current source of truth.
+Columns:
 
-## Version Index And Retained Evidence
+- **version** — the product version.
+- **commit** — the version's identity commit, written in full when it is known.
+  A pre-standard version whose commit could not be resolved from its record
+  carries `—`; it stays untagged rather than guessed.
+- **deployment** — the served identity where the version deployed, or `none`.
+  Deployment is never implied by the row's status.
+- **status** — `closed` / `accepted` for a version with an accepted record;
+  `pre-standard` for a version whose record was converted from the older
+  `versions/`, release-note or Jira-only layout; `specification only` for a
+  version that changed no artifact bytes.
+- **scope** — what the version delivered.
+- **record** — the record file, or the Jira Idea that holds it for a version with
+  no repository record.
 
-- The complete stable-version identity index is
-  [release/version-catalog.md](../release/version-catalog.md). Jira owns current
-  version state; the entries below retain delivery observations and historical
-  context rather than an independently maintained live status catalog.
-- `v0.2.0` through `v0.8.0` are closed. The online-design parity series and the
-  deployment-script lifecycle consolidation are complete.
-- `v0.8.1-env-example-and-selection` is closed.
-- `v0.8.2-env-example-guidance` is closed with accepted formats, units, and
-  operational meaning documented in every tracked environment example.
-- `v0.8.3-dependency-lifecycle-and-env-reuse` is closed with isolated database
-  lifecycle entry points and single-definition database configuration values.
-- `v0.8.4-explicit-env-controls` is closed with active assignments, explicit
-  capability switches, and one application/container timezone key.
-- `v0.8.5-timezone-contract` is closed with a shared unambiguous timezone format
-  contract for the Server application and containers.
-- `v0.8.6-configurable-persistence-storage` is closed with configurable database
-  named-volume identities and absolute host bind paths.
-- `v0.8.7-derived-database-uris` is closed with database URI values derived from
-  one set of atomic credentials, ports, and database names.
-- `v0.8.8-runtime-image-package-independence` is closed with an APK-independent
-  Server image build and retained health/timezone behavior.
-- `v0.8.9-shared-docker-network-and-layout` is closed with one external network
-  shared by application and dependency containers and a project-local Docker
-  definition layout.
-- The former beta and `v0.10.0` planning boundaries are consolidated into the first stable `v1.0.0` delivery record. `../backlog/beta-baseline.md` remains historical readiness evidence rather than an active version plan.
-- Product implementation remains pre-release while the accepted stable contract is now canonical at `/api/v1`; `/api/v0` remains a frozen previous-client alias.
-- Stable-release and delivery-workflow decisions are recorded in `../decisions/0001-stable-release-api-auth-and-capability-policy.md`, `../decisions/0002-jira-controlled-delivery-with-project-local-advancement.md`, and `../decisions/0004-agent-led-jira-intake-and-version-archives.md`.
-- [CLV-7](https://macacloud.atlassian.net/browse/CLV-7) is the authoritative
-  `v1.0.0` version record. Its retained candidate evidence is historical;
-  subsequent implementation and delivery must be read from their exact CLV
-  records rather than inferred from this baseline.
-- [CLV-8](https://macacloud.atlassian.net/browse/CLV-8) is the authoritative
-  `v1.0.1` version record for compatible follow-up maintenance.
-- [CLV-10](https://macacloud.atlassian.net/browse/CLV-10) is the authoritative
-  `v1.0.3` record for the unified identity. Its Website source was promoted
-  unchanged to `main` as the Website component retained by v1.0.4; App and
-  Server advanced to v1.0.4 before their `main` promotion.
-- [CLV-11](https://macacloud.atlassian.net/browse/CLV-11) is the authoritative
-  active `v1.0.4` delivery boundary for category and statistics correctness.
-  Testing acceptance passed and the exact App, Server, and retained Website
-  candidates were fast-forwarded from `testing` to `main`. App static Web
-  publication and Website Vercel Production deployment succeeded. No release
-  tag, Server runtime deployment, shared-environment migration, or
-  whole-product production acceptance is implied.
-- [CLV-14](https://macacloud.atlassian.net/browse/CLV-14) is the authoritative
-  active `v1.0.7` boundary for range-consistent dashboard/statistics behavior
-  and account-backed setup restoration across devices. Implementation work is
-  tracked by CLX-74, CLX-75, and CLX-76; no Testing promotion, tag,
-  publication, deployment, migration, or production acceptance is implied.
-- [CLV-15](https://macacloud.atlassian.net/browse/CLV-15) is the authoritative
-  `v1.0.8` boundary for promoting Transactions to primary navigation, moving
-  Category Management under Settings, and replacing the dashboard category
-  chart with the Financial Insights entry. CLX-81 owns the completed App work;
-  delivery evidence is recorded separately from deployment and acceptance.
-- [CLV-16](https://macacloud.atlassian.net/browse/CLV-16) is the authoritative
-  `v1.0.9` boundary for the completed About, dashboard-context, slogan, and
-  release-identity work in CLX-77 through CLX-80. Its App changes reached
-  `main` cumulatively with the accepted v1.1.0 candidate.
-- [CLV-17](https://macacloud.atlassian.net/browse/CLV-17) is the authoritative
-  `v1.0.10` boundary for consistent selected-currency presentation and
-  Settings-owned preferences. Its App changes reached `main` cumulatively with
-  the accepted v1.1.0 candidate.
-- [CLV-18](https://macacloud.atlassian.net/browse/CLV-18) is the authoritative
-  `v1.1.0` boundary for the polished registration verification journey and
-  branded HTML verification email. Exact App and Server candidates were
-  fast-forwarded from `testing` to `main`; App Production static Web
-  publication and the App/Server main workflows succeeded. The exact Server
-  candidate `b799edc9288342de5b6d701d625aa01a6c41db05` is deployed to Testing
-  and Production as `1.1.0`; both public health and version checks pass, with
-  retained environment-specific rollback images. Website was unchanged. No
-  release tag, database execution, provider email, or whole-product production
-  acceptance was performed.
-- [CLV-19](https://macacloud.atlassian.net/browse/CLV-19) is the authoritative
-  `v1.1.1` boundary for the App accessibility, URL coherence, semantic dark
-  surfaces, Budget precision and localization, responsive transaction entry,
-  reduced motion, and focused UI regression coverage. Server and Website are
-  unchanged by that version. CLV-19 records successful App Testing promotion
-  and static publication for `a74effd` on 2026-10-13; subsequent source history
-  is recorded separately. CLX-102 is later prepared inventory in `Ready (App)`
-  and is not selected or completed by the current reconciliation. Release
-  tags, runtime deployment, database execution, and production acceptance
-  remain separate states.
-- CLX items use matching exact-version labels and
-  Product Discovery delivery links. CLV owns version identity; labels support
-  queries and do not form a second authority.
-- [CLV-21](https://macacloud.atlassian.net/browse/CLV-21) owns the selected
-  `v1.1.3` App environment-configuration patch in CLX-103. The owner later
-  selected preservation of existing Testing history in `develop` before a
-  verified forward promotion. The [release note](../release/notes/1.1.3.md)
-  records exact source identities, the retained Server migration, the initial
-  failed prerequisite, the later accepted isolated MongoDB/MySQL gate and the
-  verified Testing fast-forward/CI/static-publication evidence. CLV-20 retains
-  the independently prepared
-  `v1.1.2` API performance scope.
-  On 2026-10-23, the owner-authorized App-only follow-up fast-forwarded Main to
-  `8e6e511` and successfully published to `cashlenx-app-release-main/main` with
-  the fixed `emmett-ola` identity. The initial public App check returned Vercel
-  `DEPLOYMENT_NOT_FOUND`. After the owner reported recovery, public App files
-  returned 200 and matched the immutable release; browser entry rendering and
-  canonical API health/version checks passed. The hosting blocker is resolved.
-  Server and Website were not promoted or deployed by this App operation.
+## Ladder
 
-Do not create a version directory for active planning, routine Jira work, or an audit. Create a repository-local snapshot only when durable closeout evidence explicitly needs to live with the specification.
+| Version | Commit | Deployment | Status | Scope | Record |
+| --- | --- | --- | --- | --- | --- |
+| 0.2.0 | — | none | closed (pre-standard) | Online-source design authority, Flutter tokens, shared control geometry, cash-flow semantics | [0.2.0](0.2.0.md) |
+| 0.3.0 | — | none | closed (pre-standard) | Splash, onboarding, authentication and currency/setup visual parity | [0.3.0](0.3.0.md) |
+| 0.4.0 | — | none | closed (pre-standard) | Date-range filtering, filter chips, result summary, empty-state recovery | [0.4.0](0.4.0.md) |
+| 0.5.0 | — | none | closed (pre-standard) | Finance surfaces split by feature, reporting APIs, user-scoped budgets | [0.5.0](0.5.0.md) |
+| 0.6.0 | — | none | closed (pre-standard) | Profile and settings truth without unsupported persistence | [0.6.0](0.6.0.md) |
+| 0.7.0 | — | none | closed (pre-standard) | Multi-viewport visual acceptance, regression closeout, fact synchronization | [0.7.0](0.7.0.md) |
+| 0.8.0 | — | none | closed (pre-standard) | Uniform image build, health-gated start, persistence-safe stop | [0.8.0](0.8.0.md) |
+| 0.8.1 | — | none | closed (pre-standard) | Tracked environment-example convention, lifecycle selection | [0.8.1](0.8.1.md) |
+| 0.8.2 | — | none | closed (pre-standard) | In-template guidance for environment formats, units and meaning | [0.8.2](0.8.2.md) |
+| 0.8.3 | — | none | closed (pre-standard) | Explicit MongoDB/MySQL lifecycle scripts, single-definition values | [0.8.3](0.8.3.md) |
+| 0.8.4 | — | none | closed (pre-standard) | Active environment assignments, enable-aware validation, one timezone key | [0.8.4](0.8.4.md) |
+| 0.8.5 | — | none | closed (pre-standard) | Shared UTC-or-IANA timezone contract for application and containers | [0.8.5](0.8.5.md) |
+| 0.8.6 | — | none | closed (pre-standard) | Configurable named volumes and absolute host bind paths | [0.8.6](0.8.6.md) |
+| 0.8.7 | — | none | closed (pre-standard) | Database URIs derived from atomic credentials, ports and names | [0.8.7](0.8.7.md) |
+| 0.8.8 | — | none | closed (pre-standard) | APK-independent Server image with embedded timezone data | [0.8.8](0.8.8.md) |
+| 0.8.9 | — | none | closed (pre-standard) | One shared external network, Docker definitions under each project | [0.8.9](0.8.9.md) |
+| 1.0.0 | — | not recorded | pre-standard (release-candidate note) | First stable release: `/api/v1` with `/api/v0` alias, email-or-username login, reproducible candidate artifacts | [1.0.0](1.0.0.md) |
+| 1.0.1 | — | not recorded | pre-standard (Jira only) | Compatible follow-up maintenance | Jira CLV-8 |
+| 1.0.2 | — | not recorded | pre-standard (Jira only) | Reproducible environment bootstrap | Jira CLV-9 |
+| 1.0.3 | — | not recorded | pre-standard | Unified brand identity across app, web metadata and website | [1.0.3](1.0.3.md) |
+| 1.0.4 | — | not recorded | pre-standard | Category and statistics correctness | [1.0.4](1.0.4.md) |
+| 1.0.5 | — | not recorded | pre-standard | Reliable localized entry experience | [1.0.5](1.0.5.md) |
+| 1.0.6 | — | not recorded | pre-standard (Jira only) | Reliable transaction activity, responsive profile editing | Jira CLV-13 |
+| 1.0.7 | — | not recorded | pre-standard (Jira only) | Consistent financial context across views and devices | Jira CLV-14 |
+| 1.0.8 | — | not recorded | pre-standard | Transactions as primary navigation, category management under settings | [1.0.8](1.0.8.md) |
+| 1.0.9 | — | not recorded | pre-standard (Jira only) | About, dashboard context, slogan and release identity | Jira CLV-16 |
+| 1.0.10 | — | not recorded | pre-standard (Jira only) | Selected-currency presentation and settings-owned preferences | Jira CLV-17 |
+| 1.1.0 | — | Server `b799edc9288342de5b6d701d625aa01a6c41db05` on Testing and Production; App static publication | pre-standard | Polished registration verification, branded HTML verification email | [1.1.0](1.1.0.md) |
+| 1.1.1 | — | App Testing promotion and static publication | pre-standard | Accessibility, URL coherence, semantic dark surfaces, Budget precision, responsive entry, reduced motion | [1.1.1](1.1.1.md) |
+| 1.1.2 | — | not recorded | pre-standard (Jira only) | Fast and observable API experience; prepared, not selected | Jira CLV-20 |
+| 1.1.3 | — | App `8e6e511a174c439d9f5bed9d3e67e584461781fd` on `main` and published `cashlenx-app-release-main/main`; Server and Website unchanged | pre-standard | Environment-driven App configuration patch, isolated dual-database candidate gate, verified Testing and Main delivery | [1.1.3](1.1.3.md) |
+| 1.1.4 | — | none | specification only | Convert the specification repository to the ASIDE shape: `facts/`, one ladder, one record per version | [1.1.4](1.1.4.md) |
 
-## Historical Online-Design Parity Series
+## Rules
 
-The series uses the live Figma Make file as the visual reference and treats the
-local React/Vite export as a validated cache only when its relevant files match
-the online source.
-
-| Order | Version | State | Delivery boundary |
-| --- | --- | --- | --- |
-| 1 | `v0.2.0-online-design-foundation` | Closed | Online-source authority, Flutter design tokens, shared control geometry, and consistent cash-flow semantics. |
-| 2 | `v0.3.0-entry-flow-parity` | Closed | Splash, onboarding, authentication, and currency/setup visual parity while retaining real app behavior. |
-| 3 | `v0.4.0-transaction-discovery-parity` | Closed | Date-range filtering, active filter chips, result summary, empty-state recovery, and focused tests. |
-| 4 | `v0.5.0-finance-shell-boundaries` | Closed | Split high-change finance surfaces by feature, integrate reporting APIs, and deliver user-scoped budget workflows. |
-| 5 | `v0.6.0-profile-settings-truth` | Closed | Profile/settings parity without pretending unsupported fields or prototype statistics are persisted. |
-| 6 | `v0.7.0-design-parity-acceptance` | Closed | Multi-viewport visual acceptance, regression closeout, durable fact synchronization, and residual-gap disposition. |
-
-## Subsequent Delivery Boundaries
-
-| Version | State | Delivery boundary |
-| --- | --- | --- |
-| `v0.8.0-deployment-script-lifecycle` | Closed | Uniform image build, health-gated image start, and persistence-safe project stop entry points. |
-| `v0.8.1-env-example-and-selection` | Closed | Tracked environment example convention and repository-local lifecycle selection. |
-| `v0.8.2-env-example-guidance` | Closed | In-template guidance for environment value formats, units, constraints, and operational meaning. |
-| `v0.8.3-dependency-lifecycle-and-env-reuse` | Closed | Explicit MongoDB/MySQL lifecycle scripts and single-definition database environment values. |
-| `v0.8.4-explicit-env-controls` | Closed | Active environment assignments, enable-aware validation, and one application/container timezone source. |
-| `v0.8.5-timezone-contract` | Closed | UTC or region-based IANA timezone validation shared by the Server application and containers. |
-| `v0.8.6-configurable-persistence-storage` | Closed | Configurable MongoDB/MySQL named volumes and absolute host bind paths with persistence-safe lifecycle behavior. |
-| `v0.8.7-derived-database-uris` | Closed | Local and Docker database URIs derived without duplicated credential, port, or database constants. |
-| `v0.8.8-runtime-image-package-independence` | Closed | APK-independent Server image build using embedded timezone data and the base image health utility. |
-| `v0.8.9-shared-docker-network-and-layout` | Closed | Shared external network lifecycle, container-DNS dependency routes, and Docker definitions under each project's `docker/` tree. |
-
-Use CLV version Ideas, Product Discovery delivery links, and optional CLX workstream items to select and sequence active delivery. Each app-affecting
-version advances the app's `pubspec.yaml` version and records its repository
-commit independently from the spec commit.
-
-## Record Selection
-
-| Work level | Required active record |
-| --- | --- |
-| Lightweight | Jira is optional unless the work is already tracked or benefits from shared visibility. |
-| Standard | CLX story or task connected to the selected CLV version Idea. |
-| High-impact | Jira issue with the task contract, triggered evidence, and recorded Human decision. |
-
-A repository-local closeout snapshot is optional and must not duplicate active Jira state. Promote Lightweight work to Standard when it changes external behavior or a controlled API, schema, auth, workflow, state, compatibility, migration, or deployment boundary. Promote Standard work to High-impact when a Human gate or substantial migration, security, recovery, or rollout plan is required.
-
-## Version Naming And Buckets
-
-Name CLV version Ideas `vX.Y.Z — outcome`. When an explicit repository snapshot is required, use `vX.Y.Z-short-name/`.
-
-- `v0.x`: beta and pre-stable product versions. The accepted stable compatibility boundary has opened at `/api/v1`; `/api/v0` remains a frozen alias while release readiness completes.
-- `v1.0.0`: first stable release gate.
-- Patch versions: compatible fixes, refactors, internal maintenance, and operational improvements.
-- Minor versions: compatible user, product, or platform capabilities.
-- Major versions: breaking compatibility or an intentional product or platform reset.
-
-Keep one active release line by default and label its CLX work `release-line-vX-Y` plus exactly one `version-vX-Y-Z`. Closeout of one patch does not archive the whole line. When an exact version closes and the next delivery boundary opens, record final evidence and use CLV's native Idea archive. Completed CLX work remains in place with full history.
-
-Version numbers express product delivery scope. They do not imply deployment, publication, branch promotion, or release tags.
-
-## Implementation Version Policy
-
-The durable policy is owned by `../decisions/0002-jira-controlled-delivery-with-project-local-advancement.md`, `../decisions/0004-agent-led-jira-intake-and-version-archives.md`, and `../decisions/0005-clv-authoritative-version-catalog.md`. Apply it directly rather than restating it in each retained version record. Every CLV version Idea and explicit snapshot identifies affected project areas, their resulting runtime or displayed versions, and any separately authorized release, tag, publication, or deployment action under `../WORKFLOW.md`.
-
-## Retained Record State Semantics
-
-The following states describe records already retained in this directory and do not replace the active Jira workflow:
-
-- `Draft`: boundary or task contract is still being formed.
-- `Ready`: scope and required decisions are sufficient to start implementation.
-- `WIP`: implementation or documentation synchronization is in progress.
-- `Testing`: scoped implementation is complete and acceptance evidence is being collected.
-- `Closed`: done condition and triggered evidence are accepted.
-- `Cancelled`: the version will not continue; retained decisions or deferred work have been moved to their canonical owners.
-
-Deployment states are `Not deployed`, `Testing`, `Production`, and `N/A`.
-
-`Closed` does not imply deployment. Do not close a version merely because code exists, and do not keep a version open merely because deployment has not occurred.
-
-## Template
-
-Use `_template/` when opening a version:
-
-- `README.md`: required compact task contract, delivery result, validation, states, refs, and close gate.
-- `requirement.md`: optional High-impact scope, evidence, and material decisions.
-- `developing.md`: optional High-impact implementation, migration, recovery, compatibility, or rollout detail.
-- `testing.md`: optional detailed scenario evidence when it does not fit the compact record.
-
-Do not add optional files with empty placeholders. Create only the evidence areas triggered by the work.
-
-## Optional Snapshot Workflow
-
-1. Classify the work through `../WORKFLOW.md`.
-2. Use the selected CLV version Idea and connected CLX work items for active delivery.
-3. Implement repository by repository while preserving independent build and runtime boundaries.
-4. Validate touched repositories in proportion to changed behavior and risk and record the summary and refs in Jira.
-5. Promote durable behavior into `../system/` before closing and archiving the CLV version Idea.
-6. Move deferred or rejected ideas into `../backlog/`.
-7. Add an ADR under `../decisions/` only when a choice should remain discoverable after the version closes.
-8. Create `versions/vX.Y.Z-short-name/` only when an explicit repository-local closeout snapshot is required; include only evidence that must remain with the spec.
-
-## Version Close Gate
-
-### Required
-
-- The scoped done condition is satisfied.
-- Relevant validation passes and known limits are explicit.
-- Workflow state, deployment state, validation owner/date, and implementation refs are recorded.
-- Durable current facts are updated in the canonical `system/` document.
-- Deferred work is moved to `backlog/` or retained as an explicit open question.
-- Repository state and compatibility with untouched clients or repositories are checked.
-
-### Enhanced When Triggered
-
-- API, schema, auth, workflow, or state changes include positive and negative contract evidence.
-- Migrations or data rewrites include existing-data behavior, repeat safety, and recovery evidence.
-- Security, privacy, credential, or file changes include authorization and sensitive-data evidence.
-- Deployment evidence records target, timing, reversibility, compatibility, and authorization.
-- A Human decision and approver/date are recorded only when a Human gate was triggered.
-
-After closeout, `system/` is authoritative and the version remains historical evidence.
+- A version's commit column carries the version's identity — the commit its
+  `version/X.Y.Z` tag points at, or the delivery commit when the version carries
+  no tag. A record-only commit made afterwards is named in the version record and
+  is never substituted here. The row that completes a record belongs to the row
+  it updates and needs no separate listing.
+- New work never adds a `not a version` row. A change that alters no artifact
+  bytes rides the version it serves and is listed in that version's record.
+- Rows above `1.1.4` are pre-standard: their records were converted mechanically
+  from the earlier `versions/vX.Y.Z-*/` directories, the release notes and the
+  Jira version catalog on 2026-11-20, and the conversion record states what moved
+  where. Their acceptance, promotion and deployment states are the ones their
+  record already stated; nothing was re-verified by the conversion.
+- No `version/X.Y.Z` tag exists yet in any repository. Creating one is a separate
+  controlled action; from `1.1.4` onward a tag is placed on the commit the row
+  names, on `develop`.
+- Version numbers express delivery scope. They do not imply acceptance,
+  deployment, publication or promotion.
+- `VERSION` in this directory holds the newest version in this table.

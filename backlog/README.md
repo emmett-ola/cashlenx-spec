@@ -38,9 +38,9 @@ maintained in `design-parity-api-integration.md`.
   secrets, operational endpoints, and shared-cache decisions only if
   multi-instance deployment is adopted.
 - Stable `v1.0.0` readiness: deliver the accepted targets in
-  `../decisions/0001-stable-release-api-auth-and-capability-policy.md` together
-  with the selected statistics slice, release validation, changelog/version
-  synchronization, and production-safe defaults.
+  `../facts/api-contract.md` together with the selected statistics slice,
+  release validation, version-record synchronization, and production-safe
+  defaults.
 - Post-stable maintenance: auth test coverage hardening, additional statistics
   polish, export/import UI if selected, shell decomposition, accessibility
   polish, and a spec-to-website content pipeline.
