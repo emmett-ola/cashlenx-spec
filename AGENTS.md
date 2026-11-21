@@ -84,9 +84,11 @@ deferred belongs in `backlog/`.
   so.
 - Acceptance is recorded against an exact commit by someone who did not implement
   it. Accepted is not deployed.
-- Deployment is performed manually by the owner. No repository carries a
-  deployment, rollout or rollback entry point; a `main` push is source evidence
-  only, and no agent claims a runtime deployment.
+- Delivery is per area: the App and Website publish through GitHub CI and their
+  platform integration, while the Server is started by the owner running the
+  repository's own `scripts/build.sh` and `scripts/start.sh` on the Linux host.
+  Maintain the CI workflows and shell scripts; never claim a publication or a
+  deployment from a `main` push. `spec/` ships no deployment automation.
 
 ## Working on a task
 

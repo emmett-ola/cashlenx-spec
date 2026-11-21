@@ -209,12 +209,13 @@ After the owner authorizes the exact accepted release for `main`:
    affected repositories from their exact accepted `testing` refs. No merge
    commit, no history rewrite.
 2. Wait for the required `main` workflow and record its result.
-3. Record branch refs and workflow results as source evidence. Deployment is
-   not part of this operation: the owner deploys manually, from his own tooling,
-   and the repository has no deployment entry point.
+3. Record branch refs and workflow results as source evidence.
 
-A `main` push, a green workflow or a platform publication is never evidence that
-the Server runtime was updated.
+What happens after that differs per area (`../facts/operations.md`
+§Delivery surfaces): the App and Website are published by their branch-triggered
+CI and platform integration, and the Server is deployed by the owner running
+`scripts/build.sh` and `scripts/start.sh` on the Linux host. None of those states
+is inferred from a `main` push.
 
 ## Database preflight before promotion
 

@@ -85,8 +85,10 @@ facts they refer to live beside this file.
   Docker-backed API and database flow.
 - Project-owned compiler warnings, stale facts, broken links, exposed secrets,
   contradictory policy owners and mismatched route summaries are defects.
-- Keep workflow state, branch state and deployment state separate, and report
-  each accurately.
+- Keep workflow state, branch state, publication state and deployment state
+  separate, and report each accurately: App and Website publish through CI and
+  their platform integration, and the Server is started by the owner's own
+  lifecycle scripts on the Linux host.
 - Keep active automation portable through Bash, with Zsh as an interactive
   caller when useful. PowerShell or `pwsh` is never a delivery dependency.
 - Coordinate product versions centrally while App, Server and Website runtime

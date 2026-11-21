@@ -381,45 +381,56 @@ bash scripts/environment-lifecycle.sh stop --profile local --database mongodb
 - `API_RATE_LIMIT_REQUESTS_PER_MINUTE` and `API_RATE_LIMIT_BURST` configure the in-process token bucket. Buckets use the direct TCP peer, so a host reverse proxy is treated as one aggregate peer. The ingress may enforce stricter public per-client limits but must not weaken the server guard.
 - Request access logs omit query strings and record the escaped path only.
 
-## Deployment
+## Delivery surfaces
 
-Deployment is performed manually by the owner. No repository carries a
-deployment, rollout or rollback entry point, and the agent has none:
+Each area reaches production a different way, and the repository maintains a
+different thing for each:
 
-- `scripts/` owns the release-candidate acceptance gate (`release-gate.sh`),
-  environment lifecycle, environment synchronization and whole-product
-  acceptance. All of it runs locally, produces evidence and delivers nothing.
-- A fast-forward to `main` is a source operation. What runs in Testing or
-  Production, and when, is the owner's manual act and is not recorded here as an
-  agent delivery state.
-- The Server is deployed from the owner's own tooling with owner-managed
-  configuration. Do not read, print or copy `.env.testing` or `.env.production`,
-  and do not add a deployment path to any repository.
-- App and Website publication happen through their platform integrations on
-  `main`. They are separate from Server deployment and are confirmed only when
-  the platform result is observable.
+| Area | How it reaches production | What this project maintains |
+| --- | --- | --- |
+| App | GitHub CI on `main` builds the Flutter Web bundle and publishes it to `emmett-ola/cashlenx-app-release-main`; Vercel serves that repository with no build step. `testing` publishes to `cashlenx-app-release-test`. | `.github/workflows/ci.yml`, the release-repository token, the build entry points. |
+| Website | GitHub CI builds the site; Vercel deploys the Website repository. | `.github/workflows/ci.yml`, `scripts/build.sh`, the Bun lockfile. |
+| Server | No automated deployment. The owner deploys on the Linux host by running the repository's own lifecycle scripts. | `scripts/build.sh`, `scripts/start.sh`, `scripts/stop.sh`, the dependency `build.sh`/`start.sh` pair and `scripts/lib/container_lifecycle.sh`. |
 
-The acceptance gate itself, run after the Jira blocker scan for the selected
-version:
+The Server has no CI deployment path and no deployment automation in `spec/`.
+Keeping GitHub CI and the shell scripts working is the maintenance obligation;
+publishing what they produce is the owner's act.
 
-```bash
-bash scripts/release-gate.sh \
-  --affected-components app \
-  --database unchanged \
-  --jira-preflight-reference "<CLX key or comment reference>"
-```
+### Server manual delivery on the Linux host
 
-The gate creates detached clean worktrees, validates only affected repository
-versions and tests, verifies the retained App/Server OpenAPI copy, packages
-affected images and source archives twice, compares identities and checksums,
-runs the built-client browser journey, and writes a checksummed secret-free
-manifest under the ignored `.artifacts/release-gates/`. It reads tracked inputs
-and local development configuration only; it never reads Testing or Production
-environment files and performs no tag, promotion, publication, deployment,
-migration or production-acceptance action.
+The Testing host uses `/workspace/macacloud/cashlenx` as its logical workspace
+root, with the Server worktree at `/workspace/macacloud/cashlenx/server`. Its
+owner-managed `.env.testing` stays untracked, mode `0600`.
 
-MySQL is expired, so `--database unchanged` or `--database mongodb` covers every
-supported release; the legacy dual-engine rehearsal is not maintained.
+1. Build every affected image first: `scripts/build.sh` in each project
+   directory.
+2. Start the payload in dependency order: the selected database project
+   (`scripts/dependencies/<engine>/build.sh`, then `start.sh`), then the Server,
+   then the App, then the Website. Each `start.sh` waits for its own Compose
+   healthcheck.
+3. `scripts/stop.sh` removes a runtime container while keeping its image and
+   persistent data; the final stop also removes the now-unused shared network.
+4. After recreating the Server container, validate and reload the Nginx ingress
+   so it drops any cached address for the former container, then verify the
+   public health endpoint. A healthy container or host port does not prove the
+   public ingress route is healthy.
+5. Reverse-proxy routing and TLS remain owned by the host and are outside the
+   project-local scripts.
+
+The App and Website are not started this way: their production path is the
+branch-triggered CI publication above.
+
+### What counts as evidence
+
+- App: the CI run for the exact `main` commit, plus the release-repository
+  commit whose message names the source revision.
+- Website: the platform deployment for the exact `main` commit, when the
+  platform result is observable.
+- Server: the owner's own run on the host. No CI status, `main` push or App
+  publication is evidence that the Server runtime changed.
+
+A branch promotion is source evidence for all three. It never implies that
+anything was published or deployed.
 
 ## Database-Level Data Protection
 

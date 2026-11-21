@@ -59,9 +59,10 @@ Columns:
 | 1.1.1 | `a74effdd1d4be826e8158e22820458611bce9d05` | App Testing promotion and static publication | pre-standard | Accessibility, URL coherence, semantic dark surfaces, Budget precision, responsive entry, reduced motion | [1.1.1](1.1.1.md) |
 | 1.1.2 | — | not recorded | pre-standard (Jira only) | Fast and observable API experience; prepared, not selected | CLV-20 (archived) |
 | 1.1.3 | `8e6e511a174c439d9f5bed9d3e67e584461781fd` | App `8e6e511a174c439d9f5bed9d3e67e584461781fd` on `main` and published `cashlenx-app-release-main/main`; Server and Website unchanged | pre-standard | Environment-driven App configuration patch, isolated dual-database candidate gate, verified Testing and Main delivery | [1.1.3](1.1.3.md) |
-| 1.1.4 | `eaa59c9c925caeec433c236f4418e6d46083f70c` | App static publication `346ec302514d53e633e54fe82e65d8b49303f2bb`; Server source on `main`, not deployed | accepted | Convert the specification repository to the ASIDE shape (`facts/`, one ladder, one record per version) and add the missing `scripts/test.sh` to `app/` and `server/` | [1.1.4](1.1.4.md) |
+| 1.1.4 | `aab148a817e8be23da3e6ddbf69a020afa9c1fc7` | App static publication `346ec302514d53e633e54fe82e65d8b49303f2bb`; Server source on `main`, not deployed | accepted | Convert the specification repository to the ASIDE shape (`facts/`, one ladder, one record per version) and add the missing `scripts/test.sh` to `app/` and `server/`; tagged in `app` and `server`, the spec conversion commit is listed in the record | [1.1.4](1.1.4.md) |
 | 1.1.5 | `c1b931f8b8fbc601b4329fdf6414163bb0ca5ce4` | none | accepted | Close the last baseline item with a `bun test` suite, retire CLV in Jira, expire MySQL, and delete the imported `sources/` copies | [1.1.5](1.1.5.md) |
 | 1.1.6 | `1d478bef7093d2208edbc73ad65d8d0f4a50419a` | none | accepted | Update the `vite` dev dependency to its latest 8.3 patch to clear GHSA-587h-7wmj-h5pm, which turned every Website CI branch red after `1.1.5` | [1.1.6](1.1.6.md) |
+| 1.1.7 | — | none | accepted | Correct the delivery model (App/Website publish through CI and their platform, the Server is started by the owner's lifecycle scripts), purge the retired Confluence page, and back-fill the version tags | [1.1.7](1.1.7.md) |
 
 ## Rules
 
@@ -80,9 +81,15 @@ Columns:
 - The Jira Product Discovery project `CLV` was archived on 2026-11-20. A row that
   points at a CLV Idea names a historical record, not an active surface; from
   `1.1.4` on, a version exists only as a row here plus its record.
-- No `version/X.Y.Z` tag exists yet in any repository. Creating one is a separate
-  controlled action; from `1.1.4` onward a tag is placed on the commit the row
-  names, on `develop`.
+- A specification-only version carries `—` in the commit column: it changes no
+  artifact bytes, so it has no artifact commit and no tag; its record names the
+  spec commits that carry it.
+- `version/X.Y.Z` tags now exist and are back-filled: 25 tags across the three
+  code repositories, each on the commit its row names, only after confirming the
+  commit exists and is an ancestor of `develop`. A version that touches more
+  than one repository is tagged in each of them at its own commit (`1.1.4` in
+  `app` and `server`). Rows whose date predates any resolvable commit carry no
+  tag and say so.
 - Version numbers express delivery scope. They do not imply acceptance,
   deployment, publication or promotion.
 - `VERSION` in this directory holds the newest version in this table.
