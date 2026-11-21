@@ -381,93 +381,45 @@ bash scripts/environment-lifecycle.sh stop --profile local --database mongodb
 - `API_RATE_LIMIT_REQUESTS_PER_MINUTE` and `API_RATE_LIMIT_BURST` configure the in-process token bucket. Buckets use the direct TCP peer, so a host reverse proxy is treated as one aggregate peer. The ingress may enforce stricter public per-client limits but must not weaken the server guard.
 - Request access logs omit query strings and record the escaped path only.
 
-## UAT Deployment Mechanics
+## Deployment
 
-The current Testing host uses `/workspace/macacloud/cashlenx` as its logical
-CashLenX workspace root. Its Server worktree is
-`/workspace/macacloud/cashlenx/server`, which corresponds to the local
-`server/` project in the outer workspace. Run Testing Server lifecycle commands
-from that remote worktree and keep its owner-managed `.env.testing` file
-untracked with mode `0600`.
+Deployment is performed manually by the owner. No repository carries a
+deployment, rollout or rollback entry point, and the agent has none:
 
-Build every affected image before starting services. In each affected project directory:
+- `scripts/` owns the release-candidate acceptance gate (`release-gate.sh`),
+  environment lifecycle, environment synchronization and whole-product
+  acceptance. All of it runs locally, produces evidence and delivers nothing.
+- A fast-forward to `main` is a source operation. What runs in Testing or
+  Production, and when, is the owner's manual act and is not recorded here as an
+  agent delivery state.
+- The Server is deployed from the owner's own tooling with owner-managed
+  configuration. Do not read, print or copy `.env.testing` or `.env.production`,
+  and do not add a deployment path to any repository.
+- App and Website publication happen through their platform integrations on
+  `main`. They are separate from Server deployment and are confirmed only when
+  the platform result is observable.
 
-```bash
-scripts/build.sh
-scripts/start.sh
-```
-
-If the UAT database is project-managed, explicitly prepare and start the selected
-dependency before the Server by running its dependency `build.sh` and
-`start.sh`. Start the Server next, then the Flutter web app, then the
-product-introduction website. Each `start.sh` waits for its project Compose
-healthcheck. To remove a project's runtime container while retaining its image
-and persistent data, run `scripts/stop.sh` in that project. The final stop also
-removes the now-unused shared network.
-Reverse-proxy routing and TLS remain owned by the UAT host and are outside the
-project-local scripts.
-
-The Testing Nginx ingress resolves the `cashlenx-server:10063` upstream on the
-shared `cashlenx-network`. After recreating the Server container, validate and
-reload Nginx so it drops any cached address for the former container, then
-verify the public Testing health endpoint. A healthy Server container or host
-port alone does not prove that the public ingress route is healthy.
-
-This sequence describes mechanics only. Deployment requires an explicit current
-instruction after every applicable gate passes and the external target and
-credentials are configured. Target, implementation refs, results, migration
-state, and current deployment state still require separate evidence outside
-`facts/`.
-
-Deployment authorization and deployment access are different facts. Standing
-or explicit authority permits the operation, but the executing machine must
-also have the approved non-echoing remote-access profile and host connectivity.
-Do not reinterpret a missing credential profile as missing Human authority,
-and do not ask the operator to place credentials in chat, Jira, logs, command
-arguments, or Git. Owner-managed remote-access profiles remain mode `0600` and
-outside the repositories. Bash is the portable automation contract and Zsh may
-invoke the same entry points interactively. PowerShell and `pwsh` are not active
-release or deployment dependencies; retained PowerShell scripts are legacy
-evidence only.
-
-For an accepted Production release, an explicit `main` promotion instruction
-covers one ordered operation across the affected repositories. The App's
-branch-triggered Production publication must finish and its public runtime
-identity must be verified first. When Server is affected, the exact Server
-`main` revision must then be deployed through the approved Bash entry point and
-verified through container-local health, public ingress, runtime identity,
-selected-database connectivity and migration state, absence of unintended host
-ports, and rollback readiness. These are separate evidence records even though
-they share one release instruction. Missing access or Bash deployment tooling
-leaves the release incomplete and must not be hidden by a successful branch
-push.
-
-After recording the Jira blocker scan, validate an App-only candidate with no
-Server or persistence change by running:
+The acceptance gate itself, run after the Jira blocker scan for the selected
+version:
 
 ```bash
 bash scripts/release-gate.sh \
   --affected-components app \
   --database unchanged \
-  --jira-preflight-reference "CLV-15 comment 10250"
+  --jira-preflight-reference "<CLX key or comment reference>"
 ```
 
-The Bash gate creates detached clean worktrees, validates only affected
-repository versions and tests, verifies the retained App/Server OpenAPI copy,
-packages affected images and source archives twice, compares identities and
-checksums, runs the built-client browser journey, and writes a checksummed
-secret-free manifest under `.artifacts/release-gates/`. It reads tracked release
-inputs and local development configuration only; it never reads Testing or
-Production environment files and performs no tag, promotion, publication,
-deployment, migration, or production-acceptance action.
+The gate creates detached clean worktrees, validates only affected repository
+versions and tests, verifies the retained App/Server OpenAPI copy, packages
+affected images and source archives twice, compares identities and checksums,
+runs the built-client browser journey, and writes a checksummed secret-free
+manifest under the ignored `.artifacts/release-gates/`. It reads tracked inputs
+and local development configuration only; it never reads Testing or Production
+environment files and performs no tag, promotion, publication, deployment,
+migration or production-acceptance action.
 
-Server releases with no database or persistence-boundary change may pass the
-candidate gate with `--database unchanged`; the gate compares the delivered
-`origin/main` commit to the candidate and fails when a database-sensitive path
-changed. Persistence-changing releases and controlled Server deployment remain
-fail-closed until the legacy dual-database rehearsal and deployment capabilities
-have Bash replacements. The retained PowerShell scripts are not accepted entry
-points.
+MySQL is expired, so `--database unchanged` or `--database mongodb` covers every
+supported release; the legacy dual-engine rehearsal is not maintained.
 
 ## Database-Level Data Protection
 

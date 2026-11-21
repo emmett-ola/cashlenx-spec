@@ -43,7 +43,7 @@ git diff --check
 
 Spec-only work also validates local Markdown links, moved paths, accidental non-English content, duplicated policy owners, and unchanged sibling repositories.
 
-The retained PowerShell candidate-deployment smoke harness is legacy evidence,
+The retired PowerShell candidate-deployment smoke harness was deleted in `1.1.5`;
 not an active validation entry point. A runtime-deployment change must first
 port its idempotency, rollback, partial-start recovery, tamper rejection,
 revision, public-configuration, and missing-image scenarios to Bash.
@@ -91,7 +91,7 @@ accounts are not retained.
 
 `test/scripts/budget-acceptance.sh` covers authenticated extended profile and
 configuration persistence plus budget CRUD and cash-flow-derived spending for
-both disposable database profiles. The PowerShell harness is historical only.
+the MongoDB profile. MySQL is expired.
 
 ### Build toolchain convergence
 

@@ -201,30 +201,20 @@ Stop on divergence. Do not create a merge commit, cherry-pick, reset or
 force-push to simulate a fast-forward. Keep the version in Delivery until the
 owner records Testing acceptance.
 
-## Main promotion and production delivery
+## Main promotion
 
 After the owner authorizes the exact accepted release for `main`:
 
-1. Re-run promotion and database preflights; fast-forward only the affected
-   repositories from their exact accepted `testing` refs.
-2. Wait for every required `main` workflow. When App is affected, its Production
-   static publication must succeed and the public App runtime identity must be
-   verified before continuing.
-3. When Server is affected, deploy the exact Server `main` revision only through
-   the approved Bash entry point and non-echoing owner-managed access profile.
-   Do not read or print the owner-managed Production environment file, rebuild
-   from another revision, pull an unverified image, or use retained PowerShell
-   tooling.
-4. Verify the deployed version and revision, container-local health, ingress
-   health, selected-database connectivity and migration state, absence of
-   unintended host ports, and rollback readiness.
-5. Record branch refs, workflow results, App publication, Server deployment,
-   database execution and production acceptance as distinct states.
+1. Re-run the promotion and database preflights and fast-forward only the
+   affected repositories from their exact accepted `testing` refs. No merge
+   commit, no history rewrite.
+2. Wait for the required `main` workflow and record its result.
+3. Record branch refs and workflow results as source evidence. Deployment is
+   not part of this operation: the owner deploys manually, from his own tooling,
+   and the repository has no deployment entry point.
 
-If the Bash entry point, deployment access, exact deployable revision, rollback
-identity or required health evidence is unavailable, stop at the last verified
-state and record the release as incomplete. A `main` push or an App publication
-is never evidence of Server deployment.
+A `main` push, a green workflow or a platform publication is never evidence that
+the Server runtime was updated.
 
 ## Database preflight before promotion
 

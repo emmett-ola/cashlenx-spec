@@ -60,7 +60,7 @@ Columns:
 | 1.1.2 | — | not recorded | pre-standard (Jira only) | Fast and observable API experience; prepared, not selected | CLV-20 (archived) |
 | 1.1.3 | `8e6e511a174c439d9f5bed9d3e67e584461781fd` | App `8e6e511a174c439d9f5bed9d3e67e584461781fd` on `main` and published `cashlenx-app-release-main/main`; Server and Website unchanged | pre-standard | Environment-driven App configuration patch, isolated dual-database candidate gate, verified Testing and Main delivery | [1.1.3](1.1.3.md) |
 | 1.1.4 | `eaa59c9c925caeec433c236f4418e6d46083f70c` | App static publication `346ec302514d53e633e54fe82e65d8b49303f2bb`; Server source on `main`, not deployed | accepted | Convert the specification repository to the ASIDE shape (`facts/`, one ladder, one record per version) and add the missing `scripts/test.sh` to `app/` and `server/` | [1.1.4](1.1.4.md) |
-| 1.1.5 | — | none | specification + website test entry point | Close the last baseline item with a `bun test` suite, retire CLV in Jira, expire MySQL, and delete the imported `sources/` copies | [1.1.5](1.1.5.md) |
+| 1.1.5 | `c1b931f8b8fbc601b4329fdf6414163bb0ca5ce4` | none | accepted | Close the last baseline item with a `bun test` suite, retire CLV in Jira, expire MySQL, and delete the imported `sources/` copies | [1.1.5](1.1.5.md) |
 
 ## Rules
 

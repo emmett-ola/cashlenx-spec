@@ -84,6 +84,9 @@ deferred belongs in `backlog/`.
   so.
 - Acceptance is recorded against an exact commit by someone who did not implement
   it. Accepted is not deployed.
+- Deployment is performed manually by the owner. No repository carries a
+  deployment, rollout or rollback entry point; a `main` push is source evidence
+  only, and no agent claims a runtime deployment.
 
 ## Working on a task
 
