@@ -64,7 +64,7 @@ Columns:
 | 1.1.6 | `1d478bef7093d2208edbc73ad65d8d0f4a50419a` | none | accepted | Update the `vite` dev dependency to its latest 8.3 patch to clear GHSA-587h-7wmj-h5pm, which turned every Website CI branch red after `1.1.5` | [1.1.6](1.1.6.md) |
 | 1.1.7 | — | none | accepted | Correct the delivery model (App/Website publish through CI and their platform, the Server is started by the owner's lifecycle scripts), purge the retired Confluence page, and back-fill the version tags | [1.1.7](1.1.7.md) |
 | 1.1.8 | — | none | specification only | Re-align with ASIDE after the 2026-11-22 standard correction; re-measured 23/23 spec standard and 7/7, 6/7, 7/7 baseline | [1.1.8](1.1.8.md) |
-| 1.1.9 | `bcb31d5feeaff883424c693da467cb285b8f1e3b` | none | delivered, not accepted | Own log output in configuration: directory, name template, daily/hourly/size rolling, retention via `.env*`, and JSON on stdout for collectors | [1.1.9](1.1.9.md) |
+| 1.1.9 | `66c2242edd3f59440cec7dcbeaca6bfb43eabd06` | none | delivered, not accepted | Own log output in configuration: directory, name template, daily/hourly/size rolling, retention via `.env*`, and JSON on stdout for collectors | [1.1.9](1.1.9.md) |
 
 ## Rules
 
