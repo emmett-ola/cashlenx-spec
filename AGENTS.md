@@ -9,7 +9,7 @@ This project follows the ASIDE standard; run
 `python3 /Users/emmett/workspace/macacloud/maca-project-aside/tools/check-aside.py .`
 from this directory to compare the stamp below with the framework checkout.
 
-aside: d124fa08bd3056e37cb1e9a5a14c448f3b9306d3
+aside: 1fec09ae56660d9ceed0ebaa0df0bfd6f505beab
 
 ## Reading order
 
